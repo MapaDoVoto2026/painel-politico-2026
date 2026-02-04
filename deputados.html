@@ -196,20 +196,35 @@
     </style>
 </head>
 <body>
-    <!-- Barra de navegação -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <!-- Menu de navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-landmark mr-2"></i> Dashboard Parlamentar 2026
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-landmark mr-2"></i> Painel Político 2026
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Portal
+                        </a>
+                    </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-users"></i> 513 Deputados
+                        <a class="nav-link" href="deputados.html">
+                            <i class="fas fa-users"></i> Deputados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="senadores.html">
+                            <i class="fas fa-landmark"></i> Senadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="votacao.html">
+                            <i class="fas fa-vote-yea"></i> Votar
                         </a>
                     </li>
                 </ul>
@@ -228,11 +243,11 @@
                     <p class="lead">Análise completa do posicionamento parlamentar com base em votações oficiais</p>
                     <div class="d-flex align-items-center mt-3">
                         <div class="mr-4 d-flex align-items-center">
-                            <div class="color-legend" style="width: 15px; height: 15px; background-color: var(--danger-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <div style="width: 15px; height: 15px; background-color: var(--danger-color); border-radius: 3px; margin-right: 8px;"></div>
                             <span class="small">Vermelho = Oposição</span>
                         </div>
                         <div class="mr-4 d-flex align-items-center">
-                            <div class="color-legend" style="width: 15px; height: 15px; background-color: var(--success-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <div style="width: 15px; height: 15px; background-color: var(--success-color); border-radius: 3px; margin-right: 8px;"></div>
                             <span class="small">Verde = Pró-Governo</span>
                         </div>
                     </div>
@@ -306,15 +321,15 @@
                         <div class="col-md-4 mb-3">
                             <label class="font-weight-bold d-block mb-2">Posicionamento:</label>
                             <div class="d-flex flex-wrap">
-                                <div class="checkbox-filter mr-3">
+                                <div class="mr-3">
                                     <input type="checkbox" id="filter-oposicao" checked>
                                     <label for="filter-oposicao" class="mb-0">Oposição</label>
                                 </div>
-                                <div class="checkbox-filter mr-3">
+                                <div class="mr-3">
                                     <input type="checkbox" id="filter-governo" checked>
                                     <label for="filter-governo" class="mb-0">Pró-Governo</label>
                                 </div>
-                                <div class="checkbox-filter">
+                                <div>
                                     <input type="checkbox" id="filter-centro" checked>
                                     <label for="filter-centro" class="mb-0">Centro/Outros</label>
                                 </div>
@@ -400,7 +415,7 @@
                 Acesse nosso Dashboard Interativo do Senado Federal com filtros dinâmicos, 
                 análise gráfica e a lista completa dos 54 senadores em disputa em 2026.
             </p>
-            <a href="https://misaelbrazil.github.io/mapa-do-voto-senadores/dashboard_senadores.html" target="_blank">
+            <a href="senadores.html">
                 <i class="fas fa-arrow-right mr-2"></i> Conheça o Mapa do Senado
             </a>
         </div>
@@ -414,18 +429,29 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
     
     <script>
-        // Dados dos 513 deputados - Versão otimizada
+        // Dados dos 513 deputados - Versão otimizada (apenas exemplo)
         const deputados = [
+            // Deputados de exemplo (20 deputados para demonstração)
             {id: 1, nome: "Sargento Fahur", partido: "PSD", uf: "PR", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 99.86, governismo: 0.2, totalVotos: 444, obstrucoes: 0, votosOposicao: 443, votosGoverno: 1, participacao: 100, tipo: "Deputado Federal"},
             {id: 2, nome: "Rodolfo Nogueira", partido: "PSD", uf: "MS", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 99.86, governismo: 0.26, totalVotos: 438, obstrucoes: 3, votosOposicao: 437, votosGoverno: 1, participacao: 100, tipo: "Deputado Federal"},
-            // ... (aqui você adicionaria os outros 511 deputados)
-            // Para manter o código funcional, vou adicionar alguns exemplos representativos
-            {id: 100, nome: "Carla Ayres", partido: "PT", uf: "AC", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 24, participacao: 6, tipo: "Deputado Federal"},
-            {id: 200, nome: "Elisangela Araujo", partido: "PT", uf: "PA", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 24, participacao: 6, tipo: "Deputado Federal"},
-            {id: 300, nome: "Mauricio Marcon", partido: "MDB", uf: "RS", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 99.86, governismo: 0.14, totalVotos: 444, obstrucoes: 0, votosOposicao: 443, votosGoverno: 1, participacao: 100, tipo: "Deputado Federal"},
-            {id: 400, nome: "Zucco", partido: "REPUBLICANOS", uf: "RS", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 97.3, governismo: 2.7, totalVotos: 444, obstrucoes: 0, votosOposicao: 432, votosGoverno: 12, participacao: 100, tipo: "Deputado Federal"},
-            {id: 500, nome: "Wolmer Araújo", partido: "PATRIOTA", uf: "MA", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 96, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 24, participacao: 6, tipo: "Deputado Federal"},
-            {id: 513, nome: "Gervasio Maia", partido: "PSB", uf: "PB", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 5.3, governismo: 94.7, totalVotos: 19, obstrucoes: 0, votosOposicao: 1, votosGoverno: 18, participacao: 4.6, tipo: "Deputado Federal"}
+            {id: 3, nome: "Carla Ayres", partido: "PT", uf: "AC", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 24, participacao: 6, tipo: "Deputado Federal"},
+            {id: 4, nome: "Elisangela Araujo", partido: "PT", uf: "PA", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 24, participacao: 6, tipo: "Deputado Federal"},
+            {id: 5, nome: "Mauricio Marcon", partido: "MDB", uf: "RS", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 99.86, governismo: 0.14, totalVotos: 444, obstrucoes: 0, votosOposicao: 443, votosGoverno: 1, participacao: 100, tipo: "Deputado Federal"},
+            {id: 6, nome: "Zucco", partido: "REPUBLICANOS", uf: "RS", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 97.3, governismo: 2.7, totalVotos: 444, obstrucoes: 0, votosOposicao: 432, votosGoverno: 12, participacao: 100, tipo: "Deputado Federal"},
+            {id: 7, nome: "Wolmer Araújo", partido: "PATRIOTA", uf: "MA", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 96, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 24, participacao: 6, tipo: "Deputado Federal"},
+            {id: 8, nome: "Gervasio Maia", partido: "PSB", uf: "PB", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 5.3, governismo: 94.7, totalVotos: 19, obstrucoes: 0, votosOposicao: 1, votosGoverno: 18, participacao: 4.6, tipo: "Deputado Federal"},
+            {id: 9, nome: "Delegado Paulo Bilynskyj", partido: "PL", uf: "PR", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 98.9, governismo: 1.1, totalVotos: 444, obstrucoes: 0, votosOposicao: 439, votosGoverno: 5, participacao: 100, tipo: "Deputado Federal"},
+            {id: 10, nome: "Sargento Goncalves", partido: "PL", uf: "RJ", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 99.3, governismo: 0.7, totalVotos: 444, obstrucoes: 0, votosOposicao: 441, votosGoverno: 3, participacao: 100, tipo: "Deputado Federal"},
+            {id: 11, nome: "Delegado Palumbo", partido: "PL", uf: "SP", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 96.6, governismo: 3.4, totalVotos: 444, obstrucoes: 0, votosOposicao: 429, votosGoverno: 15, participacao: 100, tipo: "Deputado Federal"},
+            {id: 12, nome: "Luiz Lima", partido: "PL", uf: "RJ", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 96.8, governismo: 3.2, totalVotos: 444, obstrucoes: 0, votosOposicao: 430, votosGoverno: 14, participacao: 100, tipo: "Deputado Federal"},
+            {id: 13, nome: "Gilson Marques", partido: "NOVO", uf: "SC", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 96.6, governismo: 3.4, totalVotos: 444, obstrucoes: 0, votosOposicao: 429, votosGoverno: 15, participacao: 100, tipo: "Deputado Federal"},
+            {id: 14, nome: "Marcel van Hattem", partido: "NOVO", uf: "RS", classificacao: "Oposição", ultimoVoto: "10/12/2025", oposicao: 96.88, governismo: 3.12, totalVotos: 444, obstrucoes: 0, votosOposicao: 430, votosGoverno: 14, participacao: 100, tipo: "Deputado Federal"},
+            {id: 15, nome: "Ivan Júnior", partido: "PT", uf: "MG", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 25, participacao: 6, tipo: "Deputado Federal"},
+            {id: 16, nome: "Lucyana Genésio", partido: "PT", uf: "MA", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 25, participacao: 6, tipo: "Deputado Federal"},
+            {id: 17, nome: "Marcelo Calero", partido: "CIDADANIA", uf: "RJ", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 25, participacao: 6, tipo: "Deputado Federal"},
+            {id: 18, nome: "Naumi Amorim", partido: "AVANTE", uf: "CE", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 25, participacao: 6, tipo: "Deputado Federal"},
+            {id: 19, nome: "Pedro Tourinho", partido: "PSD", uf: "BA", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 25, participacao: 6, tipo: "Deputado Federal"},
+            {id: 20, nome: "Washington Quaquá", partido: "PT", uf: "RJ", classificacao: "Governo", ultimoVoto: "09/04/2024", oposicao: 0, governismo: 100, totalVotos: 25, obstrucoes: 0, votosOposicao: 0, votosGoverno: 25, participacao: 6, tipo: "Deputado Federal"}
         ];
         
         // Cores para partidos
@@ -463,7 +489,7 @@
             // Configurar eventos
             setupEventListeners();
             
-            console.log("Dashboard de Deputados Federais carregado");
+            console.log("Dashboard de Deputados Federais carregado - Modo Demonstração");
         });
         
         // Carregar dados na tabela
@@ -511,7 +537,7 @@
                         "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json"
                     },
                     "paging": true,
-                    "pageLength": 25,
+                    "pageLength": 10,
                     "searching": true,
                     "ordering": true,
                     "info": true,
@@ -668,7 +694,7 @@
             
             const partidosOrdenados = Object.entries(contagemPartidos)
                 .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
+                .slice(0, 8);
             
             const partidos = partidosOrdenados.map(p => p[0]);
             const valores = partidosOrdenados.map(p => p[1]);
@@ -686,7 +712,7 @@
             };
             
             const layout = {
-                title: {text: 'Top 10 Partidos (mais deputados)', font: {size: 18}},
+                title: {text: 'Top Partidos (mais deputados)', font: {size: 18}},
                 xaxis: {title: 'Partido'},
                 yaxis: {title: 'Número de Deputados'},
                 margin: {t: 50, b: 60, l: 60, r: 30}
