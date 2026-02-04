@@ -1,0 +1,933 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard do Senado 2026 - 54 Senadores em Disputa</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --opposition-color: #27ae60;
+            --government-color: #e74c3c;
+            --centrist-color: #f39c12;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color), #1a252f);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-section {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.95));
+            color: white;
+            padding: 40px 0 30px;
+            margin-bottom: 30px;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .senador-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            border-left: 5px solid #ddd;
+        }
+        
+        .senador-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .senador-card.opposition {
+            border-left-color: var(--opposition-color);
+            background: linear-gradient(to right, rgba(39, 174, 96, 0.05), white);
+        }
+        
+        .senador-card.government {
+            border-left-color: var(--government-color);
+            background: linear-gradient(to right, rgba(231, 76, 60, 0.05), white);
+        }
+        
+        .senador-card.centrist {
+            border-left-color: var(--centrist-color);
+            background: linear-gradient(to right, rgba(243, 156, 18, 0.05), white);
+        }
+        
+        .senador-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #eee;
+            margin-right: 15px;
+            background-color: #f8f9fa;
+            display: block;
+        }
+        
+        .senador-info {
+            flex: 1;
+        }
+        
+        .badge-opposition {
+            background-color: var(--opposition-color);
+            color: white;
+        }
+        
+        .badge-government {
+            background-color: var(--government-color);
+            color: white;
+        }
+        
+        .badge-centrist {
+            background-color: var(--centrist-color);
+            color: white;
+        }
+        
+        .plotly-chart {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .tab-content {
+            padding-top: 20px;
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .color-legend {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        .filters-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .state-badge {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            margin: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .state-badge:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        
+        .state-badge.active {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+        }
+        
+        .checkbox-filter {
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .senador-photo {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .header-section {
+                padding: 30px 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-landmark mr-2"></i> Dashboard do Senado 2026
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#senadores-tab" data-toggle="tab">
+                            <i class="fas fa-users"></i> Senadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#analise-tab" data-toggle="tab">
+                            <i class="fas fa-chart-bar"></i> Análise
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="header-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 font-weight-bold">54 Senadores em Disputa - 2026</h1>
+                    <p class="lead">2/3 do Senado será renovado nas próximas eleições</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="mr-4 d-flex align-items-center">
+                            <div class="color-legend" style="background-color: var(--government-color);"></div>
+                            <span class="small">Vermelho = Pró-Governo</span>
+                        </div>
+                        <div class="mr-4 d-flex align-items-center">
+                            <div class="color-legend" style="background-color: var(--opposition-color);"></div>
+                            <span class="small">Verde = Oposição</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="color-legend" style="background-color: var(--centrist-color);"></div>
+                            <span class="small">Amarelo = Centro</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-right">
+                    <div class="bg-white rounded-3 p-3 text-dark d-inline-block">
+                        <div class="small text-muted">Eleições</div>
+                        <div class="h4 mb-0 font-weight-bold">OUTUBRO 2026</div>
+                        <div class="small">Todos os 27 estados elegem 2 senadores</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-number" style="color: var(--government-color);" id="count-government">28</div>
+                    <div class="stat-label">Pró-Governo</div>
+                    <div class="small text-muted" id="percent-government">52% dos 54</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-number" style="color: var(--opposition-color);" id="count-opposition">15</div>
+                    <div class="stat-label">Oposição</div>
+                    <div class="small text-muted" id="percent-opposition">28% dos 54</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-number" style="color: var(--centrist-color);" id="count-centrist">11</div>
+                    <div class="stat-label">Centro</div>
+                    <div class="small text-muted" id="percent-centrist">20% dos 54</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center">
+                    <div class="stat-number" id="count-parties">13</div>
+                    <div class="stat-label">Partidos</div>
+                    <div class="small text-muted">Representados</div>
+                </div>
+            </div>
+        </div>
+        
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="senadores-tab" data-toggle="tab" href="#senadores">
+                    <i class="fas fa-users mr-1"></i> Senadores (54)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="analise-tab" data-toggle="tab" href="#analise">
+                    <i class="fas fa-chart-bar mr-1"></i> Análise Comparativa
+                </a>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="mainTabsContent">
+            <div class="tab-pane fade show active" id="senadores" role="tabpanel">
+                <div class="filters-box">
+                    <h5 class="mb-3"><i class="fas fa-filter mr-2"></i>Filtrar Senadores</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-bold d-block mb-2">Posicionamento:</label>
+                            <div class="d-flex flex-wrap">
+                                <div class="checkbox-filter">
+                                    <input type="checkbox" id="filter-government" checked>
+                                    <label for="filter-government" class="mb-0">Pró-Governo</label>
+                                </div>
+                                <div class="checkbox-filter">
+                                    <input type="checkbox" id="filter-opposition" checked>
+                                    <label for="filter-opposition" class="mb-0">Oposição</label>
+                                </div>
+                                <div class="checkbox-filter">
+                                    <input type="checkbox" id="filter-centrist" checked>
+                                    <label for="filter-centrist" class="mb-0">Centro</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-bold">Partido:</label>
+                            <select class="form-control" id="filter-party">
+                                <option value="">Todos os partidos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="font-weight-bold">Estado (UF):</label>
+                            <div id="state-filters" class="d-flex flex-wrap">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-outline-secondary btn-sm" id="reset-filters">
+                                <i class="fas fa-redo mr-1"></i> Limpar Filtros
+                            </button>
+                            <div class="small text-muted">
+                                Mostrando <span id="senadores-count">54</span> de 54 senadores
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row" id="senadores-container">
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="analise" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="plotly-chart" id="graph1" style="height: 500px;"></div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="plotly-chart" id="graph2" style="height: 500px;"></div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-lg-6">
+                        <div class="plotly-chart" id="graph3" style="height: 450px;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="plotly-chart" id="graph4" style="height: 450px;"></div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="plotly-chart" id="graph5" style="height: 600px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5><i class="fas fa-landmark mr-2"></i> Dashboard do Senado 2026</h5>
+                    <p>Análise dos 54 senadores que terão seus mandatos terminando em 2026 e estarão sujeitos à reeleição.</p>
+                    <p><i class="fas fa-info-circle mr-2"></i> <strong>Legenda de cores:</strong> 
+                        <span class="badge badge-government mr-2">Vermelho = Pró-Governo</span>
+                        <span class="badge badge-opposition mr-2">Verde = Oposição</span>
+                        <span class="badge badge-centrist">Amarelo = Centro</span>
+                    </p>
+                    <p class="mb-0"><i class="fas fa-database mr-2"></i> <strong>Fonte dos dados:</strong> Senado Federal e Placar Congresso</p>
+                </div>
+                <div class="col-md-4 text-right">
+                    <p class="mb-2">Dashboard desenvolvido para transparência eleitoral</p>
+                    <p class="small mb-0">Atualizado em: 30/01/2026</p>
+                    <p class="small mb-0">Período analisado: 2019-2027</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        const senadores = [
+            // AC - Acre (2)
+            {nome: "Márcio Bittar", partido: "PL", estado: "AC", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/285"},
+            {nome: "Sérgio Petecão", partido: "PSD", estado: "AC", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/4560"},
+            
+            // AL - Alagoas (2)
+            {nome: "Renan Calheiros", partido: "MDB", estado: "AL", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/70"},
+            {nome: "Dra. Eudócia", partido: "PL", estado: "AL", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5906"},
+            
+            // AM - Amazonas (2)
+            {nome: "Eduardo Braga", partido: "MDB", estado: "AM", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/4994"},
+            {nome: "Plínio Valério", partido: "PSDB", estado: "AM", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5502"},
+            
+            // AP - Amapá (2)
+            {nome: "Randolfe Rodrigues", partido: "PT", estado: "AP", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5012"},
+            {nome: "Lucas Barreto", partido: "PSD", estado: "AP", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5926"},
+            
+            // BA - Bahia (2)
+            {nome: "Jaques Wagner", partido: "PT", estado: "BA", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/581"},
+            {nome: "Angelo Coronel", partido: "PSD", estado: "BA", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5967"},
+            
+            // CE - Ceará (2)
+            {nome: "Eduardo Girão", partido: "NOVO", estado: "CE", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5976"},
+            {nome: "Cid Gomes", partido: "PSB", estado: "CE", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5973"},
+            
+            // DF - Distrito Federal (2)
+            {nome: "Izalci Lucas", partido: "PL", estado: "DF", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/4770"},
+            {nome: "Leila Barros", partido: "PDT", estado: "DF", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5979"},
+            
+            // ES - Espírito Santo (2)
+            {nome: "Fabiano Contarato", partido: "PT", estado: "ES", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5953"},
+            {nome: "Marcos do Val", partido: "PODEMOS", estado: "ES", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5942"},
+            
+            // GO - Goiás (2)
+            {nome: "Jorge Kajuru", partido: "PSB", estado: "GO", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5895"},
+            {nome: "Vanderlan Cardoso", partido: "PSD", estado: "GO", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5899"},
+            
+            // MA - Maranhão (2)
+            {nome: "Eliziane Gama", partido: "PSD", estado: "MA", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5718"},
+            {nome: "Weverton", partido: "PDT", estado: "MA", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5411"},
+            
+            // MG - Minas Gerais (2)
+            {nome: "Rodrigo Pacheco", partido: "PSD", estado: "MG", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5732"},
+            {nome: "Carlos Viana", partido: "PODEMOS", estado: "MG", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5990"},
+            
+            // MS - Mato Grosso do Sul (2)
+            {nome: "Soraya Thronicke", partido: "PODEMOS", estado: "MS", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5988"},
+            {nome: "Nelsinho Trad", partido: "PSD", estado: "MS", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5985"},
+            
+            // MT - Mato Grosso (2)
+            {nome: "Jayme Campos", partido: "UNIÃO", estado: "MT", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/4531"},
+            {nome: "Margareth Buzetti", partido: "PP", estado: "MT", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/6304"},
+            
+            // PA - Pará (2)
+            {nome: "Jader Barbalho", partido: "MDB", estado: "PA", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/35"},
+            {nome: "Zequinha Marinho", partido: "PODEMOS", estado: "PA", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/3806"},
+            
+            // PB - Paraíba (2)
+            {nome: "Daniella Ribeiro", partido: "PP", estado: "PB", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5998"},
+            {nome: "Veneziano Vital do Rêgo", partido: "MDB", estado: "PB", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5748"},
+            
+            // PE - Pernambuco (2)
+            {nome: "Humberto Costa", partido: "PT", estado: "PE", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5008"},
+            {nome: "Fernando Dueire", partido: "MDB", estado: "PE", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5917"},
+            
+            // PI - Piauí (2)
+            {nome: "Ciro Nogueira", partido: "PP", estado: "PI", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/739"},
+            {nome: "Marcelo Castro", partido: "MDB", estado: "PI", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/742"},
+            
+            // PR - Paraná (2)
+            {nome: "Flávio Arns", partido: "PSB", estado: "PR", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/345"},
+            {nome: "Oriovisto Guimarães", partido: "PODEMOS", estado: "PR", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5924"},
+            
+            // RJ - Rio de Janeiro (2)
+            {nome: "Flávio Bolsonaro", partido: "PL", estado: "RJ", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5894"},
+            {nome: "Carlos Portinho", partido: "PL", estado: "RJ", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5936"},
+            
+            // RN - Rio Grande do Norte (2)
+            {nome: "Styvenson Valentim", partido: "PSDB", estado: "RN", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5959"},
+            {nome: "Zenaide Maia", partido: "PSD", estado: "RN", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5783"},
+            
+            // RO - Rondônia (2)
+            {nome: "Confúcio Moura", partido: "MDB", estado: "RO", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/475"},
+            {nome: "Marcos Rogério", partido: "PL", estado: "RO", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5422"},
+            
+            // RR - Roraima (2)
+            {nome: "Chico Rodrigues", partido: "PSB", estado: "RR", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/470"},
+            {nome: "Mecias de Jesus", partido: "REPUBLICANOS", estado: "RR", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/6027"},
+            
+            // RS - Rio Grande do Sul (2)
+            {nome: "Paulo Paim", partido: "PT", estado: "RS", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/825"},
+            {nome: "Luis Carlos Heinze", partido: "PP", estado: "RS", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/1186"},
+            
+            // SC - Santa Catarina (2)
+            {nome: "Esperidião Amin", partido: "PP", estado: "SC", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/22"},
+            {nome: "Ivete da Silveira", partido: "MDB", estado: "SC", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/6010"},
+            
+            // SE - Sergipe (2)
+            {nome: "Rogério Carvalho", partido: "PT", estado: "SE", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5352"},
+            {nome: "Alessandro Vieira", partido: "MDB", estado: "SE", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5982"},
+            
+            // SP - São Paulo (2)
+            {nome: "Mara Gabrilli", partido: "PSD", estado: "SP", classificacao: "Governo", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5376"},
+            {nome: "Giordano", partido: "Sem partido", estado: "SP", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/6008"},
+            
+            // TO - Tocantins (2)
+            {nome: "Irajá", partido: "PSD", estado: "TO", classificacao: "Centro", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/5385"},
+            {nome: "Eduardo Gomes", partido: "PL", estado: "TO", classificacao: "Oposição", foto: "https://legis.senado.leg.br/senadores/fotos-oficiais/3777"}
+        ];
+        
+        const partyColors = {
+            "PL": "#006b3c", "PSD": "#0a3d9a", "MDB": "#f15a22", "PT": "#ed1c24", 
+            "PP": "#0033cc", "UNIÃO": "#8246af", "PODEMOS": "#7d3c98", "PSB": "#e31d23",
+            "REPUBLICANOS": "#0047ab", "PDT": "#ffcc00", "PSDB": "#00a859", "NOVO": "#ff6b00",
+            "Sem partido": "#666666"
+        };
+        
+        const estados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PE","PI","PR","RJ","RN","RO","RR","RS","SC","SE","SP","TO"];
+        
+        const classificacoes = {
+            "Governo": "government",
+            "Oposição": "opposition", 
+            "Centro": "centrist"
+        };
+        
+        let senadoresFiltrados = [...senadores];
+        let partidosUnicos = [...new Set(senadores.map(s => s.partido))].sort();
+        
+        $(document).ready(function() {
+            updateStatistics();
+            loadSenadores();
+            initializeFilters();
+            createGraph1();
+            createGraph2();
+            createGraph3();
+            createGraph4();
+            createGraph5();
+            setupEventListeners();
+            
+            console.log("Total de senadores carregados:", senadores.length);
+        });
+        
+        function updateStatistics() {
+            const contagem = { "Governo": 0, "Oposição": 0, "Centro": 0 };
+            senadoresFiltrados.forEach(s => contagem[s.classificacao]++);
+            
+            const total = senadoresFiltrados.length;
+            
+            $('#count-government').text(contagem.Governo);
+            $('#count-opposition').text(contagem.Oposição);
+            $('#count-centrist').text(contagem.Centro);
+            
+            $('#percent-government').text(Math.round((contagem.Governo / total) * 100) + '% dos ' + total);
+            $('#percent-opposition').text(Math.round((contagem.Oposição / total) * 100) + '% dos ' + total);
+            $('#percent-centrist').text(Math.round((contagem.Centro / total) * 100) + '% dos ' + total);
+            
+            const partidosAtivos = [...new Set(senadoresFiltrados.map(s => s.partido))].length;
+            $('#count-parties').text(partidosAtivos);
+        }
+        
+        function loadSenadores() {
+            const container = $('#senadores-container');
+            container.empty();
+            
+            const senadoresOrdenados = [...senadoresFiltrados].sort((a, b) => {
+                if (a.estado === b.estado) {
+                    return a.nome.localeCompare(b.nome);
+                }
+                return a.estado.localeCompare(b.estado);
+            });
+            
+            senadoresOrdenados.forEach(senador => {
+                const classificacao = classificacoes[senador.classificacao];
+                const corPartido = partyColors[senador.partido] || '#666666';
+                
+                const corFundo = classificacao === 'government' ? 'e74c3c' : 
+                                classificacao === 'opposition' ? '27ae60' : 'f39c12';
+                
+                const avatarFallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(senador.nome)}&background=${corFundo}&color=fff&size=80&font-size=0.4&bold=true`;
+                
+                const senadorCard = $(`
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="senador-card ${classificacao}">
+                            <div class="d-flex">
+                                <div>
+                                    <img src="${senador.foto}" 
+                                         alt="${senador.nome}" 
+                                         class="senador-photo"
+                                         onerror="this.onerror=null; this.src='${avatarFallback}'">
+                                </div>
+                                <div class="senador-info">
+                                    <h6 class="font-weight-bold mb-1">${senador.nome}</h6>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge ${classificacao === 'opposition' ? 'badge-opposition' : classificacao === 'government' ? 'badge-government' : 'badge-centrist'} mr-2">
+                                            ${senador.classificacao}
+                                        </span>
+                                        <span class="badge" style="background-color: ${corPartido}; color: white;">
+                                            ${senador.partido}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <span class="badge badge-dark">${senador.estado}</span>
+                                        </div>
+                                        <div class="small text-muted">
+                                            <i class="fas fa-vote-yea"></i> 2026
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                container.append(senadorCard);
+            });
+            
+            $('#senadores-count').text(senadoresFiltrados.length);
+            updateStatistics();
+        }
+        
+        function initializeFilters() {
+            const partyFilter = $('#filter-party');
+            partyFilter.append('<option value="">Todos os partidos</option>');
+            partidosUnicos.forEach(partido => {
+                partyFilter.append(`<option value="${partido}">${partido}</option>`);
+            });
+            
+            const stateFilters = $('#state-filters');
+            estados.forEach(estado => {
+                stateFilters.append(`
+                    <span class="state-badge badge badge-secondary" data-state="${estado}">${estado}</span>
+                `);
+            });
+            
+            $('#filter-government').prop('checked', true);
+            $('#filter-opposition').prop('checked', true);
+            $('#filter-centrist').prop('checked', true);
+        }
+        
+        function setupEventListeners() {
+            $('#filter-government, #filter-opposition, #filter-centrist').on('change', function() {
+                applyFilters();
+            });
+            
+            $('#filter-party').on('change', applyFilters);
+            
+            $('.state-badge').on('click', function() {
+                $(this).toggleClass('active');
+                if ($(this).hasClass('active')) {
+                    $(this).removeClass('badge-secondary').addClass('badge-primary');
+                } else {
+                    $(this).removeClass('badge-primary').addClass('badge-secondary');
+                }
+                applyFilters();
+            });
+            
+            $('#reset-filters').on('click', function() {
+                $('#filter-government').prop('checked', true);
+                $('#filter-opposition').prop('checked', true);
+                $('#filter-centrist').prop('checked', true);
+                $('#filter-party').val('');
+                $('.state-badge').removeClass('active').removeClass('badge-primary').addClass('badge-secondary');
+                applyFilters();
+            });
+            
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                if ($(e.target).attr('href') === '#analise') {
+                    setTimeout(() => {
+                        Plotly.Plots.resize(document.getElementById('graph1'));
+                        Plotly.Plots.resize(document.getElementById('graph2'));
+                        Plotly.Plots.resize(document.getElementById('graph3'));
+                        Plotly.Plots.resize(document.getElementById('graph4'));
+                        Plotly.Plots.resize(document.getElementById('graph5'));
+                    }, 300);
+                }
+            });
+        }
+        
+        function applyFilters() {
+            const showGovernment = $('#filter-government').is(':checked');
+            const showOpposition = $('#filter-opposition').is(':checked');
+            const showCentrist = $('#filter-centrist').is(':checked');
+            const selectedParty = $('#filter-party').val();
+            const selectedStates = $('.state-badge.active').map(function() {
+                return $(this).data('state');
+            }).get();
+            
+            senadoresFiltrados = senadores.filter(senador => {
+                if (senador.classificacao === 'Governo' && !showGovernment) return false;
+                if (senador.classificacao === 'Oposição' && !showOpposition) return false;
+                if (senador.classificacao === 'Centro' && !showCentrist) return false;
+                if (selectedParty && senador.partido !== selectedParty) return false;
+                if (selectedStates.length > 0 && !selectedStates.includes(senador.estado)) return false;
+                return true;
+            });
+            
+            loadSenadores();
+        }
+        
+        function createGraph1() {
+            const contagem = { "Governo": 0, "Oposição": 0, "Centro": 0 };
+            senadores.forEach(s => contagem[s.classificacao]++);
+            
+            const trace = {
+                labels: ['Pró-Governo', 'Oposição', 'Centro'],
+                values: [contagem.Governo, contagem.Oposição, contagem.Centro],
+                type: 'pie',
+                hole: 0.4,
+                marker: {
+                    colors: ['#e74c3c', '#27ae60', '#f39c12']
+                },
+                textinfo: 'label+value+percent',
+                hovertemplate: '<b>%{label}</b><br>Senadores: %{value}<br>%{percent}<extra></extra>',
+                textposition: 'inside'
+            };
+            
+            const layout = {
+                title: {text: 'Distribuição por Posicionamento', font: {size: 18}},
+                showlegend: false,
+                margin: {t: 50, b: 20, l: 20, r: 20}
+            };
+            
+            Plotly.newPlot('graph1', [trace], layout, {responsive: true});
+        }
+        
+        function createGraph2() {
+            const contagemPartidos = {};
+            senadores.forEach(s => {
+                contagemPartidos[s.partido] = (contagemPartidos[s.partido] || 0) + 1;
+            });
+            
+            const partidosOrdenados = Object.entries(contagemPartidos)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+            
+            const partidos = partidosOrdenados.map(p => p[0]);
+            const valores = partidosOrdenados.map(p => p[1]);
+            const cores = partidos.map(p => partyColors[p] || '#666666');
+            
+            const trace = {
+                x: partidos,
+                y: valores,
+                type: 'bar',
+                orientation: 'v',
+                marker: {color: cores},
+                text: valores.map(v => v.toString()),
+                textposition: 'auto',
+                hovertemplate: '<b>%{x}</b><br>Senadores: %{y}<extra></extra>'
+            };
+            
+            const layout = {
+                title: {text: 'Top Partidos (mais senadores)', font: {size: 18}},
+                xaxis: {title: 'Partido'},
+                yaxis: {title: 'Número de Senadores', dtick: 1},
+                margin: {t: 50, b: 60, l: 60, r: 30}
+            };
+            
+            Plotly.newPlot('graph2', [trace], layout, {responsive: true});
+        }
+        
+        function createGraph3() {
+            const contagemEstados = {};
+            senadores.forEach(s => {
+                contagemEstados[s.estado] = (contagemEstados[s.estado] || 0) + 1;
+            });
+            
+            const estadosOrdenados = Object.keys(contagemEstados).sort();
+            const valores = estadosOrdenados.map(e => contagemEstados[e]);
+            
+            const trace = {
+                x: estadosOrdenados,
+                y: valores,
+                type: 'bar',
+                marker: {color: '#3498db'},
+                text: valores.map(v => v.toString()),
+                textposition: 'auto',
+                hovertemplate: '<b>UF: %{x}</b><br>Senadores: %{y}<extra></extra>'
+            };
+            
+            const layout = {
+                title: {text: 'Senadores por Estado (UF)', font: {size: 18}},
+                xaxis: {title: 'Estado', tickangle: -45},
+                yaxis: {title: 'Número de Senadores', dtick: 1},
+                margin: {t: 50, b: 80, l: 60, r: 30}
+            };
+            
+            Plotly.newPlot('graph3', [trace], layout, {responsive: true});
+        }
+        
+        function createGraph4() {
+            const dadosPorPartido = {};
+            
+            senadores.forEach(s => {
+                if (!dadosPorPartido[s.partido]) {
+                    dadosPorPartido[s.partido] = { "Governo": 0, "Oposição": 0, "Centro": 0 };
+                }
+                dadosPorPartido[s.partido][s.classificacao]++;
+            });
+            
+            const partidos = Object.keys(dadosPorPartido)
+                .sort((a, b) => {
+                    const totalA = dadosPorPartido[a].Governo + dadosPorPartido[a].Oposição + dadosPorPartido[a].Centro;
+                    const totalB = dadosPorPartido[b].Governo + dadosPorPartido[b].Oposição + dadosPorPartido[b].Centro;
+                    return totalB - totalA;
+                })
+                .slice(0, 6);
+            
+            const traceGoverno = {
+                x: partidos,
+                y: partidos.map(p => dadosPorPartido[p].Governo),
+                name: 'Pró-Governo',
+                type: 'bar',
+                marker: {color: '#e74c3c'}
+            };
+            
+            const traceOposicao = {
+                x: partidos,
+                y: partidos.map(p => dadosPorPartido[p].Oposição),
+                name: 'Oposição',
+                type: 'bar',
+                marker: {color: '#27ae60'}
+            };
+            
+            const traceCentro = {
+                x: partidos,
+                y: partidos.map(p => dadosPorPartido[p].Centro),
+                name: 'Centro',
+                type: 'bar',
+                marker: {color: '#f39c12'}
+            };
+            
+            const layout = {
+                title: {text: 'Posicionamento por Partido', font: {size: 18}},
+                barmode: 'stack',
+                xaxis: {title: 'Partido'},
+                yaxis: {title: 'Número de Senadores'},
+                legend: {orientation: 'h', y: -0.2},
+                margin: {t: 50, b: 100, l: 60, r: 30}
+            };
+            
+            Plotly.newPlot('graph4', [traceGoverno, traceOposicao, traceCentro], layout, {responsive: true});
+        }
+        
+        function createGraph5() {
+            const estadosOrdenados = [...estados].sort();
+            const partidosSelecionados = ['PL', 'PT', 'PSD', 'MDB', 'PP', 'UNIÃO', 'PODEMOS', 'PSB'];
+            
+            const z = [];
+            const text = [];
+            
+            partidosSelecionados.forEach(partido => {
+                const linha = [];
+                const linhaTexto = [];
+                
+                estadosOrdenados.forEach(estado => {
+                    const senadoresEstado = senadores.filter(s => 
+                        s.partido === partido && s.estado === estado
+                    );
+                    
+                    if (senadoresEstado.length > 0) {
+                        let score = 0;
+                        senadoresEstado.forEach(s => {
+                            if (s.classificacao === 'Oposição') score += 1;
+                            else if (s.classificacao === 'Centro') score += 0.5;
+                        });
+                        
+                        const valor = (score / senadoresEstado.length) * 100;
+                        linha.push(valor);
+                        linhaTexto.push(`${partido} - ${estado}<br>${senadoresEstado.length} senador(es)<br>Score: ${valor.toFixed(0)}`);
+                    } else {
+                        linha.push(null);
+                        linhaTexto.push(`${partido} - ${estado}<br>Nenhum senador`);
+                    }
+                });
+                
+                z.push(linha);
+                text.push(linhaTexto);
+            });
+            
+            const trace = {
+                x: estadosOrdenados,
+                y: partidosSelecionados,
+                z: z,
+                text: text,
+                type: 'heatmap',
+                colorscale: [
+                    [0, '#e74c3c'],
+                    [0.5, '#f39c12'],
+                    [1, '#27ae60']
+                ],
+                hovertemplate: '<b>%{text}</b><extra></extra>',
+                colorbar: {
+                    title: 'Posicionamento',
+                    titleside: 'right',
+                    tickmode: 'array',
+                    tickvals: [0, 50, 100],
+                    ticktext: ['Governo', 'Centro', 'Oposição']
+                }
+            };
+            
+            const layout = {
+                title: {text: 'Mapa de Calor: Posicionamento por Partido e Estado', font: {size: 18}},
+                xaxis: {title: 'Estado (UF)', side: 'bottom'},
+                yaxis: {title: 'Partido'},
+                margin: {t: 50, b: 80, l: 100, r: 30}
+            };
+            
+            Plotly.newPlot('graph5', [trace], layout, {responsive: true});
+        }
+    </script>
+</body>
+</html>
