@@ -39,3 +39,7 @@ MIT License - livre para uso e modificação.
 
 - [Portal Principal](index.html)
 - [Código Fonte](https://github.com/MapaDoVoto2026/painel-politico-2026)
+
+## 📄 Contato
+
+Email: painelpolitico2026@protonmail.com
