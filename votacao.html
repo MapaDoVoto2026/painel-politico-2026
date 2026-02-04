@@ -6,13 +6,373 @@
     <title>Sistema de Votos - Painel Político 2026</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 80px;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color), #1a252f);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .vote-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            border-left: 5px solid #ddd;
+        }
+        
+        .vote-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .vote-card.oposicao {
+            border-left-color: var(--danger-color);
+            background: linear-gradient(to right, rgba(231, 76, 60, 0.05), white);
+        }
+        
+        .vote-card.governo {
+            border-left-color: var(--success-color);
+            background: linear-gradient(to right, rgba(39, 174, 96, 0.05), white);
+        }
+        
+        .vote-count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .vote-btn {
+            padding: 10px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        
+        .vote-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .progress {
+            height: 10px;
+            margin: 10px 0;
+        }
+        
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .search-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+    </style>
 </head>
-<body style="padding: 20px; background: #f8f9fa;">
-    <div class="container text-center py-5">
-        <h1 class="text-primary"><i class="fas fa-vote-yea"></i> Sistema de Votos Públicos</h1>
-        <p class="lead">Funcionalidade em desenvolvimento - Disponível em breve!</p>
-        <p>Os usuários poderão votar em parlamentares e acompanhar a preferência pública.</p>
-        <a href="index.html" class="btn btn-primary mt-3">Voltar para o Portal</a>
+<body>
+    <!-- Menu de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-landmark mr-2"></i> Painel Político 2026
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Portal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="deputados.html">
+                            <i class="fas fa-users"></i> Deputados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="senadores.html">
+                            <i class="fas fa-landmark"></i> Senadores
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="votacao.html">
+                            <i class="fas fa-vote-yea"></i> Votar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Cabeçalho -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-5 font-weight-bold text-center text-primary">
+                    <i class="fas fa-thumbs-up mr-2"></i> Sistema de Votos Públicos
+                </h1>
+                <p class="lead text-center mb-4">
+                    Vote nos parlamentares e acompanhe a preferência pública em tempo real
+                </p>
+                
+                <div class="search-box">
+                    <h5><i class="fas fa-search mr-2"></i> Buscar Parlamentar</h5>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Digite o nome do deputado ou senador...">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control" id="filterType">
+                                <option value="">Todos os tipos</option>
+                                <option value="deputado">Deputados Federais</option>
+                                <option value="senador">Senadores</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Legenda -->
+                <div class="d-flex justify-content-center flex-wrap mb-4">
+                    <div class="mr-4 d-flex align-items-center">
+                        <div class="legend-box" style="background-color: var(--danger-color);"></div>
+                        <span class="small">Oposição</span>
+                    </div>
+                    <div class="mr-4 d-flex align-items-center">
+                        <div class="legend-box" style="background-color: var(--success-color);"></div>
+                        <span class="small">Pró-Governo</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="legend-box" style="background-color: var(--warning-color);"></div>
+                        <span class="small">Centro</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de Parlamentares para Votação -->
+        <div class="row" id="parlamentares-list">
+            <!-- Dados carregados via JavaScript -->
+        </div>
+        
+        <!-- Instruções -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle mr-2"></i> Sistema em Fase Beta</h5>
+                    <p class="mb-0">
+                        Este sistema usa <code>localStorage</code> para armazenar seus votos localmente no navegador.
+                        Para um sistema público completo com banco de dados, seria necessário backend.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="voteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-vote-yea mr-2"></i> Confirmar Voto</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body text-center" id="modalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmVoteBtn">
+                        <i class="fas fa-check mr-2"></i> Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Dados dos parlamentares
+        const parlamentares = [
+            // Deputados
+            { id: 1, nome: "Sargento Fahur", partido: "PSD", uf: "PR", tipo: "deputado", classificacao: "Oposição" },
+            { id: 2, nome: "Rodolfo Nogueira", partido: "PSD", uf: "MS", tipo: "deputado", classificacao: "Oposição" },
+            { id: 3, nome: "Carla Ayres", partido: "PT", uf: "AC", tipo: "deputado", classificacao: "Governo" },
+            { id: 4, nome: "Wolmer Araújo", partido: "PATRIOTA", uf: "MA", tipo: "deputado", classificacao: "Governo" },
+            { id: 5, nome: "Mauricio Marcon", partido: "MDB", uf: "RS", tipo: "deputado", classificacao: "Oposição" },
+            
+            // Senadores
+            { id: 101, nome: "Márcio Bittar", partido: "PL", uf: "AC", tipo: "senador", classificacao: "Oposição" },
+            { id: 102, nome: "Renan Calheiros", partido: "MDB", uf: "AL", tipo: "senador", classificacao: "Governo" },
+            { id: 103, nome: "Randolfe Rodrigues", partido: "PT", uf: "AP", tipo: "senador", classificacao: "Governo" },
+            { id: 104, nome: "Ciro Nogueira", partido: "PP", uf: "PI", tipo: "senador", classificacao: "Oposição" },
+            { id: 105, nome: "Rodrigo Pacheco", partido: "PSD", uf: "MG", tipo: "senador", classificacao: "Centro" }
+        ];
+        
+        let votos = JSON.parse(localStorage.getItem('votos_parlamentares')) || {};
+        let parlamentarSelecionado = null;
+        
+        $(document).ready(function() {
+            carregarParlamentares();
+            configurarEventos();
+        });
+        
+        function carregarParlamentares() {
+            const container = $('#parlamentares-list');
+            container.empty();
+            
+            const busca = $('#searchInput').val().toLowerCase();
+            const tipoFiltro = $('#filterType').val();
+            
+            const filtrados = parlamentares.filter(p => {
+                const nomeMatch = p.nome.toLowerCase().includes(busca);
+                const tipoMatch = tipoFiltro ? p.tipo === tipoFiltro : true;
+                return nomeMatch && tipoMatch;
+            });
+            
+            filtrados.sort((a, b) => {
+                const votosA = votos[a.id] || 0;
+                const votosB = votos[b.id] || 0;
+                return votosB - votosA;
+            });
+            
+            if (filtrados.length === 0) {
+                container.html(`
+                    <div class="col-12 text-center">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-search mr-2"></i> Nenhum parlamentar encontrado.
+                        </div>
+                    </div>
+                `);
+                return;
+            }
+            
+            filtrados.forEach(p => {
+                const votosAtuais = votos[p.id] || 0;
+                const tipoTexto = p.tipo === 'deputado' ? 'Deputado Federal' : 'Senador';
+                const classeCor = p.classificacao === 'Oposição' ? 'oposicao' : 
+                                 p.classificacao === 'Governo' ? 'governo' : '';
+                
+                const card = `
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="vote-card ${classeCor}">
+                            <div class="text-center">
+                                <h5 class="font-weight-bold">${p.nome}</h5>
+                                <div class="d-flex justify-content-center mb-2">
+                                    <span class="badge mr-2" style="background-color: ${getCorPartido(p.partido)}; color: white;">
+                                        ${p.partido}
+                                    </span>
+                                    <span class="badge badge-dark">${p.uf}</span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="badge ${p.classificacao === 'Oposição' ? 'badge-danger' : p.classificacao === 'Governo' ? 'badge-success' : 'badge-warning'}">
+                                        ${p.classificacao}
+                                    </span>
+                                    <span class="badge badge-info ml-1">${tipoTexto}</span>
+                                </div>
+                                
+                                <div class="vote-count">${votosAtuais}</div>
+                                <p class="text-muted small mb-3">votos recebidos</p>
+                                
+                                <div class="progress">
+                                    <div class="progress-bar ${p.classificacao === 'Oposição' ? 'bg-danger' : p.classificacao === 'Governo' ? 'bg-success' : 'bg-warning'}" 
+                                         style="width: ${Math.min(votosAtuais * 10, 100)}%">
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-primary vote-btn mt-3" 
+                                        onclick="prepararVoto(${p.id})"
+                                        ${jaVotou(p.id) ? 'disabled' : ''}>
+                                    <i class="fas fa-thumbs-up mr-2"></i>
+                                    ${jaVotou(p.id) ? 'Você já votou!' : 'Votar'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.append(card);
+            });
+        }
+        
+        function getCorPartido(partido) {
+            const cores = {
+                "PL": "#006b3c", "PSD": "#0a3d9a", "MDB": "#f15a22", "PT": "#ed1c24", 
+                "PP": "#0033cc", "UNIÃO": "#8246af", "PODEMOS": "#7d3c98", "PSB": "#e31d23",
+                "REPUBLICANOS": "#0047ab", "PDT": "#ffcc00", "PATRIOTA": "#00a859"
+            };
+            return cores[partido] || '#666666';
+        }
+        
+        function jaVotou(id) {
+            return localStorage.getItem(`votou_${id}`) === 'true';
+        }
+        
+        function prepararVoto(id) {
+            parlamentarSelecionado = parlamentares.find(p => p.id === id);
+            
+            if (!parlamentarSelecionado) return;
+            
+            const modalBody = `
+                <h4>${parlamentarSelecionado.nome}</h4>
+                <p>${parlamentarSelecionado.partido} - ${parlamentarSelecionado.uf}</p>
+                <p class="mb-4">Você está prestes a votar em ${parlamentarSelecionado.tipo === 'deputado' ? 'um deputado federal' : 'um senador'}.</p>
+                <p class="text-muted"><small>Seu voto será registrado localmente no seu navegador.</small></p>
+            `;
+            
+            $('#modalBody').html(modalBody);
+            $('#voteModal').modal('show');
+        }
+        
+        function configurarEventos() {
+            $('#searchInput, #filterType').on('input change', carregarParlamentares);
+            
+            $('#confirmVoteBtn').on('click', function() {
+                if (!parlamentarSelecionado) return;
+                
+                votos[parlamentarSelecionado.id] = (votos[parlamentarSelecionado.id] || 0) + 1;
+                localStorage.setItem('votos_parlamentares', JSON.stringify(votos));
+                localStorage.setItem(`votou_${parlamentarSelecionado.id}`, 'true');
+                
+                carregarParlamentares();
+                $('#voteModal').modal('hide');
+                
+                const alerta = $(`
+                    <div class="alert alert-success alert-dismissible fade show fixed-top mt-5 mx-3" style="z-index: 9999;">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <strong>Voto registrado!</strong> Você votou em ${parlamentarSelecionado.nome}.
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                `);
+                
+                $('body').append(alerta);
+                setTimeout(() => alerta.alert('close'), 5000);
+            });
+        }
+    </script>
 </body>
 </html>
