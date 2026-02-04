@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa do Voto 2026 - Dashboard Parlamentar</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 80px; /* Para o menu fixo */
+        }
+        
+        .navbar-custom {
+            background: rgba(44, 62, 80, 0.95);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 10px 20px !important;
+            border-radius: 5px;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .portal-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: transform 0.4s, box-shadow 0.4s;
+        }
+        
+        .portal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+        
+        .dashboard-btn {
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            margin: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .dashboard-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .badge-feature {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin: 5px;
+            opacity: 0.8;
+            transition: all 0.3s;
+        }
+        
+        .badge-feature:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        .stats-box {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .portal-card {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .dashboard-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu de Navegação Fixo -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand font-weight-bold" href="index.html">
+                <i class="fas fa-landmark mr-2"></i> Mapa do Voto 2026
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Início
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard_deputados.html">
+                            <i class="fas fa-users"></i> Deputados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard_senadores.html">
+                            <i class="fas fa-landmark"></i> Senadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ficha_individual.html">
+                            <i class="fas fa-vote-yea"></i> Votar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <!-- Cabeçalho -->
+        <div class="text-center text-white mb-5">
+            <h1 class="display-4 font-weight-bold mb-3">
+                <i class="fas fa-chart-network"></i> Dashboard Parlamentar 2026
+            </h1>
+            <p class="lead mb-4">Transparência política em tempo real para eleições conscientes</p>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="stats-box">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <h3 class="text-warning">513</h3>
+                                <p class="small mb-0">Deputados Federais</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="text-success">54</h3>
+                                <p class="small mb-0">Senadores em Disputa</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="text-info">27</h3>
+                                <p class="small mb-0">Estados Analisados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cards Principais -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="portal-card">
+                    <h2 class="text-center mb-4 text-primary">
+                        <i class="fas fa-rocket mr-2"></i> Escolha seu Dashboard
+                    </h2>
+                    
+                    <div class="row">
+                        <!-- Deputados -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-primary shadow">
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-users fa-4x text-primary"></i>
+                                    </div>
+                                    <h3 class="card-title text-primary">Deputados Federais</h3>
+                                    <p class="card-text">
+                                        Análise completa dos 513 deputados com:
+                                        <br>• Filtros dinâmicos (partido, estado, posicionamento)
+                                        <br>• Gráficos interativos
+                                        <br>• Histórico de votações
+                                        <br>• Dados atualizados até 10/12/2025
+                                    </p>
+                                    <div class="mt-4">
+                                        <a href="dashboard_deputados.html" 
+                                           class="btn btn-primary dashboard-btn">
+                                            <i class="fas fa-chart-bar mr-2"></i>
+                                            Acessar Dashboard
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light text-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-database mr-1"></i> Fonte: Placar Congresso
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Senadores -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-success shadow">
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-landmark fa-4x text-success"></i>
+                                    </div>
+                                    <h3 class="card-title text-success">Senadores</h3>
+                                    <p class="card-text">
+                                        Dashboard dos 54 senadores em disputa:
+                                        <br>• Filtros por estado e partido
+                                        <br>• Posicionamento político color-coded
+                                        <br>• Análise de reeleição 2026
+                                        <br>• Gráficos comparativos
+                                    </p>
+                                    <div class="mt-4">
+                                        <a href="dashboard_senadores.html" 
+                                           class="btn btn-success dashboard-btn">
+                                            <i class="fas fa-poll mr-2"></i>
+                                            Acessar Dashboard
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light text-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar-alt mr-1"></i> Eleições: Outubro 2026
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sistema de Votos -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card border-warning shadow">
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-vote-yea fa-3x text-warning"></i>
+                                    </div>
+                                    <h3 class="card-title text-warning">
+                                        <i class="fas fa-star mr-2"></i> Sistema de Votos Públicos
+                                    </h3>
+                                    <p class="card-text">
+                                        <strong>NOVO:</strong> Vote nos parlamentares e acompanhe a preferência pública!
+                                        <br>• Votos acumulativos e públicos
+                                        <br>• Visualize quem tem mais apoio
+                                        <br>• Compare posicionamentos
+                                        <br>• Seu voto conta para a estatística geral
+                                    </p>
+                                    <div class="mt-3">
+                                        <a href="ficha_individual.html" 
+                                           class="btn btn-warning dashboard-btn">
+                                            <i class="fas fa-thumbs-up mr-2"></i>
+                                            Participar da Votação
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Em Desenvolvimento -->
+                    <div class="mt-5 pt-4 border-top">
+                        <h4 class="text-center mb-4">
+                            <i class="fas fa-tools mr-2"></i> Em Desenvolvimento
+                        </h4>
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <a href="governadores.html" class="badge badge-warning badge-feature m-2">
+                                        <i class="fas fa-user-tie mr-1"></i> Governadores
+                                    </a>
+                                    <a href="deputados_estaduais.html" class="badge badge-warning badge-feature m-2">
+                                        <i class="fas fa-user-friends mr-1"></i> Deputados Estaduais
+                                    </a>
+                                    <a href="ficha_individual.html" class="badge badge-info badge-feature m-2">
+                                        <i class="fas fa-id-card mr-1"></i> Ficha Individual
+                                    </a>
+                                    <a href="comparativo_regional.html" class="badge badge-warning badge-feature m-2">
+                                        <i class="fas fa-map-marked-alt mr-1"></i> Comparativo Regional
+                                    </a>
+                                    <span class="badge badge-secondary badge-feature m-2">
+                                        <i class="fas fa-mobile-alt mr-1"></i> App Mobile (2027)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rodapé -->
+                <div class="text-center text-white mt-4">
+                    <p class="small">
+                        <i class="fas fa-code-branch"></i> 
+                        Projeto open-source para transparência política | 
+                        <i class="fas fa-heart text-danger"></i> Desenvolvido para o Brasil
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
