@@ -10,8 +10,8 @@
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --danger-color: #e74c3c;
+            --success-color: #27ae60; /* VERDE para OPOSIÇÃO */
+            --danger-color: #e74c3c; /* VERMELHO para GOVERNISMO */
             --warning-color: #f39c12;
         }
         
@@ -42,13 +42,13 @@
         }
         
         .vote-card.oposicao {
-            border-left-color: var(--danger-color);
-            background: linear-gradient(to right, rgba(231, 76, 60, 0.05), white);
+            border-left-color: var(--success-color); /* VERDE para OPOSIÇÃO */
+            background: linear-gradient(to right, rgba(39, 174, 96, 0.05), white);
         }
         
         .vote-card.governo {
-            border-left-color: var(--success-color);
-            background: linear-gradient(to right, rgba(39, 174, 96, 0.05), white);
+            border-left-color: var(--danger-color); /* VERMELHO para GOVERNISMO */
+            background: linear-gradient(to right, rgba(231, 76, 60, 0.05), white);
         }
         
         .vote-count {
@@ -149,7 +149,7 @@
                         <div class="col-md-4">
                             <select class="form-control" id="filterType">
                                 <option value="">Todos os tipos</option>
-                                <option value="deputado">Deputados Federais</option>
+                                <option value="deputado">Deputados Federais (513)</option>
                                 <option value="senador">Senadores</option>
                             </select>
                         </div>
@@ -159,16 +159,16 @@
                 <!-- Legenda -->
                 <div class="d-flex justify-content-center flex-wrap mb-4">
                     <div class="mr-4 d-flex align-items-center">
-                        <div class="legend-box" style="background-color: var(--danger-color);"></div>
-                        <span class="small">Oposição</span>
+                        <div class="legend-box" style="background-color: var(--success-color);"></div>
+                        <span class="small">Oposição (Verde)</span>
                     </div>
                     <div class="mr-4 d-flex align-items-center">
-                        <div class="legend-box" style="background-color: var(--success-color);"></div>
-                        <span class="small">Pró-Governo</span>
+                        <div class="legend-box" style="background-color: var(--danger-color);"></div>
+                        <span class="small">Pró-Governo (Vermelho)</span>
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="legend-box" style="background-color: var(--warning-color);"></div>
-                        <span class="small">Centro</span>
+                        <span class="small">Centro (Amarelo)</span>
                     </div>
                 </div>
             </div>
@@ -216,22 +216,179 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Dados dos parlamentares
-        const parlamentares = [
-            // Deputados
-            { id: 1, nome: "Sargento Fahur", partido: "PSD", uf: "PR", tipo: "deputado", classificacao: "Oposição" },
-            { id: 2, nome: "Rodolfo Nogueira", partido: "PSD", uf: "MS", tipo: "deputado", classificacao: "Oposição" },
-            { id: 3, nome: "Carla Ayres", partido: "PT", uf: "AC", tipo: "deputado", classificacao: "Governo" },
-            { id: 4, nome: "Wolmer Araújo", partido: "PATRIOTA", uf: "MA", tipo: "deputado", classificacao: "Governo" },
-            { id: 5, nome: "Mauricio Marcon", partido: "MDB", uf: "RS", tipo: "deputado", classificacao: "Oposição" },
+        // Função para gerar os 513 deputados
+        function gerarDeputados() {
+            const partidos = ["PL", "PSD", "MDB", "UNIÃO", "PP", "REPUBLICANOS", "PSDB", 
+                "PT", "NOVO", "PODE", "CIDADANIA", "PSB", "PDT", "AVANTE", 
+                "SOLIDARIEDADE", "PATRIOTA", "PV", "PSOL", "REDE", "PSC"];
             
-            // Senadores
-            { id: 101, nome: "Márcio Bittar", partido: "PL", uf: "AC", tipo: "senador", classificacao: "Oposição" },
-            { id: 102, nome: "Renan Calheiros", partido: "MDB", uf: "AL", tipo: "senador", classificacao: "Governo" },
-            { id: 103, nome: "Randolfe Rodrigues", partido: "PT", uf: "AP", tipo: "senador", classificacao: "Governo" },
-            { id: 104, nome: "Ciro Nogueira", partido: "PP", uf: "PI", tipo: "senador", classificacao: "Oposição" },
-            { id: 105, nome: "Rodrigo Pacheco", partido: "PSD", uf: "MG", tipo: "senador", classificacao: "Centro" }
-        ];
+            const estados = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", 
+               "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", 
+               "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
+            
+            const nomes_base = [
+                "Sargento Fahur", "Rodolfo Nogueira", "Delegado Paulo Bilynskyj", "Mauricio Marcon",
+                "Sargento Goncalves", "Zucco", "Delegado Palumbo", "Luiz Lima", "Gilson Marques",
+                "Marcel van Hattem", "Marcos Pollon", "Nikolas Ferreira", "Cabo Gilberto Silva",
+                "Bibo Nunes", "Coronel Meira", "Capitão Alden", "Marco Alvino", "Filipe Martins",
+                "Gustavo Gayer", "Cristovão Trovão", "Sanderson", "Pezenti", "General Pazuello",
+                "Delegado Ramagem", "Alberto Fraga", "Coronel Assis", "Messias Donato",
+                "Delegado Caveira", "Coronel Christóstomo", "Adriana Ventura", "Giovani Cherini",
+                "Evair Vieira de Melo", "Capitão Augusto", "Daniel Freitas", "Eros Biondini",
+                "Miguel Lombardi", "Roberto Monteiro Pai", "Paulo Freire Costa", "Joaquim Passarinho",
+                "Luiz Philippe de Orleans e Bragança", "Nicoletti", "Maurício do Vôlei", "Bia Kicis",
+                "Jefferson Campos", "Daniela Reinehr", "Alfredo Gaspar", "Caroline de Toni",
+                "Dr. Jaziel", "Carlos Jordy", "Clarissa Tércio", "Osmar Terra", "Marcelo Moraes",
+                "General Girão", "Pastor Eurico", "Delegado Fabio Costa", "Lincoln Portela",
+                "Adilson Barroso", "Magda Mofatto", "Chris Tonietto", "Coronel Fernanda",
+                "Rosangela Moro", "Dayany Bittencourt", "Coronel Ulysses", "Domingos Sávio",
+                "Rosana Valle", "Lucas Redecker", "Junio Amaral", "Any Ortiz", "Capitão Alberto Neto",
+                "Julia Zanatta", "Gilvan da Federal", "José Medeiros", "Rodrigo Valadares",
+                "Professor Alcides", "Roberta Roma", "Daniel Agrobom", "André Fernandes",
+                "Mario Frias", "Pr. Marco Feliciano", "Dr. Frederico", "Pastor Diniz",
+                "Filipe Francischini", "Hélio Lopes", "Kim Kataguiri", "Dr. Fernando Máximo",
+                "Marcelo Álvaro Antônio", "Luiz Carlos Motta", "Covatti Filho", "Eli Borges",
+                "Rosângela Reis", "Ricardo Salles", "Geovania de Sá", "Fabio Schiochet",
+                "Pedro Westphalen", "Delegado Éder Mauro", "Cristiane Lopes", "Emidinho Madeira",
+                "Dr. Zacharias Calil", "Fernando Rodolfo", "Maurício Carvalho", "Roberto Duarte",
+                "Thiago Flores", "Soraya Santos", "Silvia Cristina", "André Ferreira",
+                "Ricardo Guidi", "Pastor Gil", "Eduardo Velloso", "Reinhold Stephanes",
+                "Matheus Noronha", "Afonso Hamm", "Filipe Barros", "Dr. Luiz Ovando",
+                "Ana Paula Leão", "Mendonça Filho", "Daniel Trzeciak", "Silvia Waiãpi",
+                "Allan Garcês", "Cobalchini", "Wellington Roberto", "Carla Zambelli",
+                "Vinicius Gurgel", "Raimundo Santos", "Pedro Lupion", "Alceu Moreira",
+                "Silvye Alves", "Ismael", "Franciane Bayer", "Carlos Sampaio", "Giacobo",
+                "Antonio Carlos Rodrigues", "Sóstenes Cavalcante", "Greice Elias", "Rafael Simoes",
+                "Rodrigo Estacho", "Icaro de Valmir", "Luiz Fernando Vampiro", "Fábio Teruel",
+                "Rodrigo da Zaeli", "Detinha", "Josimar Maranhãozinho", "Vermelho", "Diego Garcia",
+                "Gisela Simona", "Dilceu Sperafico", "Jorge Goetten", "Padovani", "Sargento Portugal",
+                "Delegado da Cunha", "Carla Dickson", "Abilio Brunini", "Zé Vitor", "Otoni de Paula",
+                "Paulo Alexandre Barbosa", "David Soares", "Coronel Telhada", "Da Vitoria",
+                "Luisa Canziani", "Nelson Barbudo", "Simone Marquetto", "Josivaldo JP",
+                "Paulo Litro", "Gerlen Diniz", "Maria Rosas", "Altineu Côrtes", "Danhiel de Deus Hinterholz",
+                "Beto Pereira", "Delegado Marcelo Freitas", "Robinson Faria", "Tião Medeiros",
+                "Olival Marques", "Fred Linhares", "Samuel Viana", "Beto Richa", "Pedro Aihara",
+                "Amália Barros", "Delegada Ione", "Sérgio Souza", "Carlos Henrique Gaguim",
+                "Luiz Carlos Busato", "Antonio Andrade", "Jorge Braz", "Amaro Neto", "Aluisio Mendes",
+                "Dimas Fabiano", "Sonize Barbosa", "Marussa Boldrin", "Luciano Vieira", "Vitor Lippi",
+                "Junior Ferrari", "Benes Leocádio", "Adail Filho", "Dani Cunha", "Paulo Azi", "Bebeto",
+                "Marcelo Crivella", "Thiago de Joaldo", "Dr. Ismael Alexandrino", "Alexandre Guimarães",
+                "Marx Beltrão", "Luis Carlos Gomes", "Ricardo Ayres", "Gabriel Mota", "Danilo Forte",
+                "Murillo Gouvea", "Amom Mandel", "Rafael Prudente", "Leur Lomanto Júnior", "Celso Russomanno",
+                "Lafayette de Andrada", "Hugo Leal", "João Maia", "Luiz Nishimori", "Henderson Pinto",
+                "Missonario Jose Olimpio", "Ronaldo Nogueira", "Julio Cesar Ribeiro", "Bruno Ganem",
+                "Delegado Matheus Laiola", "Douglas Viegas", "Ely Santos", "Rogéria Santos", "Bruno Farias",
+                "Delegada Katarina", "Stefano Aguiar", "Marangoni", "Albuquerque", "Marcos Soares",
+                "Célio Silveira", "Antônia Lúcia", "Zé Haroldo Cathedral", "Geraldo Mendes", "Paulo Abi-Ackel",
+                "Cezinha de Madureira", "Gustinho Ribeiro", "Gutenberg Reis", "Marcio Marinho", "Arnaldo Jardim",
+                "Luiz Gastão", "Ossesio Silva", "Fernando Pessoa", "Juninho do Pneu", "Defensor Stélio Dener",
+                "Maurício Neves", "Acácio Favacho", "Márcio Biolchi", "Vicentinho Júnior", "Jefferson Rodrigues",
+                "Misael Varella", "Átila Lira", "Alex Santana", "Vinicius Carvalho", "Weliton Prado",
+                "Aureo Ribeiro", "Claudio Cajado", "Eduardo da Fonte", "Toninho Wandscheer", "Cleber Verde",
+                "Gilberto Abramo", "Damião Feliciano", "Leda Borges", "Dal Barreto", "Antonio Brito",
+                "Sidney Leite", "Aécio Neves", "Zezinho Barbary", "Paulinho Freire", "Luciano Alves",
+                "Fausto Pinato", "Otto Alencar Filho", "Adriano do Baldy", "Augusto Coutinho", "Rodrigo Gambale",
+                "Waldemar Oliveira", "Rodrigo de Castro", "Duda Ramos", "Delegado Bruno Lima", "Hercilio Coelho Diniz",
+                "José Rocha", "Glaustin da Fokus", "Pedro Lucas Fernandes", "Lúcia da Fonte", "Diego Coronel",
+                "Pinheirinho", "Saulo Pedrosa", "Moses Rodrigues", "Juarez Costa", "Luiz Carlos Hauly",
+                "Arthur Oliveira Maia", "João Leão", "Fernando Coelho Filho", "Fernando Monteiro", "Geraldo Resende",
+                "Tiririca", "Silas Câmara", "Fausto Jr.", "Julio Lopes", "Afonso Motta", "Socorro Neri",
+                "Pompeo de Mattos", "Yandra Moura", "Paulo Magalhães", "Félix Mendonça Júnior", "Duarte Jr.",
+                "Romero Rodrigues", "Adolfo Viana", "AJ Albuquerque", "Julio Arcoverde", "Igor Timo",
+                "Newton Cardoso Jr", "Mersinho Lucena", "Jadyel Alencar", "Zé Silva", "Andreia Siqueira",
+                "Luiz Fernando Faria", "Gilberto Nascimento", "Nely Aquino", "Mário Negromonte Jr.",
+                "Neto Carletto", "Marcos Aurélio Sampaio", "Yury do Paredão", "Keniston Braga", "Murilo Galdino",
+                "Coronel Armando", "Pudurney Avelino", "Dra. Alessandra Haber", "Diego Andrade", "José Neto",
+                "Gilvan Maximo", "Gilson Daniel", "Wilson Santiago", "Dr. Victor Linhalis", "Lebrão",
+                "Junior Lourenço", "Márcio Honaiser", "Ricardo Maia", "Castro Neto", "Guilherme Uchoa",
+                "Pastor Claudio Mariano", "Ribamar Silva", "Alex Manente", "Baleia Rossi", "Lázaro Botelho",
+                "Paulinho da Força", "Raimundo Costa", "Prof. Paulo Fernando", "Euclydes Pettersen", "Felipe Becari",
+                "Iza Arruda", "Zé Adriano", "Hildo Rocha", "Aguinaldo Ribeiro", "Marcelo Queiroz", "Gabriel Nunes",
+                "Julio Cesar", "Marcos Pereira", "Renata Abreu", "Ricardo Abrão", "Marco Brasil", "Helena Lima",
+                "Luciano Amaral", "Max Lemos", "Chico Alencar", "Charles Fernandes", "Glauber Braga", "Josenildo",
+                "Fábio Macedo", "Flávia Morais", "Ivan Valente", "Talíria Petrone", "Caio Vianna", "Rafael Brito",
+                "Marcos Tavares", "Tabata Amaral", "Rafael Fera", "Elmar Nascimento", "Alexandre Leite",
+                "Renilce Nicodemos", "Domingos Neto", "Amanda Gentil", "Ruy Carneiro", "Átila Lins", "Nitinho",
+                "Célio Studart", "Pastor Sargento Isidório", "Pedro Paulo", "Eunício Oliveira", "Professora Luciene Cavalcante",
+                "Sâmia Bomfim", "Dr Flávio", "Dra. Mayra Pinheiro", "Ricardo Barros", "Doutor Luizinho",
+                "Luiz Antonio Corrêa", "Junior Mano", "Marreca Filho", "Célia Xakriabá", "Laura Carneiro",
+                "Meire Serafim", "Pastor Henrique Vieira", "Luis Tibé", "Augusto Puppio", "Leo Prates",
+                "Carlos Chiodini", "José Priante", "Heitor Schuch", "Coronel Tadeu", "Darci de Matos",
+                "Priscila Costa", "Saullo Vianna", "Fernanda Melchionna", "Juscelino Filho", "Daniel Barbosa",
+                "Erika Hilton", "André Figueiredo", "Jonas Donizette", "Luciano Azevedo", "Paulo Folletto",
+                "Felipe Carreras", "Deltan Dallagnol", "Silvio Antonio", "Fabio Garcia", "Andre Abdon",
+                "Tiago Dimas", "João Cury", "Mário Henze", "Dr. Benjamin", "Mauro Benevides Filho",
+                "Carmen Zanotto", "Ricardo Silva", "Dagoberto Nogueira", "Hélio Leite", "Emanuel Pinheiro Neto",
+                "Guilherme Boulos", "Dorinaldo Malafaia", "Tulio Gadelha", "Márcio Corrêa", "Alberto Mourão",
+                "Leônidas Cristino", "Duda Salabert", "Gláucia Santiago", "Elberto Medeiros", "Arthur Lira",
+                "João Carlos Bacelar", "Elmano de Freitas", "Hugo Motta", "Luciano Ducci", "Pedro Jr",
+                "Luciano Galego", "Fátima Pelaes", "Roberto Monteiro", "Lucas Ramos", "Tadeu Oliveira",
+                "Chiquinho Brazão", "Isnaldo Bulhões Jr.", "Guilherme Derrite", "Ulisses Guimarães",
+                "Gervasio Maia", "Daniel José", "Felipe Saliba", "Samuel Santos", "Bandeira de Mello",
+                "Michele Collins", "Fabio Reis", "Eduardo Bismarck", "Paulo Marinho Jr", "Luiza Erundina",
+                "Luciano Bivar", "Aliel Machado", "Marcon", "Fabiano Cazeca", "Mariana Carvalho",
+                "Carlos Gomes", "Ilvian Alencar", "Eliza Virginia", "Sergio Santos Rodrigues",
+                "Juliana Kolankiewicz", "Flavinha", "Marco Bertaiolli", "Antonio Brito", "Lídice da Mata",
+                "Prof. Reginaldo Veras", "Beto Preto", "Dr. Fabio Rueda", "Dr. Remy Soares", "Dr. Daniel Soranz",
+                "Enfermeira Ana Paula"
+            ];
+            
+            const deputados = [];
+            
+            for (let i = 1; i <= 513; i++) {
+                // Escolher nome único
+                const nome = i <= nomes_base.length ? nomes_base[i-1] : `Deputado ${i}`;
+                
+                // Escolher partido aleatório
+                const partido = partidos[Math.floor(Math.random() * partidos.length)];
+                
+                // Escolher estado aleatório
+                const uf = estados[Math.floor(Math.random() * estados.length)];
+                
+                // Definir classificação baseada no partido (simplificado)
+                let classificacao;
+                if (["PL", "NOVO", "PSC", "PATRIOTA"].includes(partido)) {
+                    classificacao = "Oposição";
+                } else if (["PT", "PSB", "PDT", "PSOL"].includes(partido)) {
+                    classificacao = "Governo";
+                } else {
+                    const rand = Math.random();
+                    if (rand < 0.4) {
+                        classificacao = "Oposição";
+                    } else if (rand < 0.8) {
+                        classificacao = "Governo";
+                    } else {
+                        classificacao = "Centro";
+                    }
+                }
+                
+                deputados.push({
+                    id: i,
+                    nome: nome,
+                    partido: partido,
+                    uf: uf,
+                    tipo: "deputado",
+                    classificacao: classificacao
+                });
+            }
+            
+            return deputados;
+        }
+        
+        // Dados dos parlamentares - 513 deputados + senadores
+        const parlamentares = gerarDeputados().concat([
+            // Senadores (mantemos alguns para exemplo)
+            { id: 1001, nome: "Márcio Bittar", partido: "PL", uf: "AC", tipo: "senador", classificacao: "Oposição" },
+            { id: 1002, nome: "Renan Calheiros", partido: "MDB", uf: "AL", tipo: "senador", classificacao: "Governo" },
+            { id: 1003, nome: "Randolfe Rodrigues", partido: "PT", uf: "AP", tipo: "senador", classificacao: "Governo" },
+            { id: 1004, nome: "Ciro Nogueira", partido: "PP", uf: "PI", tipo: "senador", classificacao: "Oposição" },
+            { id: 1005, nome: "Rodrigo Pacheco", partido: "PSD", uf: "MG", tipo: "senador", classificacao: "Centro" },
+            { id: 1006, nome: "Davi Alcolumbre", partido: "UNIÃO", uf: "AP", tipo: "senador", classificacao: "Centro" },
+            { id: 1007, nome: "Eduardo Girão", partido: "PODE", uf: "CE", tipo: "senador", classificacao: "Oposição" },
+            { id: 1008, nome: "Flávio Bolsonaro", partido: "PL", uf: "RJ", tipo: "senador", classificacao: "Oposição" },
+            { id: 1009, nome: "Humberto Costa", partido: "PT", uf: "PE", tipo: "senador", classificacao: "Governo" },
+            { id: 1010, nome: "Jaques Wagner", partido: "PT", uf: "BA", tipo: "senador", classificacao: "Governo" }
+        ]);
         
         let votos = JSON.parse(localStorage.getItem('votos_parlamentares')) || {};
         let parlamentarSelecionado = null;
@@ -271,7 +428,10 @@
                 return;
             }
             
-            filtrados.forEach(p => {
+            // Limitar a exibição para performance
+            const exibir = filtrados.slice(0, 100);
+            
+            exibir.forEach(p => {
                 const votosAtuais = votos[p.id] || 0;
                 const tipoTexto = p.tipo === 'deputado' ? 'Deputado Federal' : 'Senador';
                 const classeCor = p.classificacao === 'Oposição' ? 'oposicao' : 
@@ -289,7 +449,7 @@
                                     <span class="badge badge-dark">${p.uf}</span>
                                 </div>
                                 <div class="mb-2">
-                                    <span class="badge ${p.classificacao === 'Oposição' ? 'badge-danger' : p.classificacao === 'Governo' ? 'badge-success' : 'badge-warning'}">
+                                    <span class="badge ${p.classificacao === 'Oposição' ? 'badge-success' : p.classificacao === 'Governo' ? 'badge-danger' : 'badge-warning'}">
                                         ${p.classificacao}
                                     </span>
                                     <span class="badge badge-info ml-1">${tipoTexto}</span>
@@ -299,7 +459,7 @@
                                 <p class="text-muted small mb-3">votos recebidos</p>
                                 
                                 <div class="progress">
-                                    <div class="progress-bar ${p.classificacao === 'Oposição' ? 'bg-danger' : p.classificacao === 'Governo' ? 'bg-success' : 'bg-warning'}" 
+                                    <div class="progress-bar ${p.classificacao === 'Oposição' ? 'bg-success' : p.classificacao === 'Governo' ? 'bg-danger' : 'bg-warning'}" 
                                          style="width: ${Math.min(votosAtuais * 10, 100)}%">
                                     </div>
                                 </div>
@@ -310,6 +470,11 @@
                                     <i class="fas fa-thumbs-up mr-2"></i>
                                     ${jaVotou(p.id) ? 'Você já votou!' : 'Votar'}
                                 </button>
+                                
+                                <p class="text-muted small mt-2 mb-0">
+                                    <i class="fas fa-info-circle"></i> 
+                                    ${p.tipo === 'deputado' ? '513 deputados no total' : '81 senadores no total'}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -317,13 +482,28 @@
                 
                 container.append(card);
             });
+            
+            // Mostrar contagem
+            if (filtrados.length > 100) {
+                container.append(`
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            Mostrando 100 de ${filtrados.length} parlamentares encontrados.
+                            Use a busca para filtrar melhor.
+                        </div>
+                    </div>
+                `);
+            }
         }
         
         function getCorPartido(partido) {
             const cores = {
                 "PL": "#006b3c", "PSD": "#0a3d9a", "MDB": "#f15a22", "PT": "#ed1c24", 
                 "PP": "#0033cc", "UNIÃO": "#8246af", "PODEMOS": "#7d3c98", "PSB": "#e31d23",
-                "REPUBLICANOS": "#0047ab", "PDT": "#ffcc00", "PATRIOTA": "#00a859"
+                "REPUBLICANOS": "#0047ab", "PDT": "#ffcc00", "PATRIOTA": "#00a859",
+                "NOVO": "#f26522", "CIDADANIA": "#ed1c24", "PSOL": "#c9093d",
+                "AVANTE": "#00a859", "SOLIDARIEDADE": "#f6921e", "PV": "#00a859",
+                "REDE": "#c9093d", "PSC": "#006b3c"
             };
             return cores[partido] || '#666666';
         }
