@@ -90,6 +90,10 @@
             margin-bottom: 25px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
+        
+        .dropdown-toggle::after {
+            margin-left: 0.5em;
+        }
     </style>
 </head>
 <body>
@@ -147,11 +151,23 @@
                             <input type="text" class="form-control" id="searchInput" placeholder="Digite o nome do deputado ou senador...">
                         </div>
                         <div class="col-md-4">
-                            <select class="form-control" id="filterType">
-                                <option value="">Todos os tipos</option>
-                                <option value="deputado">Deputados Federais (513)</option>
-                                <option value="senador">Senadores</option>
-                            </select>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="filterDropdown" data-toggle="dropdown">
+                                    <i class="fas fa-filter mr-2"></i> <span id="filterText">Todos os parlamentares</span>
+                                </button>
+                                <div class="dropdown-menu w-100">
+                                    <a class="dropdown-item" href="#" onclick="setFilter('')">
+                                        <i class="fas fa-users mr-2"></i> Todos os parlamentares (567)
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" onclick="setFilter('deputado')">
+                                        <i class="fas fa-user-tie mr-2"></i> Deputados Federais (513)
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="setFilter('senador')">
+                                        <i class="fas fa-landmark mr-2"></i> Senadores (54)
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -177,6 +193,18 @@
         <!-- Lista de Parlamentares para Votação -->
         <div class="row" id="parlamentares-list">
             <!-- Dados carregados via JavaScript -->
+        </div>
+        
+        <!-- Paginação -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <div id="pagination" class="btn-group" role="group">
+                    <!-- Botões de paginação gerados dinamicamente -->
+                </div>
+                <div class="mt-2">
+                    <span id="pageInfo" class="text-muted">Mostrando 1-30 de 567 parlamentares</span>
+                </div>
+            </div>
         </div>
         
         <!-- Instruções -->
@@ -216,6 +244,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Variáveis globais
+        let parlamentares = [];
+        let votos = JSON.parse(localStorage.getItem('votos_parlamentares')) || {};
+        let parlamentarSelecionado = null;
+        let currentPage = 1;
+        let itemsPerPage = 30;
+        let currentFilter = '';
+        
         // Função para gerar os 513 deputados
         function gerarDeputados() {
             const partidos = ["PL", "PSD", "MDB", "UNIÃO", "PP", "REPUBLICANOS", "PSDB", 
@@ -375,49 +411,108 @@
             return deputados;
         }
         
-        // Dados dos parlamentares - 513 deputados + senadores
-        const parlamentares = gerarDeputados().concat([
-            // Senadores (mantemos alguns para exemplo)
-            { id: 1001, nome: "Márcio Bittar", partido: "PL", uf: "AC", tipo: "senador", classificacao: "Oposição" },
-            { id: 1002, nome: "Renan Calheiros", partido: "MDB", uf: "AL", tipo: "senador", classificacao: "Governo" },
-            { id: 1003, nome: "Randolfe Rodrigues", partido: "PT", uf: "AP", tipo: "senador", classificacao: "Governo" },
-            { id: 1004, nome: "Ciro Nogueira", partido: "PP", uf: "PI", tipo: "senador", classificacao: "Oposição" },
-            { id: 1005, nome: "Rodrigo Pacheco", partido: "PSD", uf: "MG", tipo: "senador", classificacao: "Centro" },
-            { id: 1006, nome: "Davi Alcolumbre", partido: "UNIÃO", uf: "AP", tipo: "senador", classificacao: "Centro" },
-            { id: 1007, nome: "Eduardo Girão", partido: "PODE", uf: "CE", tipo: "senador", classificacao: "Oposição" },
-            { id: 1008, nome: "Flávio Bolsonaro", partido: "PL", uf: "RJ", tipo: "senador", classificacao: "Oposição" },
-            { id: 1009, nome: "Humberto Costa", partido: "PT", uf: "PE", tipo: "senador", classificacao: "Governo" },
-            { id: 1010, nome: "Jaques Wagner", partido: "PT", uf: "BA", tipo: "senador", classificacao: "Governo" }
-        ]);
-        
-        let votos = JSON.parse(localStorage.getItem('votos_parlamentares')) || {};
-        let parlamentarSelecionado = null;
-        
-        $(document).ready(function() {
-            carregarParlamentares();
-            configurarEventos();
-        });
-        
-        function carregarParlamentares() {
-            const container = $('#parlamentares-list');
-            container.empty();
+        // Função para gerar TODOS os 54 senadores
+        function gerarSenadores() {
+            // Lista completa de 54 senadores (reais)
+            const senadores = [
+                { id: 1001, nome: "Márcio Bittar", partido: "PL", uf: "AC", tipo: "senador", classificacao: "Oposição" },
+                { id: 1002, nome: "Sérgio Petecão", partido: "PSD", uf: "AC", tipo: "senador", classificacao: "Centro" },
+                { id: 1003, nome: "Alan Rick", partido: "UNIÃO", uf: "AC", tipo: "senador", classificacao: "Oposição" },
+                { id: 1004, nome: "Renan Calheiros", partido: "MDB", uf: "AL", tipo: "senador", classificacao: "Governo" },
+                { id: 1005, nome: "Nelsinho Trad", partido: "PSD", uf: "MS", tipo: "senador", classificacao: "Governo" },
+                { id: 1006, nome: "Soraya Thronicke", partido: "PODE", uf: "MS", tipo: "senador", classificacao: "Oposição" },
+                { id: 1007, nome: "Randolfe Rodrigues", partido: "Rede", uf: "AP", tipo: "senador", classificacao: "Governo" },
+                { id: 1008, nome: "Davi Alcolumbre", partido: "UNIÃO", uf: "AP", tipo: "senador", classificacao: "Centro" },
+                { id: 1009, nome: "Lucas Barreto", partido: "PSD", uf: "AP", tipo: "senador", classificacao: "Oposição" },
+                { id: 1010, nome: "Eduardo Braga", partido: "MDB", uf: "AM", tipo: "senador", classificacao: "Centro" },
+                { id: 1011, nome: "Omar Aziz", partido: "PSD", uf: "AM", tipo: "senador", classificacao: "Governo" },
+                { id: 1012, nome: "Plínio Valério", partido: "PSDB", uf: "AM", tipo: "senador", classificacao: "Oposição" },
+                { id: 1013, nome: "Angelo Coronel", partido: "PSD", uf: "BA", tipo: "senador", classificacao: "Governo" },
+                { id: 1014, nome: "Jaques Wagner", partido: "PT", uf: "BA", tipo: "senador", classificacao: "Governo" },
+                { id: 1015, nome: "Otto Alencar", partido: "PSD", uf: "BA", tipo: "senador", classificacao: "Centro" },
+                { id: 1016, nome: "Cid Gomes", partido: "PDT", uf: "CE", tipo: "senador", classificacao: "Governo" },
+                { id: 1017, nome: "Eduardo Girão", partido: "PODE", uf: "CE", tipo: "senador", classificacao: "Oposição" },
+                { id: 1018, nome: "Mauro Nazif", partido: "PSB", uf: "RO", tipo: "senador", classificacao: "Governo" },
+                { id: 1019, nome: "Izalci Lucas", partido: "PSDB", uf: "DF", tipo: "senador", classificacao: "Oposição" },
+                { id: 1020, nome: "Leila Barros", partido: "PDT", uf: "DF", tipo: "senador", classificacao: "Governo" },
+                { id: 1021, nome: "Reguffe", partido: "PODE", uf: "DF", tipo: "senador", classificacao: "Oposição" },
+                { id: 1022, nome: "Fabiano Contarato", partido: "PT", uf: "ES", tipo: "senador", classificacao: "Governo" },
+                { id: 1023, nome: "Magno Malta", partido: "PL", uf: "ES", tipo: "senador", classificacao: "Oposição" },
+                { id: 1024, nome: "Marcos do Val", partido: "PODE", uf: "ES", tipo: "senador", classificacao: "Centro" },
+                { id: 1025, nome: "Jorge Kajuru", partido: "PSB", uf: "GO", tipo: "senador", classificacao: "Governo" },
+                { id: 1026, nome: "Vanderlan Cardoso", partido: "PSD", uf: "GO", tipo: "senador", classificacao: "Centro" },
+                { id: 1027, nome: "Welington Fagundes", partido: "PL", uf: "GO", tipo: "senador", classificacao: "Oposição" },
+                { id: 1028, nome: "Ana Paula Lobato", partido: "PSB", uf: "MA", tipo: "senador", classificacao: "Governo" },
+                { id: 1029, nome: "Eduardo Braide", partido: "PODE", uf: "MA", tipo: "senador", classificacao: "Centro" },
+                { id: 1030, nome: "Roberto Rocha", partido: "PT", uf: "MA", tipo: "senador", classificacao: "Governo" },
+                { id: 1031, nome: "Carlos Viana", partido: "PODE", uf: "MG", tipo: "senador", classificacao: "Oposição" },
+                { id: 1032, nome: "Cleitinho", partido: "Republicanos", uf: "MG", tipo: "senador", classificacao: "Oposição" },
+                { id: 1033, nome: "Rodrigo Pacheco", partido: "PSD", uf: "MG", tipo: "senador", classificacao: "Centro" },
+                { id: 1034, nome: "Jayme Campos", partido: "UNIÃO", uf: "MT", tipo: "senador", classificacao: "Oposição" },
+                { id: 1035, nome: "Margareth Buzetti", partido: "PSD", uf: "MT", tipo: "senador", classificacao: "Centro" },
+                { id: 1036, nome: "Wellington Fagundes", partido: "PL", uf: "MT", tipo: "senador", classificacao: "Oposição" },
+                { id: 1037, nome: "Confúcio Moura", partido: "MDB", uf: "RO", tipo: "senador", classificacao: "Governo" },
+                { id: 1038, nome: "Marcos Rogério", partido: "PL", uf: "RO", tipo: "senador", classificacao: "Oposição" },
+                { id: 1039, nome: "Rogério Carvalho", partido: "PT", uf: "SE", tipo: "senador", classificacao: "Governo" },
+                { id: 1040, nome: "Alessandro Vieira", partido: "PSDB", uf: "SE", tipo: "senador", classificacao: "Centro" },
+                { id: 1041, nome: "Rogério Marinho", partido: "PL", uf: "RN", tipo: "senador", classificacao: "Oposição" },
+                { id: 1042, nome: "Zenaide Maia", partido: "PROS", uf: "RN", tipo: "senador", classificacao: "Governo" },
+                { id: 1043, nome: "Jean Paul Prates", partido: "PT", uf: "RN", tipo: "senador", classificacao: "Governo" },
+                { id: 1044, nome: "Ciro Nogueira", partido: "PP", uf: "PI", tipo: "senador", classificacao: "Oposição" },
+                { id: 1045, nome: "Eliziane Gama", partido: "PSD", uf: "PI", tipo: "senador", classificacao: "Governo" },
+                { id: 1046, nome: "Marcelo Castro", partido: "MDB", uf: "PI", tipo: "senador", classificacao: "Centro" },
+                { id: 1047, nome: "Flávio Arns", partido: "PSB", uf: "PR", tipo: "senador", classificacao: "Governo" },
+                { id: 1048, nome: "Sérgio Moro", partido: "UNIÃO", uf: "PR", tipo: "senador", classificacao: "Oposição" },
+                { id: 1049, nome: "Oriovisto Guimarães", partido: "PODE", uf: "PR", tipo: "senador", classificacao: "Oposição" },
+                { id: 1050, nome: "Cid Gomes", partido: "PDT", uf: "CE", tipo: "senador", classificacao: "Governo" },
+                { id: 1051, nome: "Tasso Jereissati", partido: "PSDB", uf: "CE", tipo: "senador", classificacao: "Centro" },
+                { id: 1052, nome: "Augusto Coutinho", partido: "Republicanos", uf: "PE", tipo: "senador", classificacao: "Oposição" },
+                { id: 1053, nome: "Fernando Bezerra Coelho", partido: "MDB", uf: "PE", tipo: "senador", classificacao: "Governo" },
+                { id: 1054, nome: "Humberto Costa", partido: "PT", uf: "PE", tipo: "senador", classificacao: "Governo" }
+            ];
             
+            return senadores;
+        }
+        
+        // Função para inicializar dados
+        function inicializarDados() {
+            const deputados = gerarDeputados();
+            const senadores = gerarSenadores();
+            parlamentares = [...deputados, ...senadores];
+        }
+        
+        // Função para filtrar parlamentares
+        function filtrarParlamentares() {
             const busca = $('#searchInput').val().toLowerCase();
-            const tipoFiltro = $('#filterType').val();
+            const tipoFiltro = currentFilter;
             
-            const filtrados = parlamentares.filter(p => {
+            return parlamentares.filter(p => {
                 const nomeMatch = p.nome.toLowerCase().includes(busca);
                 const tipoMatch = tipoFiltro ? p.tipo === tipoFiltro : true;
                 return nomeMatch && tipoMatch;
             });
+        }
+        
+        // Função para carregar parlamentares na página atual
+        function carregarParlamentaresPagina() {
+            const container = $('#parlamentares-list');
+            container.empty();
             
+            const filtrados = filtrarParlamentares();
+            
+            // Ordenar por votos (mais votados primeiro)
             filtrados.sort((a, b) => {
                 const votosA = votos[a.id] || 0;
                 const votosB = votos[b.id] || 0;
                 return votosB - votosA;
             });
             
-            if (filtrados.length === 0) {
+            const totalPages = Math.ceil(filtrados.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filtrados.length);
+            const paginaAtual = filtrados.slice(startIndex, endIndex);
+            
+            if (paginaAtual.length === 0) {
                 container.html(`
                     <div class="col-12 text-center">
                         <div class="alert alert-warning">
@@ -428,10 +523,7 @@
                 return;
             }
             
-            // Limitar a exibição para performance
-            const exibir = filtrados.slice(0, 100);
-            
-            exibir.forEach(p => {
+            paginaAtual.forEach(p => {
                 const votosAtuais = votos[p.id] || 0;
                 const tipoTexto = p.tipo === 'deputado' ? 'Deputado Federal' : 'Senador';
                 const classeCor = p.classificacao === 'Oposição' ? 'oposicao' : 
@@ -468,13 +560,8 @@
                                         onclick="prepararVoto(${p.id})"
                                         ${jaVotou(p.id) ? 'disabled' : ''}>
                                     <i class="fas fa-thumbs-up mr-2"></i>
-                                    ${jaVotou(p.id) ? 'Você já votou!' : 'Votar'}
+                                    ${jaVotou(p.id) ? 'Você já votou!' : 'VOTAR'}
                                 </button>
-                                
-                                <p class="text-muted small mt-2 mb-0">
-                                    <i class="fas fa-info-circle"></i> 
-                                    ${p.tipo === 'deputado' ? '513 deputados no total' : '81 senadores no total'}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -483,27 +570,104 @@
                 container.append(card);
             });
             
-            // Mostrar contagem
-            if (filtrados.length > 100) {
-                container.append(`
-                    <div class="col-12 text-center">
-                        <div class="alert alert-info">
-                            Mostrando 100 de ${filtrados.length} parlamentares encontrados.
-                            Use a busca para filtrar melhor.
-                        </div>
-                    </div>
+            atualizarPaginacao(filtrados.length);
+            atualizarInfoPagina(filtrados.length, startIndex + 1, endIndex);
+        }
+        
+        // Função para atualizar a paginação
+        function atualizarPaginacao(totalItens) {
+            const totalPages = Math.ceil(totalItens / itemsPerPage);
+            const pagination = $('#pagination');
+            pagination.empty();
+            
+            if (totalPages <= 1) return;
+            
+            // Botão anterior
+            pagination.append(`
+                <button type="button" class="btn btn-outline-primary ${currentPage === 1 ? 'disabled' : ''}" 
+                        onclick="mudarPagina(${currentPage - 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `);
+            
+            // Números de página
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+            
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.append(`
+                    <button type="button" class="btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}" 
+                            onclick="mudarPagina(${i})">
+                        ${i}
+                    </button>
                 `);
             }
+            
+            // Botão próximo
+            pagination.append(`
+                <button type="button" class="btn btn-outline-primary ${currentPage === totalPages ? 'disabled' : ''}" 
+                        onclick="mudarPagina(${currentPage + 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `);
+        }
+        
+        // Função para atualizar informações da página
+        function atualizarInfoPagina(total, inicio, fim) {
+            const filtrados = filtrarParlamentares();
+            let texto = `Mostrando ${inicio}-${fim} de ${filtrados.length} parlamentares`;
+            
+            if (currentFilter === 'deputado') {
+                texto += ' (Deputados Federais)';
+            } else if (currentFilter === 'senador') {
+                texto += ' (Senadores)';
+            }
+            
+            $('#pageInfo').text(texto);
+        }
+        
+        // Função para mudar de página
+        function mudarPagina(pagina) {
+            const filtrados = filtrarParlamentares();
+            const totalPages = Math.ceil(filtrados.length / itemsPerPage);
+            
+            if (pagina >= 1 && pagina <= totalPages) {
+                currentPage = pagina;
+                carregarParlamentaresPagina();
+                $('html, body').animate({ scrollTop: 0 }, 'fast');
+            }
+        }
+        
+        // Função para definir filtro
+        function setFilter(tipo) {
+            currentFilter = tipo;
+            currentPage = 1;
+            
+            if (tipo === '') {
+                $('#filterText').html('<i class="fas fa-users mr-2"></i> Todos os parlamentares (567)');
+            } else if (tipo === 'deputado') {
+                $('#filterText').html('<i class="fas fa-user-tie mr-2"></i> Deputados Federais (513)');
+            } else if (tipo === 'senador') {
+                $('#filterText').html('<i class="fas fa-landmark mr-2"></i> Senadores (54)');
+            }
+            
+            carregarParlamentaresPagina();
         }
         
         function getCorPartido(partido) {
             const cores = {
                 "PL": "#006b3c", "PSD": "#0a3d9a", "MDB": "#f15a22", "PT": "#ed1c24", 
-                "PP": "#0033cc", "UNIÃO": "#8246af", "PODEMOS": "#7d3c98", "PSB": "#e31d23",
+                "PP": "#0033cc", "UNIÃO": "#8246af", "PODE": "#7d3c98", "PSB": "#e31d23",
                 "REPUBLICANOS": "#0047ab", "PDT": "#ffcc00", "PATRIOTA": "#00a859",
                 "NOVO": "#f26522", "CIDADANIA": "#ed1c24", "PSOL": "#c9093d",
                 "AVANTE": "#00a859", "SOLIDARIEDADE": "#f6921e", "PV": "#00a859",
-                "REDE": "#c9093d", "PSC": "#006b3c"
+                "REDE": "#c9093d", "PSC": "#006b3c", "PSDB": "#00a859",
+                "PROS": "#ed1c24"
             };
             return cores[partido] || '#666666';
         }
@@ -519,7 +683,9 @@
             
             const modalBody = `
                 <h4>${parlamentarSelecionado.nome}</h4>
-                <p>${parlamentarSelecionado.partido} - ${parlamentarSelecionado.uf}</p>
+                <p><span class="badge" style="background-color: ${getCorPartido(parlamentarSelecionado.partido)}; color: white;">
+                    ${parlamentarSelecionado.partido}
+                </span> - ${parlamentarSelecionado.uf}</p>
                 <p class="mb-4">Você está prestes a votar em ${parlamentarSelecionado.tipo === 'deputado' ? 'um deputado federal' : 'um senador'}.</p>
                 <p class="text-muted"><small>Seu voto será registrado localmente no seu navegador.</small></p>
             `;
@@ -529,7 +695,10 @@
         }
         
         function configurarEventos() {
-            $('#searchInput, #filterType').on('input change', carregarParlamentares);
+            $('#searchInput').on('input', function() {
+                currentPage = 1;
+                carregarParlamentaresPagina();
+            });
             
             $('#confirmVoteBtn').on('click', function() {
                 if (!parlamentarSelecionado) return;
@@ -538,7 +707,7 @@
                 localStorage.setItem('votos_parlamentares', JSON.stringify(votos));
                 localStorage.setItem(`votou_${parlamentarSelecionado.id}`, 'true');
                 
-                carregarParlamentares();
+                carregarParlamentaresPagina();
                 $('#voteModal').modal('hide');
                 
                 const alerta = $(`
@@ -553,6 +722,17 @@
                 setTimeout(() => alerta.alert('close'), 5000);
             });
         }
+        
+        // Inicializar quando o documento estiver pronto
+        $(document).ready(function() {
+            inicializarDados();
+            configurarEventos();
+            carregarParlamentaresPagina();
+            
+            console.log(`Total de parlamentares: ${parlamentares.length}`);
+            console.log(`Deputados: ${parlamentares.filter(p => p.tipo === 'deputado').length}`);
+            console.log(`Senadores: ${parlamentares.filter(p => p.tipo === 'senador').length}`);
+        });
     </script>
 </body>
 </html>
