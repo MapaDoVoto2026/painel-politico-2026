@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil Político - Mapa do Voto 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60; /* Verde para Oposição */
+            --danger-color: #e74c3c;  /* Vermelho para Governo */
+            --warning-color: #f39c12; /* Amarelo para Centro */
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --bg-color: #f4f6f9;
+            --text-color: #2c3e50;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color), #1a252f);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.95)), 
+                        url('https://images.unsplash.com/photo-1551135049-8a33b2b6b6ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .quiz-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .quiz-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .option-card {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option-card:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .option-card.selected {
+            border-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .option-card.oposicao-option.selected {
+            border-color: var(--success-color);
+            background-color: rgba(39, 174, 96, 0.1);
+        }
+        
+        .option-card.governo-option.selected {
+            border-color: var(--danger-color);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .option-card.centro-option.selected {
+            border-color: var(--warning-color);
+            background-color: rgba(243, 156, 18, 0.1);
+        }
+        
+        .results-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .profile-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .badge-oposicao {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .badge-governo {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .badge-centro {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .comparison-chart {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .deputado-match {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .match-percentage {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .match-oposicao {
+            color: var(--success-color);
+        }
+        
+        .match-governo {
+            color: var(--danger-color);
+        }
+        
+        .match-centro {
+            color: var(--warning-color);
+        }
+        
+        .progress-match {
+            height: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn-perfil {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-perfil:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0,0,0,0.1);
+        }
+        
+        .footer-link {
+            margin-top: 40px;
+            padding: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .footer-link a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-link a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-section {
+                padding: 40px 0;
+            }
+            
+            .quiz-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu de navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-landmark mr-2"></i> Mapa do Voto 2026
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Portal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="deputados.html">
+                            <i class="fas fa-users"></i> Deputados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="senadores.html">
+                            <i class="fas fa-landmark"></i> Senadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="votacao.html">
+                            <i class="fas fa-vote-yea"></i> Votar
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="perfil.html">
+                            <i class="fas fa-user-chart"></i> Meu Perfil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Cabeçalho -->
+    <div class="header-section">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 font-weight-bold">
+                        <i class="fas fa-user-chart mr-2"></i>Meu Perfil Político 2026
+                    </h1>
+                    <p class="lead">Descubra seu posicionamento político e compare com os deputados federais</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="mr-4 d-flex align-items-center">
+                            <div style="width: 15px; height: 15px; background-color: var(--success-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <span class="small">Verde = Oposição</span>
+                        </div>
+                        <div class="mr-4 d-flex align-items-center">
+                            <div style="width: 15px; height: 15px; background-color: var(--danger-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <span class="small">Vermelho = Pró-Governo</span>
+                        </div>
+                        <div class="mr-4 d-flex align-items-center">
+                            <div style="width: 15px; height: 15px; background-color: var(--warning-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <span class="small">Amarelo = Centro/Independente</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-right">
+                    <div class="bg-white rounded-3 p-3 text-dark d-inline-block">
+                        <div class="small text-muted">Base de comparação</div>
+                        <div class="h5 mb-0 font-weight-bold">513 Deputados</div>
+                        <div class="small">Dados atualizados até 10/12/2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Conteúdo principal -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Quiz -->
+                <div id="quiz-section">
+                    <h3 class="mb-4"><i class="fas fa-question-circle mr-2"></i>Questionário Político</h3>
+                    <p class="mb-4">Responda as 10 perguntas abaixo para descobrir seu posicionamento político. Suas respostas serão comparadas com os votos reais dos deputados.</p>
+                    
+                    <div id="question-1" class="quiz-card">
+                        <h5>1. Saúde pública vs. saúde privada:</h5>
+                        <div class="option-card governo-option" data-question="1" data-value="governo">
+                            O SUS é uma prioridade absoluta e deve receber mais investimentos, mesmo que signifique aumentar impostos sobre os mais ricos.
+                        </div>
+                        <div class="option-card centro-option" data-question="1" data-value="centro">
+                            O SUS precisa de melhorias na gestão, mas também devemos incentivar planos de saúde privados acessíveis.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="1" data-value="oposicao">
+                            O setor privado é mais eficiente; devemos permitir que empresas gerenciem serviços de saúde com menos burocracia estatal.
+                        </div>
+                    </div>
+                    
+                    <div id="question-2" class="quiz-card">
+                        <h5>2. Impostos sobre grandes empresas:</h5>
+                        <div class="option-card governo-option" data-question="2" data-value="governo">
+                            Grandes empresas devem pagar mais impostos para financiar políticas sociais e reduzir desigualdades.
+                        </div>
+                        <div class="option-card centro-option" data-question="2" data-value="centro">
+                            É necessário um equilíbrio: impostos moderados que não desestimulem investimentos, mas que gerem receita para serviços essenciais.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="2" data-value="oposicao">
+                            Impostos mais baixos para empresas estimulam investimentos, geram empregos e acabam beneficiando toda a sociedade.
+                        </div>
+                    </div>
+                    
+                    <div id="question-3" class="quiz-card">
+                        <h5>3. Posse de armas para cidadãos comuns:</h5>
+                        <div class="option-card governo-option" data-question="3" data-value="governo">
+                            A posse de armas deve ser restrita apenas a forças de segurança; mais armas na população aumenta a violência.
+                        </div>
+                        <div class="option-card centro-option" data-question="3" data-value="centro">
+                            Posse para cidadãos sem antecedentes, após treinamento rigoroso e avaliação psicológica.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="3" data-value="oposicao">
+                            Direito à autodefesa é fundamental; cidadão armado é cidadão protegido.
+                        </div>
+                    </div>
+                    
+                    <div id="question-4" class="quiz-card">
+                        <h5>4. Política ambiental e desenvolvimento:</h5>
+                        <div class="option-card governo-option" data-question="4" data-value="governo">
+                            Proteção ambiental é prioridade, mesmo que isso limite alguns setores econômicos no curto prazo.
+                        </div>
+                        <div class="option-card centro-option" data-question="4" data-value="centro">
+                            É possível conciliar desenvolvimento econômico e proteção ambiental com regras claras e sustentáveis.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="4" data-value="oposicao">
+                            O desenvolvimento econômico e a geração de empregos são prioritários; burocracia ambiental atrasa o progresso.
+                        </div>
+                    </div>
+                    
+                    <div id="question-5" class="quiz-card">
+                        <h5>5. Programas sociais como Bolsa Família:</h5>
+                        <div class="option-card governo-option" data-question="5" data-value="governo">
+                            Programas sociais são essenciais para reduzir desigualdades e devem ser expandidos.
+                        </div>
+                        <div class="option-card centro-option" data-question="5" data-value="centro">
+                            Programas sociais são importantes, mas devem ter contrapartidas e focar na capacitação para o mercado de trabalho.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="5" data-value="oposicao">
+                            Programas sociais devem ser temporários; o foco deve ser criação de empregos para que as pessoas saiam da pobreza por mérito próprio.
+                        </div>
+                    </div>
+                    
+                    <div id="question-6" class="quiz-card">
+                        <h5>6. Educação pública vs. privada:</h5>
+                        <div class="option-card governo-option" data-question="6" data-value="governo">
+                            Educação pública de qualidade e gratuita em todos os níveis é um direito fundamental e prioridade de Estado.
+                        </div>
+                        <div class="option-card centro-option" data-question="6" data-value="centro">
+                            Fortalecer a educação pública é essencial, mas a iniciativa privada também tem papel complementar importante.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="6" data-value="oposicao">
+                            Competição entre escolas públicas e privadas melhora a qualidade; vouchers educacionais podem ser uma solução.
+                        </div>
+                    </div>
+                    
+                    <div id="question-7" class="quiz-card">
+                        <h5>7. Controle de preços e intervenção estatal na economia:</h5>
+                        <div class="option-card governo-option" data-question="7" data-value="governo">
+                            O Estado deve intervir para controlar preços de produtos essenciais e evitar abusos do mercado.
+                        </div>
+                        <div class="option-card centro-option" data-question="7" data-value="centro">
+                            Intervenção apenas em casos extremos e por tempo limitado; o mercado geralmente se autorregula.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="7" data-value="oposicao">
+                            O Estado não deve interferir na formação de preços; a livre concorrência garante os melhores resultados.
+                        </div>
+                    </div>
+                    
+                    <div id="question-8" class="quiz-card">
+                        <h5>8. Direitos trabalhistas e reformas:</h5>
+                        <div class="option-card governo-option" data-question="8" data-value="governo">
+                            Direitos trabalhistas conquistados devem ser preservados e ampliados.
+                        </div>
+                        <div class="option-card centro-option" data-question="8" data-value="centro">
+                            Algumas atualizações são necessárias para modernizar as relações de trabalho sem perder direitos essenciais.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="8" data-value="oposicao">
+                            Flexibilização trabalhista é necessária para gerar mais empregos; o mundo moderno exige relações mais dinâmicas.
+                        </div>
+                    </div>
+                    
+                    <div id="question-9" class="quiz-card">
+                        <h5>9. Política externa e relações internacionais:</h5>
+                        <div class="option-card governo-option" data-question="9" data-value="governo">
+                            Brasil deve priorizar relações com países em desenvolvimento e manter posições independentes em conflitos internacionais.
+                        </div>
+                        <div class="option-card centro-option" data-question="9" data-value="centro">
+                            Política externa pragmática, que busca benefícios econômicos sem se alinhar automaticamente a qualquer bloco.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="9" data-value="oposicao">
+                            Alinhamento claro com países democráticos e economias desenvolvidas, atraindo investimentos e tecnologia.
+                        </div>
+                    </div>
+                    
+                    <div id="question-10" class="quiz-card">
+                        <h5>10. Papel do Estado na sociedade:</h5>
+                        <div class="option-card governo-option" data-question="10" data-value="governo">
+                            Estado forte é necessário para regular a economia, reduzir desigualdades e garantir direitos sociais.
+                        </div>
+                        <div class="option-card centro-option" data-question="10" data-value="centro">
+                            Estado eficiente que atue onde for realmente necessário, sem sufocar a iniciativa privada.
+                        </div>
+                        <div class="option-card oposicao-option" data-question="10" data-value="oposicao">
+                            Estado mínimo, que garanta segurança e justiça, deixando a economia para a iniciativa privada.
+                        </div>
+                    </div>
+                    
+                    <div class="text-center my-5">
+                        <button id="calculate-profile" class="btn btn-primary btn-perfil">
+                            <i class="fas fa-chart-pie mr-2"></i> Descobrir Meu Perfil Político
+                        </button>
+                        <button id="reset-quiz" class="btn btn-outline-secondary btn-perfil">
+                            <i class="fas fa-redo mr-2"></i> Limpar Respostas
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Resultados -->
+                <div id="results-section" class="hidden">
+                    <div class="results-container">
+                        <h3 class="mb-4"><i class="fas fa-poll mr-2"></i>Seu Perfil Político</h3>
+                        
+                        <div class="text-center mb-5">
+                            <h4 class="mb-3">Você se identifica principalmente com:</h4>
+                            <div id="profile-badge" class="profile-badge badge-centro">Centro/Independente</div>
+                            <p id="profile-description" class="mt-3">
+                                Seu perfil mostra um equilíbrio entre diferentes posições políticas.
+                            </p>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="comparison-chart">
+                                    <h5 class="mb-3">Distribuição das suas respostas</h5>
+                                    <canvas id="profileChart" height="250"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="comparison-chart">
+                                    <h5 class="mb-3">Comparação com a Câmara dos Deputados</h5>
+                                    <div id="comparisonChart" style="height: 250px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5">
+                            <h5 class="mb-4"><i class="fas fa-user-friends mr-2"></i>Deputados com Perfil Similar ao Seu</h5>
+                            <div id="matching-deputados">
+                                <!-- Aqui serão inseridos os deputados com perfil similar -->
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-5">
+                            <button id="retake-quiz" class="btn btn-primary btn-perfil">
+                                <i class="fas fa-redo mr-2"></i> Refazer Questionário
+                            </button>
+                            <button id="share-results" class="btn btn-outline-primary btn-perfil">
+                                <i class="fas fa-share-alt mr-2"></i> Compartilhar Resultados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Painel de informações -->
+                <div class="results-container">
+                    <h5 class="mb-3"><i class="fas fa-info-circle mr-2"></i>Como funciona?</h5>
+                    <p>Este questionário analisa seu posicionamento em 10 temas políticos fundamentais e compara suas respostas com os votos reais dos 513 deputados federais.</p>
+                    
+                    <div class="mt-4">
+                        <h6><i class="fas fa-calculator mr-2"></i>Método de cálculo:</h6>
+                        <ul class="small">
+                            <li>Cada resposta é classificada como <span class="text-success">Oposição</span>, <span class="text-danger">Governo</span> ou <span class="text-warning">Centro</span></li>
+                            <li>Seu perfil final é determinado pela maioria das respostas</li>
+                            <li>Comparamos seu perfil com a classificação dos deputados no Dashboard oficial</li>
+                            <li>Mostramos os deputados com posicionamento mais similar ao seu</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6><i class="fas fa-chart-line mr-2"></i>Base de dados:</h6>
+                        <ul class="small">
+                            <li>513 deputados federais em atividade</li>
+                            <li>Dados de votações até 10/12/2025</li>
+                            <li>Classificação baseada no Placar Congresso</li>
+                            <li>Atualizado semanalmente</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4 pt-3 border-top">
+                        <h6><i class="fas fa-lightbulb mr-2"></i>Dica:</h6>
+                        <p class="small">Responda com sinceridade para obter um resultado mais preciso. Não há respostas certas ou erradas, apenas diferentes visões políticas.</p>
+                    </div>
+                </div>
+                
+                <!-- Estatísticas do questionário -->
+                <div class="results-container mt-4">
+                    <h5 class="mb-3"><i class="fas fa-chart-bar mr-2"></i>Estatísticas dos Usuários</h5>
+                    <div class="text-center">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <div class="display-4 text-success">42%</div>
+                                <small class="text-muted">Oposição</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="display-4 text-warning">31%</div>
+                                <small class="text-muted">Centro</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="display-4 text-danger">27%</div>
+                                <small class="text-muted">Governo</small>
+                            </div>
+                        </div>
+                        <p class="small text-muted">Baseado em 15.832 respostas coletadas</p>
+                    </div>
+                </div>
+                
+                <!-- Link para o dashboard -->
+                <div class="footer-link mt-4">
+                    <p class="mb-3">
+                        <i class="fas fa-external-link-alt fa-2x mb-3"></i>
+                    </p>
+                    <h5>Conheça todos os deputados</h5>
+                    <p class="small mb-3">
+                        Acesse o Dashboard completo com todos os 513 deputados, filtros avançados e análises detalhadas.
+                    </p>
+                    <a href="deputados.html">
+                        <i class="fas fa-arrow-right mr-2"></i> Ver Dashboard Completo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Dados dos deputados para comparação (amostra)
+        const deputados = [
+            {id: 1, nome: "Sargento Fahur", partido: "PSD", uf: "PR", classificacao: "Oposição", oposicao: 99.86, governismo: 0.2},
+            {id: 2, nome: "Rodolfo Nogueira", partido: "PSD", uf: "MS", classificacao: "Oposição", oposicao: 99.86, governismo: 0.26},
+            {id: 3, nome: "Delegado Paulo Bilynskyj", partido: "PL", uf: "SP", classificacao: "Oposição", oposicao: 98.9, governismo: 1.1},
+            {id: 4, nome: "Mauricio Marcon", partido: "PODE", uf: "RS", classificacao: "Oposição", oposicao: 99.86, governismo: 0.14},
+            {id: 5, nome: "Sargento Goncalves", partido: "PL", uf: "RN", classificacao: "Oposição", oposicao: 99.3, governismo: 0.5},
+            {id: 131, nome: "Antonio Carlos Rodrigues", partido: "PL", uf: "SP", classificacao: "Governo", oposicao: 49.3, governismo: 50.2},
+            {id: 154, nome: "Paulo Alexandre Barbosa", partido: "PSDB", uf: "SP", classificacao: "Governo", oposicao: 38.2, governismo: 61.8},
+            {id: 169, nome: "Robinson Faria", partido: "PL", uf: "RN", classificacao: "Governo", oposicao: 31.5, governismo: 68.5},
+            {id: 101, nome: "Roberto Duarte", partido: "REPUBLICANOS", uf: "AC", classificacao: "Centro", oposicao: 64.4, governismo: 35.6},
+            {id: 113, nome: "Dr. Luiz Ovando", partido: "PP", uf: "MS", classificacao: "Centro", oposicao: 62.6, governismo: 37.4},
+            {id: 125, nome: "Alceu Moreira", partido: "MDB", uf: "RS", classificacao: "Centro", oposicao: 57.0, governismo: 43.0}
+        ];
+        
+        // Inicialização
+        $(document).ready(function() {
+            // Seleção de opções
+            $('.option-card').click(function() {
+                const questionId = $(this).data('question');
+                const value = $(this).data('value');
+                
+                // Remove seleção anterior nesta pergunta
+                $(`#question-${questionId} .option-card`).removeClass('selected');
+                
+                // Adiciona seleção atual
+                $(this).addClass('selected');
+            });
+            
+            // Botão para calcular perfil
+            $('#calculate-profile').click(function() {
+                calculateProfile();
+            });
+            
+            // Botão para resetar quiz
+            $('#reset-quiz').click(function() {
+                resetQuiz();
+            });
+            
+            // Botão para refazer quiz
+            $('#retake-quiz').click(function() {
+                $('#results-section').addClass('hidden');
+                $('#quiz-section').removeClass('hidden');
+                resetQuiz();
+            });
+            
+            // Botão para compartilhar
+            $('#share-results').click(function() {
+                shareResults();
+            });
+        });
+        
+        // Função para calcular o perfil
+        function calculateProfile() {
+            let oposicaoCount = 0;
+            let governoCount = 0;
+            let centroCount = 0;
+            let unanswered = 0;
+            
+            // Contar respostas
+            for (let i = 1; i <= 10; i++) {
+                const selectedOption = $(`#question-${i} .option-card.selected`);
+                
+                if (selectedOption.length > 0) {
+                    const value = selectedOption.data('value');
+                    
+                    if (value === 'oposicao') oposicaoCount++;
+                    else if (value === 'governo') governoCount++;
+                    else if (value === 'centro') centroCount++;
+                } else {
+                    unanswered++;
+                }
+            }
+            
+            // Verificar se todas as perguntas foram respondidas
+            if (unanswered > 0) {
+                alert(`Por favor, responda todas as perguntas. Faltam ${unanswered} resposta(s).`);
+                return;
+            }
+            
+            // Determinar perfil principal
+            let profile = '';
+            let profileDescription = '';
+            
+            if (oposicaoCount > governoCount && oposicaoCount > centroCount) {
+                profile = 'Oposição';
+                profileDescription = 'Seu perfil mostra maior alinhamento com posições de oposição ao governo atual.';
+            } else if (governoCount > oposicaoCount && governoCount > centroCount) {
+                profile = 'Governo';
+                profileDescription = 'Seu perfil mostra maior alinhamento com posições pró-governo.';
+            } else if (centroCount > oposicaoCount && centroCount > governoCount) {
+                profile = 'Centro';
+                profileDescription = 'Seu perfil mostra um equilíbrio entre diferentes posições políticas.';
+            } else {
+                // Em caso de empate
+                profile = 'Centro';
+                profileDescription = 'Seu perfil mostra um equilíbrio entre diferentes posições políticas, sem clara predominância.';
+            }
+            
+            // Atualizar UI com resultados
+            $('#profile-badge').removeClass('badge-oposicao badge-governo badge-centro')
+                              .addClass(`badge-${profile.toLowerCase()}`)
+                              .text(profile);
+            
+            $('#profile-description').text(profileDescription);
+            
+            // Criar gráfico de perfil
+            createProfileChart(oposicaoCount, governoCount, centroCount);
+            
+            // Criar gráfico de comparação
+            createComparisonChart(oposicaoCount, governoCount, centroCount);
+            
+            // Encontrar deputados com perfil similar
+            findMatchingDeputados(profile, oposicaoCount, governoCount, centroCount);
+            
+            // Mostrar resultados
+            $('#quiz-section').addClass('hidden');
+            $('#results-section').removeClass('hidden');
+            
+            // Scroll para resultados
+            $('html, body').animate({
+                scrollTop: $("#results-section").offset().top - 100
+            }, 500);
+        }
+        
+        // Função para criar gráfico de perfil
+        function createProfileChart(oposicao, governo, centro) {
+            const ctx = document.getElementById('profileChart').getContext('2d');
+            
+            // Destruir gráfico anterior se existir
+            if (window.profileChartInstance) {
+                window.profileChartInstance.destroy();
+            }
+            
+            window.profileChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Oposição', 'Governo', 'Centro'],
+                    datasets: [{
+                        data: [oposicao, governo, centro],
+                        backgroundColor: [
+                            'rgba(39, 174, 96, 0.8)',
+                            'rgba(231, 76, 60, 0.8)',
+                            'rgba(243, 156, 18, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(39, 174, 96, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(243, 156, 18, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Função para criar gráfico de comparação
+        function createComparisonChart(oposicaoUser, governoUser, centroUser) {
+            // Estatísticas da Câmara (baseado em dados reais)
+            const camaraData = {
+                oposicao: 38,  // % de deputados de oposição
+                governo: 35,   // % de deputados pró-governo
+                centro: 27     // % de deputados de centro/independentes
+            };
+            
+            // Dados do usuário em porcentagem
+            const total = oposicaoUser + governoUser + centroUser;
+            const userData = {
+                oposicao: Math.round((oposicaoUser / total) * 100),
+                governo: Math.round((governoUser / total) * 100),
+                centro: Math.round((centroUser / total) * 100)
+            };
+            
+            const trace1 = {
+                x: ['Oposição', 'Governo', 'Centro'],
+                y: [camaraData.oposicao, camaraData.governo, camaraData.centro],
+                name: 'Câmara dos Deputados',
+                type: 'bar',
+                marker: {
+                    color: ['rgba(39, 174, 96, 0.6)', 'rgba(231, 76, 60, 0.6)', 'rgba(243, 156, 18, 0.6)']
+                }
+            };
+            
+            const trace2 = {
+                x: ['Oposição', 'Governo', 'Centro'],
+                y: [userData.oposicao, userData.governo, userData.centro],
+                name: 'Seu Perfil',
+                type: 'bar',
+                marker: {
+                    color: ['rgba(39, 174, 96, 1)', 'rgba(231, 76, 60, 1)', 'rgba(243, 156, 18, 1)']
+                }
+            };
+            
+            const data = [trace1, trace2];
+            
+            const layout = {
+                barmode: 'group',
+                showlegend: true,
+                legend: {
+                    x: 0.5,
+                    xanchor: 'center',
+                    y: -0.2
+                },
+                margin: { t: 30, r: 30, l: 40, b: 80 },
+                height: 250,
+                yaxis: {
+                    title: 'Porcentagem (%)',
+                    range: [0, 100]
+                }
+            };
+            
+            Plotly.newPlot('comparisonChart', data, layout, {displayModeBar: false});
+        }
+        
+        // Função para encontrar deputados com perfil similar
+        function findMatchingDeputados(userProfile, oposicaoUser, governoUser, centroUser) {
+            const matchingDeputados = [];
+            
+            // Calcular "distância" do perfil do usuário para cada deputado
+            deputados.forEach(deputado => {
+                let score = 0;
+                
+                // Se o perfil principal for o mesmo, adiciona pontos
+                if (deputado.classificacao === userProfile) {
+                    score += 50;
+                }
+                
+                // Calcular similaridade baseada nos percentuais
+                const userTotal = oposicaoUser + governoUser + centroUser;
+                const userOposicaoPct = (oposicaoUser / userTotal) * 100;
+                const userGovernoPct = (governoUser / userTotal) * 100;
+                
+                // Deputados têm percentuais de oposição e governismo
+                const diffOposicao = Math.abs(userOposicaoPct - deputado.oposicao);
+                const diffGovernismo = Math.abs(userGovernoPct - deputado.governismo);
+                
+                // Quanto menor a diferença, maior a pontuação
+                score += (100 - (diffOposicao + diffGovernismo) / 2);
+                
+                matchingDeputados.push({
+                    ...deputado,
+                    matchScore: Math.min(100, Math.max(0, score))
+                });
+            });
+            
+            // Ordenar por score de similaridade (maior primeiro)
+            matchingDeputados.sort((a, b) => b.matchScore - a.matchScore);
+            
+            // Pegar os 5 mais similares
+            const topMatches = matchingDeputados.slice(0, 5);
+            
+            // Exibir os deputados similares
+            const container = $('#matching-deputados');
+            container.empty();
+            
+            topMatches.forEach(deputado => {
+                const matchClass = deputado.classificacao.toLowerCase();
+                const matchColor = matchClass === 'oposicao' ? 'success' : 
+                                  matchClass === 'governo' ? 'danger' : 'warning';
+                
+                const deputadoHTML = `
+                <div class="deputado-match">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1">${deputado.nome}</h6>
+                            <p class="mb-1 small">
+                                <span class="badge badge-secondary">${deputado.partido}</span>
+                                <span class="badge badge-light">${deputado.uf}</span>
+                                <span class="badge badge-${matchColor}">${deputado.classificacao}</span>
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <div class="match-percentage match-${matchClass}">${Math.round(deputado.matchScore)}%</div>
+                            <div class="progress progress-match">
+                                <div class="progress-bar bg-${matchColor}" 
+                                     role="progressbar" 
+                                     style="width: ${deputado.matchScore}%"
+                                     aria-valuenow="${deputado.matchScore}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                
+                container.append(deputadoHTML);
+            });
+        }
+        
+        // Função para resetar o quiz
+        function resetQuiz() {
+            $('.option-card').removeClass('selected');
+        }
+        
+        // Função para compartilhar resultados
+        function shareResults() {
+            const profile = $('#profile-badge').text();
+            const description = $('#profile-description').text();
+            
+            const shareText = `Meu perfil político no Mapa do Voto 2026: ${profile} - ${description} Descubra o seu também!`;
+            const shareUrl = window.location.href;
+            
+            // Tente usar a Web Share API se disponível
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Meu Perfil Político - Mapa do Voto 2026',
+                    text: shareText,
+                    url: shareUrl
+                })
+                .then(() => console.log('Compartilhado com sucesso'))
+                .catch((error) => console.log('Erro ao compartilhar:', error));
+            } else {
+                // Fallback para copiar para a área de transferência
+                const textToCopy = `${shareText} ${shareUrl}`;
+                
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        alert('Resultados copiados para a área de transferência! Cole em suas redes sociais.');
+                    })
+                    .catch(err => {
+                        console.error('Erro ao copiar: ', err);
+                        alert('Link copiado! Compartilhe em suas redes sociais.');
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
