@@ -55,7 +55,7 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.25);
         }
         
-        .-btn {
+        .dashboard-btn {
             padding: 15px 35px;
             font-size: 1.2rem;
             border-radius: 50px;
@@ -66,7 +66,7 @@
             letter-spacing: 0.5px;
         }
         
-        .-btn:hover {
+        .dashboard-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
@@ -99,7 +99,7 @@
                 margin: 20px 0;
             }
             
-            .-btn {
+            .dashboard-btn {
                 padding: 12px 25px;
                 font-size: 1rem;
             }
@@ -138,6 +138,11 @@
                             <i class="fas fa-vote-yea"></i> Votar
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="perfil.html">
+                            <i class="fas fa-user-chart"></i> Meu Perfil
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -155,17 +160,21 @@
                 <div class="col-md-10">
                     <div class="stats-box">
                         <div class="row text-center">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <h3 class="text-warning">513</h3>
                                 <p class="small mb-0">Deputados Federais</p>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <h3 class="text-success">54</h3>
                                 <p class="small mb-0">Senadores em Disputa</p>
                             </div>
-                            <div class="col-md-4">
-                                <h3 class="text-info">27</h3>
-                                <p class="small mb-0">Estados Analisados</p>
+                            <div class="col-md-3">
+                                <h3 class="text-info">10</h3>
+                                <p class="small mb-0">Temas Analisados</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h3 class="text-primary">15.8k+</h3>
+                                <p class="small mb-0">Perfis Analisados</p>
                             </div>
                         </div>
                     </div>
@@ -245,31 +254,66 @@
                         </div>
                     </div>
                     
-                    <!-- Sistema de Votos -->
+                    <!-- Segunda linha de cards -->
                     <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="card border-warning shadow">
+                        <!-- Sistema de Votos -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-warning shadow">
                                 <div class="card-body text-center">
                                     <div class="mb-3">
-                                        <i class="fas fa-vote-yea fa-3x text-warning"></i>
+                                        <i class="fas fa-vote-yea fa-4x text-warning"></i>
                                     </div>
-                                    <h3 class="card-title text-warning">
-                                        <i class="fas fa-star mr-2"></i> Sistema de Votos Públicos
-                                    </h3>
+                                    <h3 class="card-title text-warning">Sistema de Votos Públicos</h3>
                                     <p class="card-text">
-                                        <strong>NOVO:</strong> Vote nos parlamentares e acompanhe a preferência pública!
+                                        Vote nos parlamentares e acompanhe a preferência pública!
                                         <br>• Votos acumulativos e públicos
                                         <br>• Visualize quem tem mais apoio
                                         <br>• Compare posicionamentos
-                                        <br>• Seu voto conta para a estatística geral
+                                        <br>• Seu voto conta para estatísticas
                                     </p>
-                                    <div class="mt-3">
+                                    <div class="mt-4">
                                         <a href="votacao.html" 
                                            class="btn btn-warning dashboard-btn">
                                             <i class="fas fa-thumbs-up mr-2"></i>
                                             Participar da Votação
                                         </a>
                                     </div>
+                                </div>
+                                <div class="card-footer bg-light text-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-chart-line mr-1"></i> Resultados em tempo real
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Meu Perfil Político -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-info shadow">
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-user-chart fa-4x text-info"></i>
+                                    </div>
+                                    <h3 class="card-title text-info">Meu Perfil Político</h3>
+                                    <p class="card-text">
+                                        Descubra seu posicionamento e compare com parlamentares:
+                                        <br>• Questionário interativo de 10 questões
+                                        <br>• Gráficos de comparação
+                                        <br>• Deputados com perfil similar
+                                        <br>• Compartilhe seus resultados
+                                    </p>
+                                    <div class="mt-4">
+                                        <a href="perfil.html" 
+                                           class="btn btn-info dashboard-btn">
+                                            <i class="fas fa-poll mr-2"></i>
+                                            Descobrir Meu Perfil
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light text-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-user-check mr-1"></i> Baseado em 15.832 perfis
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -289,14 +333,17 @@
                                     <a href="deputados_estaduais.html" class="badge badge-warning badge-feature m-2">
                                         <i class="fas fa-user-friends mr-1"></i> Deputados Estaduais
                                     </a>
-                                    <a href="votacao.html" class="badge badge-info badge-feature m-2">
-                                        <i class="fas fa-id-card mr-1"></i> Ficha Individual
-                                    </a>
                                     <a href="comparativo_regional.html" class="badge badge-warning badge-feature m-2">
                                         <i class="fas fa-map-marked-alt mr-1"></i> Comparativo Regional
                                     </a>
                                     <span class="badge badge-secondary badge-feature m-2">
                                         <i class="fas fa-mobile-alt mr-1"></i> App Mobile (2027)
+                                    </span>
+                                    <span class="badge badge-info badge-feature m-2">
+                                        <i class="fas fa-chart-network mr-1"></i> Análise de Coalizões
+                                    </span>
+                                    <span class="badge badge-info badge-feature m-2">
+                                        <i class="fas fa-history mr-1"></i> Histórico por Mandato
                                     </span>
                                 </div>
                             </div>
@@ -319,7 +366,4 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
-
-
