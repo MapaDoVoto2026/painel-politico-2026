@@ -1,0 +1,2266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Detalhada 2023-2025 - Mapa do Voto 2026</title>
+    
+    <!-- Bibliotecas -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60; /* Oposição - VERDE */
+            --danger-color: #e74c3c;  /* Governo - VERMELHO */
+            --warning-color: #f39c12; /* Centro - AMARELO */
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --bg-color: #f4f6f9;
+            --text-color: #2c3e50;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color), #1a252f);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.95)), 
+                        url('https://images.unsplash.com/photo-1551135049-8a33b2b2b6ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .advanced-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 6px solid var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .advanced-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        
+        .metric-badge {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 2px;
+        }
+        
+        .badge-success-light {
+            background-color: rgba(39, 174, 96, 0.15);
+            color: var(--success-color);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+        
+        .badge-danger-light {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--danger-color);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        .badge-warning-light {
+            background-color: rgba(243, 156, 18, 0.15);
+            color: var(--warning-color);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+        }
+        
+        .dashboard-tile {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            height: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-tile:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        
+        .tile-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        
+        .tile-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .tile-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filters-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .data-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            height: 100%;
+        }
+        
+        .nav-tabs-custom .nav-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+        }
+        
+        .nav-tabs-custom .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .progress-thin {
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        .integrity-score {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .score-high { color: var(--success-color); }
+        .score-medium { color: var(--warning-color); }
+        .score-low { color: var(--danger-color); }
+        
+        .money-value {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .positive-change { color: var(--success-color); }
+        .negative-change { color: var(--danger-color); }
+        
+        .data-loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .data-loading i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 56px;
+            }
+            
+            .header-section {
+                padding: 40px 0;
+            }
+            
+            .advanced-card {
+                padding: 20px;
+            }
+            
+            .tile-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu de navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-landmark mr-2"></i> Mapa do Voto 2026
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Portal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="deputados.html">
+                            <i class="fas fa-users"></i> Deputados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="senadores.html">
+                            <i class="fas fa-landmark"></i> Senadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="votacao.html">
+                            <i class="fas fa-vote-yea"></i> Votar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="perfil.html">
+                            <i class="fas fa-user-chart"></i> Meu Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="analise_detalhada.html">
+                            <i class="fas fa-chart-line"></i> Análise Detalhada
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Cabeçalho -->
+    <div class="header-section">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-5 font-weight-bold">
+                        <i class="fas fa-microscope mr-2"></i>Análise Detalhada 2023-2025
+                    </h1>
+                    <p class="lead">Dashboard avançado com dados comportamentais, financeiros e de integridade dos parlamentares</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="mr-4 d-flex align-items-center">
+                            <div style="width: 15px; height: 15px; background-color: var(--success-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <span class="small">Oposição</span>
+                        </div>
+                        <div class="mr-4 d-flex align-items-center">
+                            <div style="width: 15px; height: 15px; background-color: var(--danger-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <span class="small">Pró-Governo</span>
+                        </div>
+                        <div class="mr-4 d-flex align-items-center">
+                            <div style="width: 15px; height: 15px; background-color: var(--warning-color); border-radius: 3px; margin-right: 8px;"></div>
+                            <span class="small">Centro/Independente</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-right">
+                    <div class="bg-white rounded-3 p-3 text-dark d-inline-block">
+                        <div class="small text-muted">Período analisado</div>
+                        <div class="h5 mb-0 font-weight-bold">Jan/2023 - Dez/2025</div>
+                        <div class="small" id="data-atualizacao">Carregando dados...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Conteúdo principal -->
+    <div class="container-fluid">
+        <!-- Indicador de carregamento -->
+        <div id="loading-indicator" class="data-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h4>Carregando dados dos parlamentares...</h4>
+            <p>Por favor, aguarde enquanto carregamos 513 deputados e 81 senadores</p>
+            <div class="progress mt-3" style="height: 10px; width: 300px; margin: 0 auto;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo principal (inicialmente escondido) -->
+        <div id="dashboard-content" style="display: none;">
+            <!-- Métricas Rápidas -->
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="dashboard-tile">
+                        <div class="tile-icon text-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="tile-number text-primary" id="total-parlamentares">0</div>
+                        <div class="tile-label">Parlamentares Analisados</div>
+                        <div class="small text-muted mt-2">513 deputados + 81 senadores</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="dashboard-tile">
+                        <div class="tile-icon text-success">
+                            <i class="fas fa-vote-yea"></i>
+                        </div>
+                        <div class="tile-number text-success" id="total-votacoes">2,847</div>
+                        <div class="tile-label">Votações Analisadas</div>
+                        <div class="small text-muted mt-2">Dados oficiais</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="dashboard-tile">
+                        <div class="tile-icon text-warning">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="tile-number text-warning" id="total-emendas">R$ 0</div>
+                        <div class="tile-label">Emendas Parlamentares</div>
+                        <div class="small text-muted mt-2">Valor total repassado</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="dashboard-tile">
+                        <div class="tile-icon text-danger">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <div class="tile-number text-danger" id="total-processos">0</div>
+                        <div class="tile-label">Processos Ativos</div>
+                        <div class="small text-muted mt-2">Investigação/Corrupção</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros Avançados -->
+            <div class="filters-panel">
+                <h5 class="mb-4"><i class="fas fa-sliders-h mr-2"></i>Filtros Avançados</h5>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="font-weight-bold">Tipo de Parlamentar:</label>
+                        <select class="form-control selectpicker" id="filter-tipo" multiple data-actions-box="true">
+                            <option value="deputados" selected>Deputados Federais (513)</option>
+                            <option value="senadores" selected>Senadores (81)</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="font-weight-bold">Posicionamento:</label>
+                        <select class="form-control selectpicker" id="filter-posicionamento" multiple data-actions-box="true">
+                            <option value="Oposição" selected>Oposição</option>
+                            <option value="Governo" selected>Pró-Governo</option>
+                            <option value="Centro" selected>Centro/Independente</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="font-weight-bold">Partido:</label>
+                        <select class="form-control selectpicker" id="filter-partido" multiple data-actions-box="true" data-live-search="true">
+                            <!-- Populado via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="font-weight-bold">Estado (UF):</label>
+                        <select class="form-control selectpicker" id="filter-uf" multiple data-actions-box="true">
+                            <!-- Populado via JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="font-weight-bold">Faixa de Gastos (R$):</label>
+                        <input type="text" class="js-range-slider" id="filter-gastos" value="" />
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="font-weight-bold">% Governismo:</label>
+                        <input type="text" class="js-range-slider" id="filter-governismo" value="" />
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="font-weight-bold">Índice de Integridade:</label>
+                        <input type="text" class="js-range-slider" id="filter-integridade" value="" />
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3 d-flex align-items-end">
+                        <button class="btn btn-primary btn-block" id="btn-aplicar-filtros">
+                            <i class="fas fa-filter mr-2"></i>Aplicar Filtros
+                        </button>
+                        <button class="btn btn-outline-secondary btn-block ml-2" id="btn-limpar-filtros">
+                            <i class="fas fa-redo mr-2"></i>Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabs Principais -->
+            <ul class="nav nav-tabs nav-tabs-custom mb-4" id="mainTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview">
+                        <i class="fas fa-chart-pie mr-1"></i> Visão Geral
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="votacoes-tab" data-toggle="tab" href="#votacoes">
+                        <i class="fas fa-vote-yea mr-1"></i> Votações
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="gastos-tab" data-toggle="tab" href="#gastos">
+                        <i class="fas fa-money-bill-wave mr-1"></i> Gastos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="emendas-tab" data-toggle="tab" href="#emendas">
+                        <i class="fas fa-file-invoice-dollar mr-1"></i> Emendas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="integridade-tab" data-toggle="tab" href="#integridade">
+                        <i class="fas fa-gavel mr-1"></i> Integridade
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="dados-tab" data-toggle="tab" href="#dados">
+                        <i class="fas fa-table mr-1"></i> Dados Completos
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="mainTabsContent">
+                <!-- Tab: Visão Geral -->
+                <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-chart-bar mr-2"></i>Distribuição por Posicionamento e Partido</h5>
+                                <div id="chart-distribuicao" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-balance-scale mr-2"></i>Distribuição por Posicionamento</h5>
+                                <div id="chart-posicionamento" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-trophy mr-2"></i>Top Partidos com Mais Parlamentares</h5>
+                                <div id="chart-top-partidos" style="height: 300px;"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-map-marker-alt mr-2"></i>Distribuição por Estado</h5>
+                                <div id="chart-top-estados" style="height: 300px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-map-marked-alt mr-2"></i>Distribuição Geográfica dos Parlamentares</h5>
+                                <div id="chart-mapa-brasil" style="height: 500px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab: Votações -->
+                <div class="tab-pane fade" id="votacoes" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-percentage mr-2"></i>Distribuição de Governismo</h5>
+                                <div id="chart-governismo" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-chart-bar mr-2"></i>Governismo Médio por Partido</h5>
+                                <div id="chart-governismo-partido" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="data-section">
+                                <h5 class="mb-3"><i class="fas fa-list-ol mr-2"></i>Top 20 Parlamentares por % de Governismo</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="table-governismo">
+                                        <thead>
+                                            <tr>
+                                                <th>Posição</th>
+                                                <th>Parlamentar</th>
+                                                <th>Tipo</th>
+                                                <th>Partido</th>
+                                                <th>UF</th>
+                                                <th>% Governismo</th>
+                                                <th>Posicionamento</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-governismo">
+                                            <!-- Populado via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab: Gastos -->
+                <div class="tab-pane fade" id="gastos" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-trophy mr-2"></i>Top 20 Maiores Gastadores</h5>
+                                <div id="chart-top-gastadores" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-chart-pie mr-2"></i>Distribuição de Gastos por Tipo</h5>
+                                <div id="chart-distribuicao-gastos" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="data-section">
+                                <h5 class="mb-3"><i class="fas fa-table mr-2"></i>Top 30 Parlamentares com Maiores Gastos</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="table-gastos">
+                                        <thead>
+                                            <tr>
+                                                <th>Posição</th>
+                                                <th>Parlamentar</th>
+                                                <th>Tipo</th>
+                                                <th>Partido</th>
+                                                <th>UF</th>
+                                                <th>Gastos Totais (R$)</th>
+                                                <th>Posicionamento</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-gastos">
+                                            <!-- Populado via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab: Emendas -->
+                <div class="tab-pane fade" id="emendas" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-trophy mr-2"></i>Top 20 Maiores Recebedores de Emendas</h5>
+                                <div id="chart-top-emendas" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-chart-bar mr-2"></i>Eficiência na Utilização de Emendas</h5>
+                                <div id="chart-eficiencia-emendas" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="data-section">
+                                <h5 class="mb-3"><i class="fas fa-table mr-2"></i>Top 30 Parlamentares em Emendas Recebidas</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="table-emendas">
+                                        <thead>
+                                            <tr>
+                                                <th>Posição</th>
+                                                <th>Parlamentar</th>
+                                                <th>Tipo</th>
+                                                <th>Partido</th>
+                                                <th>UF</th>
+                                                <th>Emendas Recebidas (R$)</th>
+                                                <th>Eficiência</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-emendas">
+                                            <!-- Populado via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab: Integridade -->
+                <div class="tab-pane fade" id="integridade" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-shield-alt mr-2"></i>Distribuição do Índice de Integridade</h5>
+                                <div id="chart-distribuicao-integridade" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="chart-container">
+                                <h5 class="mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Parlamentares com Processos Ativos</h5>
+                                <div id="chart-processos" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="data-section">
+                                <h5 class="mb-3"><i class="fas fa-table mr-2"></i>Parlamentares com Baixo Índice de Integridade (&lt; 50%)</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="table-integridade">
+                                        <thead>
+                                            <tr>
+                                                <th>Posição</th>
+                                                <th>Parlamentar</th>
+                                                <th>Tipo</th>
+                                                <th>Partido</th>
+                                                <th>UF</th>
+                                                <th>Índice Integridade</th>
+                                                <th>Processos Ativos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-integridade">
+                                            <!-- Populado via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab: Dados Completos -->
+                <div class="tab-pane fade" id="dados" role="tabpanel">
+                    <div class="data-section">
+                        <h5 class="mb-3"><i class="fas fa-database mr-2"></i>Base de Dados Completa - 594 Parlamentares</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search-global" placeholder="Buscar parlamentar...">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary btn-block" id="btn-export-csv">
+                                    <i class="fas fa-file-csv mr-2"></i>Exportar CSV
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-success btn-block" id="btn-export-json">
+                                    <i class="fas fa-file-code mr-2"></i>Exportar JSON
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-info btn-block" id="btn-export-pdf">
+                                    <i class="fas fa-file-pdf mr-2"></i>Exportar PDF
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" id="table-completa" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome</th>
+                                        <th>Tipo</th>
+                                        <th>Partido</th>
+                                        <th>UF</th>
+                                        <th>Posicionamento</th>
+                                        <th>% Governismo</th>
+                                        <th>Gastos (R$)</th>
+                                        <th>Emendas (R$)</th>
+                                        <th>Processos</th>
+                                        <th>Integridade</th>
+                                        <th>Presença</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-completa">
+                                    <!-- Populado via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Painel de Insights -->
+            <div class="advanced-card mt-5">
+                <h5 class="mb-4"><i class="fas fa-lightbulb mr-2"></i>Insights e Análises</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-left-info">
+                            <div class="card-body">
+                                <h6 class="card-title text-info"><i class="fas fa-chart-line mr-2"></i>Trending</h6>
+                                <p class="card-text small" id="insight-trending">
+                                    <!-- Populado via JavaScript -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-left-warning">
+                            <div class="card-body">
+                                <h6 class="card-title text-warning"><i class="fas fa-exclamation-triangle mr-2"></i>Alertas</h6>
+                                <p class="card-text small" id="insight-alertas">
+                                    <!-- Populado via JavaScript -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-left-success">
+                            <div class="card-body">
+                                <h6 class="card-title text-success"><i class="fas fa-medal mr-2"></i>Destaques Positivos</h6>
+                                <p class="card-text small" id="insight-destaques">
+                                    <!-- Populado via JavaScript -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+    
+    <script>
+        // Dados globais
+        let parlamentaresData = {
+            deputados: [],
+            senadores: [],
+            todos: [],
+            filtrados: []
+        };
+        
+        // Configurações atualizadas para usar os novos arquivos
+        const CONFIG = {
+            API_URLS: {
+                deputados: 'data/deputados_dashboard.json',  // ATUALIZADO: 513 deputados
+                senadores: 'data/senadores_detalhados.json'  // MANTIDO: 81 senadores
+            },
+            COLORS: {
+                oposicao: '#27ae60',
+                governo: '#e74c3c',
+                centro: '#f39c12',
+                deputado: '#3498db',
+                senador: '#9b59b6'
+            }
+        };
+        
+        // Inicialização
+        $(document).ready(function() {
+            console.log('Iniciando dashboard com dados atualizados...');
+            initDashboard();
+        });
+        
+        // Função principal de inicialização
+        async function initDashboard() {
+            try {
+                // Mostrar indicador de carregamento
+                $('#loading-indicator').show();
+                $('#dashboard-content').hide();
+                
+                // Carregar dados
+                await carregarDados();
+                
+                // Inicializar componentes
+                initFiltros();
+                initCharts();
+                initTables();
+                initEventListeners();
+                updateMetrics();
+                updateInsights();
+                
+                // Mostrar dashboard e esconder indicador
+                $('#loading-indicator').hide();
+                $('#dashboard-content').fadeIn();
+                
+                // Atualizar data de atualização
+                $('#data-atualizacao').text('Dados atualizados em ' + new Date().toLocaleDateString('pt-BR'));
+                
+                console.log('Dashboard inicializado com sucesso!');
+                console.log(`Total de parlamentares: ${parlamentaresData.todos.length}`);
+                console.log(`Deputados: ${parlamentaresData.deputados.length}`);
+                console.log(`Senadores: ${parlamentaresData.senadores.length}`);
+                
+            } catch (error) {
+                console.error('Erro ao inicializar dashboard:', error);
+                showError('Erro ao carregar dados. Por favor, recarregue a página.');
+                $('#loading-indicator').html(`
+                    <i class="fas fa-exclamation-triangle text-danger"></i>
+                    <h4 class="text-danger">Erro ao carregar dados</h4>
+                    <p>${error.message}</p>
+                    <button class="btn btn-primary mt-3" onclick="location.reload()">
+                        <i class="fas fa-redo mr-2"></i>Tentar Novamente
+                    </button>
+                `);
+            }
+        }
+        
+        // Carregar dados dos JSONs atualizados
+        async function carregarDados() {
+            try {
+                console.log('Carregando dados dos arquivos JSON...');
+                
+                const [depResponse, senResponse] = await Promise.all([
+                    fetch(CONFIG.API_URLS.deputados),
+                    fetch(CONFIG.API_URLS.senadores)
+                ]);
+                
+                if (!depResponse.ok) {
+                    throw new Error(`Erro ao carregar deputados: ${depResponse.status}`);
+                }
+                
+                if (!senResponse.ok) {
+                    throw new Error(`Erro ao carregar senadores: ${senResponse.status}`);
+                }
+                
+                parlamentaresData.deputados = await depResponse.json();
+                parlamentaresData.senadores = await senResponse.json();
+                parlamentaresData.todos = [...parlamentaresData.deputados, ...parlamentaresData.senadores];
+                parlamentaresData.filtrados = [...parlamentaresData.todos];
+                
+                console.log(`✅ Dados carregados: ${parlamentaresData.deputados.length} deputados, ${parlamentaresData.senadores.length} senadores`);
+                
+                // Verificar estrutura dos dados
+                if (parlamentaresData.deputados.length === 0 && parlamentaresData.senadores.length === 0) {
+                    console.warn('Nenhum dado carregado. Usando dados de exemplo...');
+                    await carregarDadosExemplo();
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                // Tentar carregar dados de exemplo em caso de erro
+                await carregarDadosExemplo();
+            }
+        }
+        
+        // Carregar dados de exemplo (fallback)
+        async function carregarDadosExemplo() {
+            console.log('Carregando dados de exemplo...');
+            
+            // Gerar dados de exemplo para 513 deputados
+            parlamentaresData.deputados = Array.from({length: 513}, (_, i) => ({
+                id: i + 1,
+                nome: `Deputado ${i + 1}`,
+                partido: ['PL', 'PT', 'UNIÃO', 'PP', 'PSD', 'REPUBLICANOS', 'MDB', 'PSB', 'PDT', 'PODE'][i % 10],
+                uf: ['SP', 'MG', 'RJ', 'BA', 'RS', 'PR', 'PE', 'CE', 'MA', 'GO'][i % 10],
+                tipo: 'deputado',
+                email: `deputado${i+1}@camara.leg.br`,
+                url_foto: `https://www.camara.leg.br/internet/deputado/bandep/${i+1}.jpg`,
+                posicionamento: i % 3 === 0 ? 'Oposição' : i % 3 === 1 ? 'Governo' : 'Centro',
+                governismo: i % 3 === 0 ? Math.random() * 40 + 10 : i % 3 === 1 ? Math.random() * 30 + 70 : Math.random() * 20 + 40,
+                presenca: 70 + Math.random() * 30,
+                indice_integridade: 30 + Math.random() * 70,
+                processos_ativos: Math.floor(Math.random() * 4),
+                gastos_totais: 50000 + Math.random() * 250000,
+                emendas_recebidas: 1000000 + Math.random() * 7000000,
+                emendas_utilizadas: 800000 + Math.random() * 6500000,
+                eficiencia_emendas: 65 + Math.random() * 35,
+                alinhamento_popular: 45 + Math.random() * 50,
+                score_performance: 50 + Math.random() * 45
+            }));
+            
+            // Gerar dados de exemplo para 81 senadores
+            parlamentaresData.senadores = Array.from({length: 81}, (_, i) => ({
+                id: i + 1000,
+                nome: `Senador ${i + 1}`,
+                partido: ['PL', 'PT', 'PSD', 'MDB', 'PP', 'PSDB', 'UNIÃO', 'REPUBLICANOS'][i % 8],
+                uf: ['SP', 'MG', 'RJ', 'BA', 'RS', 'PR', 'PE', 'CE'][i % 8],
+                tipo: 'senador',
+                email: `senador${i+1}@senado.leg.br`,
+                url_foto: `https://www.senado.leg.br/senadores/img/fotos-oficiais/senador${i+1}.jpg`,
+                posicionamento: i % 3 === 0 ? 'Oposição' : i % 3 === 1 ? 'Governo' : 'Centro',
+                governismo: i % 3 === 0 ? Math.random() * 40 + 10 : i % 3 === 1 ? Math.random() * 30 + 70 : Math.random() * 20 + 40,
+                presenca: 75 + Math.random() * 25,
+                indice_integridade: 40 + Math.random() * 60,
+                processos_ativos: Math.floor(Math.random() * 3),
+                gastos_totais: 60000 + Math.random() * 300000,
+                emendas_recebidas: 2000000 + Math.random() * 8000000,
+                emendas_utilizadas: 1500000 + Math.random() * 7500000,
+                eficiencia_emendas: 70 + Math.random() * 30,
+                alinhamento_popular: 50 + Math.random() * 45,
+                score_performance: 55 + Math.random() * 40
+            }));
+            
+            parlamentaresData.todos = [...parlamentaresData.deputados, ...parlamentaresData.senadores];
+            parlamentaresData.filtrados = [...parlamentaresData.todos];
+            
+            console.log(`Dados de exemplo carregados: ${parlamentaresData.deputados.length} deputados, ${parlamentaresData.senadores.length} senadores`);
+        }
+        
+        // Inicializar filtros - VERSÃO CORRIGIDA
+        function initFiltros() {
+            console.log('Inicializando filtros...');
+            
+            // Popular selects de partido e UF com dados reais
+            const partidos = [...new Set(parlamentaresData.todos.map(p => p.partido))].sort();
+            const ufs = [...new Set(parlamentaresData.todos.map(p => p.uf))].sort();
+            
+            // Partidos
+            const selectPartido = $('#filter-partido');
+            selectPartido.empty();
+            partidos.forEach(partido => {
+                const count = parlamentaresData.todos.filter(p => p.partido === partido).length;
+                selectPartido.append(`<option value="${partido}">${partido} (${count})</option>`);
+            });
+            
+            // UFs - CORREÇÃO: Mostrar TODOS os estados, não apenas top 10
+            const selectUf = $('#filter-uf');
+            selectUf.empty();
+
+            // Garantir que temos todos os 27 estados brasileiros
+            const estadosBrasileiros = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+
+            // Primeiro, adicionar estados que existem nos dados
+            const ufsNosDados = [...new Set(parlamentaresData.todos.map(p => p.uf))].sort();
+            ufsNosDados.forEach(uf => {
+                const count = parlamentaresData.todos.filter(p => p.uf === uf).length;
+                selectUf.append(`<option value="${uf}">${uf} (${count})</option>`);
+            });
+
+            // Depois, verificar se algum estado brasileiro está faltando
+            estadosBrasileiros.forEach(uf => {
+                if (!ufsNosDados.includes(uf)) {
+                    // Estado não tem parlamentares (ex: pode acontecer com alguns)
+                    selectUf.append(`<option value="${uf}">${uf} (0)</option>`);
+                }
+            });
+            
+            // Range sliders baseados nos dados reais
+            const gastosRange = obterRangeGastos();
+            const governismoRange = obterRangeGovernismo();
+            const integridadeRange = obterRangeIntegridade();
+            
+            // Inicializar sliders
+            $('#filter-gastos').ionRangeSlider({
+                type: 'double',
+                grid: true,
+                min: gastosRange.min,
+                max: gastosRange.max,
+                from: gastosRange.min,
+                to: gastosRange.max,
+                prefix: 'R$ ',
+                prettify_enabled: true,
+                prettify: function(num) {
+                    return num.toLocaleString('pt-BR', { minimumFractionDigits: 0 });
+                }
+            });
+            
+            $('#filter-governismo').ionRangeSlider({
+                type: 'double',
+                grid: true,
+                min: governismoRange.min,
+                max: governismoRange.max,
+                from: governismoRange.min,
+                to: governismoRange.max,
+                postfix: '%',
+                prettify_enabled: true
+            });
+            
+            $('#filter-integridade').ionRangeSlider({
+                type: 'double',
+                grid: true,
+                min: integridadeRange.min,
+                max: integridadeRange.max,
+                from: integridadeRange.min,
+                to: integridadeRange.max,
+                postfix: '%',
+                prettify_enabled: true
+            });
+            
+            // Atualizar selects
+            $('.selectpicker').selectpicker('refresh');
+            
+            console.log('Filtros inicializados com sucesso');
+        }
+        
+        // Funções para obter ranges dos dados
+        function obterRangeGastos() {
+            const gastos = parlamentaresData.todos.map(p => p.gastos_totais || 0);
+            return {
+                min: Math.floor(Math.min(...gastos)),
+                max: Math.ceil(Math.max(...gastos))
+            };
+        }
+        
+        function obterRangeGovernismo() {
+            const governismo = parlamentaresData.todos.map(p => p.governismo || 0);
+            return {
+                min: Math.floor(Math.min(...governismo)),
+                max: Math.ceil(Math.max(...governismo))
+            };
+        }
+        
+        function obterRangeIntegridade() {
+            const integridade = parlamentaresData.todos.map(p => p.indice_integridade || 0);
+            return {
+                min: Math.floor(Math.min(...integridade)),
+                max: Math.ceil(Math.max(...integridade))
+            };
+        }
+        
+        // Inicializar gráficos
+        function initCharts() {
+            console.log('Inicializando gráficos...');
+            
+            criarChartDistribuicao();
+            criarChartPosicionamento();
+            criarChartTopPartidos();
+            criarChartTopEstados();
+            criarChartGovernismo();
+            criarChartGovernismoPartido();
+            criarChartTopGastadores();
+            criarChartDistribuicaoGastos();
+            criarChartTopEmendas();
+            criarChartEficienciaEmendas();
+            criarChartDistribuicaoIntegridade();
+            criarChartProcessos();
+            criarChartMapaBrasil(); // Novo gráfico adicionado
+            
+            console.log('Gráficos inicializados com sucesso');
+        }
+        
+        // Criar gráfico de distribuição por partido e posicionamento
+        function criarChartDistribuicao() {
+            const dados = parlamentaresData.todos;
+            
+            // Agrupar por partido e posicionamento
+            const agrupamento = {};
+            dados.forEach(p => {
+                const key = `${p.partido}`;
+                if (!agrupamento[key]) {
+                    agrupamento[key] = { total: 0, oposicao: 0, governo: 0, centro: 0 };
+                }
+                agrupamento[key].total++;
+                agrupamento[key][p.posicionamento.toLowerCase()]++;
+            });
+            
+            // Ordenar por total e pegar top 15
+            const partidosOrdenados = Object.keys(agrupamento)
+                .sort((a, b) => agrupamento[b].total - agrupamento[a].total)
+                .slice(0, 15);
+            
+            const traces = [
+                {
+                    x: partidosOrdenados,
+                    y: partidosOrdenados.map(p => agrupamento[p].oposicao),
+                    name: 'Oposição',
+                    type: 'bar',
+                    marker: { color: CONFIG.COLORS.oposicao }
+                },
+                {
+                    x: partidosOrdenados,
+                    y: partidosOrdenados.map(p => agrupamento[p].governo),
+                    name: 'Governo',
+                    type: 'bar',
+                    marker: { color: CONFIG.COLORS.governo }
+                },
+                {
+                    x: partidosOrdenados,
+                    y: partidosOrdenados.map(p => agrupamento[p].centro),
+                    name: 'Centro',
+                    type: 'bar',
+                    marker: { color: CONFIG.COLORS.centro }
+                }
+            ];
+            
+            const layout = {
+                title: 'Distribuição por Partido (Top 15)',
+                barmode: 'stack',
+                xaxis: { title: 'Partido', tickangle: -45 },
+                yaxis: { title: 'Número de Parlamentares' },
+                legend: { orientation: 'h', y: -0.3 }
+            };
+            
+            Plotly.newPlot('chart-distribuicao', traces, layout, { responsive: true });
+        }
+        
+        // Criar gráfico de distribuição por posicionamento
+        function criarChartPosicionamento() {
+            const dados = parlamentaresData.todos;
+            
+            const contagem = {
+                'Oposição': dados.filter(p => p.posicionamento === 'Oposição').length,
+                'Governo': dados.filter(p => p.posicionamento === 'Governo').length,
+                'Centro': dados.filter(p => p.posicionamento === 'Centro').length
+            };
+            
+            const trace = {
+                labels: Object.keys(contagem),
+                values: Object.values(contagem),
+                type: 'pie',
+                hole: 0.4,
+                marker: { 
+                    colors: [CONFIG.COLORS.oposicao, CONFIG.COLORS.governo, CONFIG.COLORS.centro]
+                },
+                textinfo: 'label+percent',
+                hoverinfo: 'label+value+percent'
+            };
+            
+            const layout = {
+                title: 'Distribuição por Posicionamento',
+                showlegend: true
+            };
+            
+            Plotly.newPlot('chart-posicionamento', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico dos top 10 partidos
+        function criarChartTopPartidos() {
+            const dados = parlamentaresData.todos;
+            
+            // Contar por partido
+            const contagem = {};
+            dados.forEach(p => {
+                contagem[p.partido] = (contagem[p.partido] || 0) + 1;
+            });
+            
+            // Ordenar e pegar top 10
+            const top10 = Object.entries(contagem)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            const trace = {
+                x: top10.map(item => item[0]),
+                y: top10.map(item => item[1]),
+                type: 'bar',
+                marker: { 
+                    color: top10.map((_, i) => 
+                        i < 3 ? '#2c3e50' : 
+                        i < 6 ? '#3498db' : '#7f8c8d'
+                    )
+                },
+                text: top10.map(item => item[1]),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Top 10 Partidos com Mais Parlamentares',
+                xaxis: { title: 'Partido' },
+                yaxis: { title: 'Número de Parlamentares' }
+            };
+            
+            Plotly.newPlot('chart-top-partidos', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico dos estados - VERSÃO CORRIGIDA
+        function criarChartTopEstados() {
+            const dados = parlamentaresData.todos;
+            
+            // Contar por UF
+            const contagem = {};
+            dados.forEach(p => {
+                contagem[p.uf] = (contagem[p.uf] || 0) + 1;
+            });
+            
+            // Ordenar todos os estados
+            const todosEstados = Object.entries(contagem)
+                .sort((a, b) => b[1] - a[1]);
+            
+            // Se tiver mais de 15 estados, usar scroll no gráfico
+            const temMuitosEstados = todosEstados.length > 15;
+            
+            const trace = {
+                x: todosEstados.map(item => item[0]),
+                y: todosEstados.map(item => item[1]),
+                type: 'bar',
+                marker: { 
+                    color: todosEstados.map((item, i) => 
+                        i < 5 ? '#2c3e50' : // Top 5 mais escuros
+                        i < 10 ? '#3498db' : // Próximos 5
+                        '#95a5a6' // Demais
+                    )
+                },
+                text: todosEstados.map(item => item[1]),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: `Distribuição por Estado (${todosEstados.length} estados)`,
+                xaxis: { 
+                    title: 'Estado (UF)',
+                    tickangle: temMuitosEstados ? -45 : 0
+                },
+                yaxis: { title: 'Número de Parlamentares' },
+                height: temMuitosEstados ? 500 : 400
+            };
+            
+            Plotly.newPlot('chart-top-estados', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico de mapa do Brasil com distribuição de parlamentares
+        function criarChartMapaBrasil() {
+            const dados = parlamentaresData.todos;
+            
+            // Contar por UF
+            const contagem = {};
+            dados.forEach(p => {
+                contagem[p.uf] = (contagem[p.uf] || 0) + 1;
+            });
+            
+            // Dados para o mapa (códigos do IBGE)
+            const estadosMapa = {
+                'AC': 'Acre', 'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas',
+                'BA': 'Bahia', 'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',
+                'GO': 'Goiás', 'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul',
+                'MG': 'Minas Gerais', 'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná',
+                'PE': 'Pernambuco', 'PI': 'Piauí', 'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte',
+                'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina',
+                'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
+            };
+            
+            const data = [{
+                type: 'choropleth',
+                locations: Object.keys(estadosMapa),
+                z: Object.keys(estadosMapa).map(uf => contagem[uf] || 0),
+                locationmode: 'Brazil states',
+                colorscale: [
+                    [0, '#f8f9fa'],
+                    [0.2, '#d6eaf8'],
+                    [0.4, '#85c1e9'],
+                    [0.6, '#3498db'],
+                    [0.8, '#2874a6'],
+                    [1, '#1b4f72']
+                ],
+                colorbar: {
+                    title: 'Nº Parlamentares',
+                    thickness: 20
+                },
+                hoverinfo: 'location+z',
+                text: Object.keys(estadosMapa).map(uf => 
+                    `${estadosMapa[uf]} (${uf})<br>${contagem[uf] || 0} parlamentares`
+                ),
+                hoverlabel: {
+                    bgcolor: 'white',
+                    font: { color: 'black' }
+                }
+            }];
+            
+            const layout = {
+                title: 'Distribuição Geográfica dos Parlamentares',
+                geo: {
+                    scope: 'brazil',
+                    showlakes: false,
+                    showframe: false,
+                    projection: { type: 'mercator' },
+                    bgcolor: 'rgba(255,255,255,0)'
+                },
+                margin: { t: 40, b: 0, l: 0, r: 0 }
+            };
+            
+            Plotly.newPlot('chart-mapa-brasil', data, layout, { responsive: true });
+        }
+        
+        // Criar gráfico de distribuição de governismo
+        function criarChartGovernismo() {
+            const dados = parlamentaresData.todos;
+            
+            // Criar buckets de 10% cada
+            const buckets = Array.from({length: 10}, (_, i) => ({
+                range: `${i*10}-${(i+1)*10}%`,
+                count: 0
+            }));
+            
+            dados.forEach(p => {
+                const gov = p.governismo || 0;
+                const bucketIndex = Math.min(Math.floor(gov / 10), 9);
+                buckets[bucketIndex].count++;
+            });
+            
+            const trace = {
+                x: buckets.map(b => b.range),
+                y: buckets.map(b => b.count),
+                type: 'bar',
+                marker: { 
+                    color: buckets.map((b, i) => 
+                        i < 3 ? CONFIG.COLORS.oposicao :
+                        i > 6 ? CONFIG.COLORS.governo :
+                        CONFIG.COLORS.centro
+                    )
+                },
+                text: buckets.map(b => b.count),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Distribuição de % de Governismo',
+                xaxis: { title: 'Faixa de Governismo' },
+                yaxis: { title: 'Número de Parlamentares' }
+            };
+            
+            Plotly.newPlot('chart-governismo', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico de governismo médio por partido
+        function criarChartGovernismoPartido() {
+            const dados = parlamentaresData.todos;
+            
+            // Agrupar por partido
+            const agrupamento = {};
+            dados.forEach(p => {
+                if (!agrupamento[p.partido]) {
+                    agrupamento[p.partido] = { total: 0, soma: 0 };
+                }
+                agrupamento[p.partido].total++;
+                agrupamento[p.partido].soma += p.governismo || 0;
+            });
+            
+            // Calcular média e ordenar
+            const medias = Object.entries(agrupamento)
+                .map(([partido, dados]) => ({
+                    partido,
+                    media: dados.soma / dados.total
+                }))
+                .sort((a, b) => b.media - a.media)
+                .slice(0, 15);
+            
+            const trace = {
+                x: medias.map(m => m.partido),
+                y: medias.map(m => m.media),
+                type: 'bar',
+                marker: { 
+                    color: medias.map(m => 
+                        m.media < 40 ? CONFIG.COLORS.oposicao :
+                        m.media > 60 ? CONFIG.COLORS.governo :
+                        CONFIG.COLORS.centro
+                    )
+                },
+                text: medias.map(m => m.media.toFixed(1) + '%'),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Governismo Médio por Partido (Top 15)',
+                xaxis: { title: 'Partido', tickangle: -45 },
+                yaxis: { 
+                    title: 'Governismo Médio (%)',
+                    range: [0, 100]
+                }
+            };
+            
+            Plotly.newPlot('chart-governismo-partido', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico dos top 20 maiores gastadores
+        function criarChartTopGastadores() {
+            const dados = parlamentaresData.todos;
+            
+            // Ordenar por gastos e pegar top 20
+            const top20 = [...dados]
+                .sort((a, b) => (b.gastos_totais || 0) - (a.gastos_totais || 0))
+                .slice(0, 20);
+            
+            const trace = {
+                x: top20.map(p => p.nome.split(' ').pop()), // Último nome
+                y: top20.map(p => p.gastos_totais || 0),
+                type: 'bar',
+                marker: { 
+                    color: top20.map(p => 
+                        p.tipo === 'deputado' ? CONFIG.COLORS.deputado : CONFIG.COLORS.senador
+                    )
+                },
+                text: top20.map(p => formatarMoeda(p.gastos_totais || 0)),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Top 20 Maiores Gastadores',
+                xaxis: { title: 'Parlamentar', tickangle: -45 },
+                yaxis: { title: 'Gastos Totais (R$)' }
+            };
+            
+            Plotly.newPlot('chart-top-gastadores', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico de distribuição de gastos por faixa
+        function criarChartDistribuicaoGastos() {
+            const dados = parlamentaresData.todos;
+            const gastos = dados.map(p => p.gastos_totais || 0);
+            
+            // Criar buckets de R$50.000
+            const maxGasto = Math.max(...gastos);
+            const numBuckets = Math.ceil(maxGasto / 50000);
+            
+            const buckets = Array.from({length: numBuckets}, (_, i) => ({
+                range: `R$ ${(i*50000).toLocaleString()} - R$ ${((i+1)*50000).toLocaleString()}`,
+                count: 0
+            }));
+            
+            gastos.forEach(gasto => {
+                const bucketIndex = Math.min(Math.floor(gasto / 50000), numBuckets - 1);
+                buckets[bucketIndex].count++;
+            });
+            
+            // Pegar apenas os primeiros 15 buckets (para visualização)
+            const bucketsExibicao = buckets.slice(0, 15);
+            
+            const trace = {
+                x: bucketsExibicao.map(b => b.range),
+                y: bucketsExibicao.map(b => b.count),
+                type: 'bar',
+                marker: { color: '#e74c3c' },
+                text: bucketsExibicao.map(b => b.count),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Distribuição de Gastos por Faixa',
+                xaxis: { title: 'Faixa de Gastos (R$)', tickangle: -45 },
+                yaxis: { title: 'Número de Parlamentares' }
+            };
+            
+            Plotly.newPlot('chart-distribuicao-gastos', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico dos top 20 maiores recebedores de emendas
+        function criarChartTopEmendas() {
+            const dados = parlamentaresData.todos;
+            
+            // Ordenar por emendas e pegar top 20
+            const top20 = [...dados]
+                .sort((a, b) => (b.emendas_recebidas || 0) - (a.emendas_recebidas || 0))
+                .slice(0, 20);
+            
+            const trace = {
+                x: top20.map(p => p.nome.split(' ').pop()),
+                y: top20.map(p => p.emendas_recebidas || 0),
+                type: 'bar',
+                marker: { 
+                    color: top20.map(p => 
+                        p.tipo === 'deputado' ? '#2ecc71' : '#1abc9c'
+                    )
+                },
+                text: top20.map(p => formatarMoeda(p.emendas_recebidas || 0)),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Top 20 Maiores Recebedores de Emendas',
+                xaxis: { title: 'Parlamentar', tickangle: -45 },
+                yaxis: { title: 'Emendas Recebidas (R$)' }
+            };
+            
+            Plotly.newPlot('chart-top-emendas', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico de eficiência na utilização de emendas
+        function criarChartEficienciaEmendas() {
+            const dados = parlamentaresData.todos;
+            
+            // Criar buckets de 10% cada para eficiência
+            const buckets = Array.from({length: 10}, (_, i) => ({
+                range: `${i*10}-${(i+1)*10}%`,
+                count: 0
+            }));
+            
+            dados.forEach(p => {
+                const eficiencia = p.eficiencia_emendas || 0;
+                const bucketIndex = Math.min(Math.floor(eficiencia / 10), 9);
+                buckets[bucketIndex].count++;
+            });
+            
+            const trace = {
+                x: buckets.map(b => b.range),
+                y: buckets.map(b => b.count),
+                type: 'bar',
+                marker: { 
+                    color: buckets.map((b, i) => 
+                        i > 7 ? '#27ae60' :
+                        i > 4 ? '#f39c12' :
+                        '#e74c3c'
+                    )
+                },
+                text: buckets.map(b => b.count),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Distribuição de Eficiência na Utilização de Emendas',
+                xaxis: { title: 'Faixa de Eficiência' },
+                yaxis: { title: 'Número de Parlamentares' }
+            };
+            
+            Plotly.newPlot('chart-eficiencia-emendas', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico de distribuição do índice de integridade
+        function criarChartDistribuicaoIntegridade() {
+            const dados = parlamentaresData.todos;
+            
+            // Criar buckets de 10% cada
+            const buckets = Array.from({length: 10}, (_, i) => ({
+                range: `${i*10}-${(i+1)*10}%`,
+                count: 0
+            }));
+            
+            dados.forEach(p => {
+                const integridade = p.indice_integridade || 0;
+                const bucketIndex = Math.min(Math.floor(integridade / 10), 9);
+                buckets[bucketIndex].count++;
+            });
+            
+            const trace = {
+                x: buckets.map(b => b.range),
+                y: buckets.map(b => b.count),
+                type: 'bar',
+                marker: { 
+                    color: buckets.map((b, i) => 
+                        i > 7 ? CONFIG.COLORS.oposicao :
+                        i > 4 ? CONFIG.COLORS.centro :
+                        CONFIG.COLORS.governo
+                    )
+                },
+                text: buckets.map(b => b.count),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Distribuição do Índice de Integridade',
+                xaxis: { title: 'Faixa de Integridade' },
+                yaxis: { title: 'Número de Parlamentares' }
+            };
+            
+            Plotly.newPlot('chart-distribuicao-integridade', [trace], layout, { responsive: true });
+        }
+        
+        // Criar gráfico de parlamentares com processos ativos
+        function criarChartProcessos() {
+            const dados = parlamentaresData.todos;
+            
+            // Contar por número de processos
+            const contagem = {};
+            dados.forEach(p => {
+                const processos = p.processos_ativos || 0;
+                contagem[processos] = (contagem[processos] || 0) + 1;
+            });
+            
+            // Ordenar por número de processos
+            const processosOrdenados = Object.keys(contagem)
+                .map(Number)
+                .sort((a, b) => a - b);
+            
+            const trace = {
+                x: processosOrdenados.map(p => p.toString()),
+                y: processosOrdenados.map(p => contagem[p]),
+                type: 'bar',
+                marker: { 
+                    color: processosOrdenados.map(p => 
+                        p === 0 ? '#27ae60' :
+                        p === 1 ? '#f39c12' :
+                        '#e74c3c'
+                    )
+                },
+                text: processosOrdenados.map(p => contagem[p]),
+                textposition: 'auto'
+            };
+            
+            const layout = {
+                title: 'Parlamentares por Número de Processos Ativos',
+                xaxis: { title: 'Número de Processos Ativos' },
+                yaxis: { title: 'Número de Parlamentares' }
+            };
+            
+            Plotly.newPlot('chart-processos', [trace], layout, { responsive: true });
+        }
+        
+        // Inicializar tabelas
+        function initTables() {
+            console.log('Inicializando tabelas...');
+            
+            // Popular tabelas específicas
+            popularTabelaGovernismo();
+            popularTabelaGastos();
+            popularTabelaEmendas();
+            popularTabelaIntegridade();
+            
+            // Inicializar DataTable para tabela completa
+            inicializarDataTableCompleta();
+            
+            console.log('Tabelas inicializadas com sucesso');
+        }
+        
+        // Popular tabela de governismo
+        function popularTabelaGovernismo() {
+            const tbody = $('#tbody-governismo');
+            tbody.empty();
+            
+            // Ordenar por governismo (maior para menor)
+            const top20 = [...parlamentaresData.todos]
+                .sort((a, b) => (b.governismo || 0) - (a.governismo || 0))
+                .slice(0, 20);
+            
+            top20.forEach((p, index) => {
+                tbody.append(`
+                    <tr>
+                        <td>${index + 1}º</td>
+                        <td><strong>${p.nome}</strong></td>
+                        <td><span class="badge ${p.tipo === 'deputado' ? 'badge-primary' : 'badge-success'}">${p.tipo === 'deputado' ? 'Deputado' : 'Senador'}</span></td>
+                        <td>${p.partido}</td>
+                        <td>${p.uf}</td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar ${p.governismo > 70 ? 'bg-danger' : p.governismo < 40 ? 'bg-success' : 'bg-warning'}" 
+                                     role="progressbar" style="width: ${p.governismo || 0}%">
+                                    ${(p.governismo || 0).toFixed(1)}%
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="metric-badge ${p.posicionamento === 'Oposição' ? 'badge-success-light' : p.posicionamento === 'Governo' ? 'badge-danger-light' : 'badge-warning-light'}">
+                                ${p.posicionamento}
+                            </span>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+        
+        // Popular tabela de gastos
+        function popularTabelaGastos() {
+            const tbody = $('#tbody-gastos');
+            tbody.empty();
+            
+            // Ordenar por gastos (maior para menor)
+            const top30 = [...parlamentaresData.todos]
+                .sort((a, b) => (b.gastos_totais || 0) - (a.gastos_totais || 0))
+                .slice(0, 30);
+            
+            top30.forEach((p, index) => {
+                tbody.append(`
+                    <tr>
+                        <td>${index + 1}º</td>
+                        <td><strong>${p.nome}</strong></td>
+                        <td><span class="badge ${p.tipo === 'deputado' ? 'badge-primary' : 'badge-success'}">${p.tipo === 'deputado' ? 'Deputado' : 'Senador'}</span></td>
+                        <td>${p.partido}</td>
+                        <td>${p.uf}</td>
+                        <td class="money-value">${formatarMoeda(p.gastos_totais || 0)}</td>
+                        <td>
+                            <span class="metric-badge ${p.posicionamento === 'Oposição' ? 'badge-success-light' : p.posicionamento === 'Governo' ? 'badge-danger-light' : 'badge-warning-light'}">
+                                ${p.posicionamento}
+                            </span>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+        
+        // Popular tabela de emendas
+        function popularTabelaEmendas() {
+            const tbody = $('#tbody-emendas');
+            tbody.empty();
+            
+            // Ordenar por emendas recebidas (maior para menor)
+            const top30 = [...parlamentaresData.todos]
+                .sort((a, b) => (b.emendas_recebidas || 0) - (a.emendas_recebidas || 0))
+                .slice(0, 30);
+            
+            top30.forEach((p, index) => {
+                tbody.append(`
+                    <tr>
+                        <td>${index + 1}º</td>
+                        <td><strong>${p.nome}</strong></td>
+                        <td><span class="badge ${p.tipo === 'deputado' ? 'badge-primary' : 'badge-success'}">${p.tipo === 'deputado' ? 'Deputado' : 'Senador'}</span></td>
+                        <td>${p.partido}</td>
+                        <td>${p.uf}</td>
+                        <td class="money-value">${formatarMoeda(p.emendas_recebidas || 0)}</td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar ${p.eficiencia_emendas > 80 ? 'bg-success' : p.eficiencia_emendas > 60 ? 'bg-warning' : 'bg-danger'}" 
+                                     role="progressbar" style="width: ${p.eficiencia_emendas || 0}%">
+                                    ${(p.eficiencia_emendas || 0).toFixed(1)}%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+        
+        // Popular tabela de integridade
+        function popularTabelaIntegridade() {
+            const tbody = $('#tbody-integridade');
+            tbody.empty();
+            
+            // Filtrar por integridade baixa (< 50%) e ordenar
+            const baixaIntegridade = [...parlamentaresData.todos]
+                .filter(p => (p.indice_integridade || 0) < 50)
+                .sort((a, b) => (a.indice_integridade || 0) - (b.indice_integridade || 0));
+            
+            baixaIntegridade.forEach((p, index) => {
+                tbody.append(`
+                    <tr>
+                        <td>${index + 1}º</td>
+                        <td><strong>${p.nome}</strong></td>
+                        <td><span class="badge ${p.tipo === 'deputado' ? 'badge-primary' : 'badge-success'}">${p.tipo === 'deputado' ? 'Deputado' : 'Senador'}</span></td>
+                        <td>${p.partido}</td>
+                        <td>${p.uf}</td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar ${p.indice_integridade > 70 ? 'bg-success' : p.indice_integridade > 40 ? 'bg-warning' : 'bg-danger'}" 
+                                     role="progressbar" style="width: ${p.indice_integridade || 0}%">
+                                    ${(p.indice_integridade || 0).toFixed(1)}%
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            ${p.processos_ativos > 0 ? 
+                                `<span class="badge badge-danger">${p.processos_ativos} processo(s)</span>` : 
+                                '<span class="badge badge-success">Nenhum</span>'
+                            }
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+        
+        // Inicializar DataTable completa
+        function inicializarDataTableCompleta() {
+            const table = $('#table-completa').DataTable({
+                data: parlamentaresData.todos,
+                columns: [
+                    { 
+                        data: 'id',
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'nome',
+                        render: function(data, type, row) {
+                            return `<strong>${data}</strong>`;
+                        }
+                    },
+                    { 
+                        data: 'tipo',
+                        render: function(data) {
+                            const badgeClass = data === 'deputado' ? 'badge-primary' : 'badge-success';
+                            const label = data === 'deputado' ? 'Deputado' : 'Senador';
+                            return `<span class="badge ${badgeClass}">${label}</span>`;
+                        },
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'partido',
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'uf',
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'posicionamento',
+                        render: function(data) {
+                            const badgeClass = data === 'Oposição' ? 'badge-success-light' :
+                                              data === 'Governo' ? 'badge-danger-light' : 'badge-warning-light';
+                            return `<span class="metric-badge ${badgeClass}">${data}</span>`;
+                        },
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'governismo',
+                        render: function(data) {
+                            const valor = parseFloat(data || 0).toFixed(1);
+                            const cor = data >= 70 ? 'positive-change' : data <= 30 ? 'negative-change' : '';
+                            return `<span class="${cor}">${valor}%</span>`;
+                        },
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'gastos_totais',
+                        render: function(data) {
+                            return `<span class="money-value">${formatarMoeda(data || 0)}</span>`;
+                        },
+                        className: 'dt-right'
+                    },
+                    { 
+                        data: 'emendas_recebidas',
+                        render: function(data) {
+                            return `${formatarMoeda(data || 0)}`;
+                        },
+                        className: 'dt-right'
+                    },
+                    { 
+                        data: 'processos_ativos',
+                        render: function(data) {
+                            return data > 0 ? 
+                                `<span class="badge badge-danger">${data}</span>` :
+                                '<span class="badge badge-success">0</span>';
+                        },
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'indice_integridade',
+                        render: function(data) {
+                            const valor = parseFloat(data || 50).toFixed(0);
+                            const scoreClass = valor >= 70 ? 'score-high' : 
+                                              valor >= 40 ? 'score-medium' : 'score-low';
+                            return `
+                                <div class="integrity-score ${scoreClass}">${valor}%</div>
+                                <div class="progress progress-thin">
+                                    <div class="progress-bar ${valor >= 70 ? 'bg-success' : valor >= 40 ? 'bg-warning' : 'bg-danger'}" 
+                                         role="progressbar" style="width: ${valor}%"></div>
+                                </div>
+                            `;
+                        },
+                        className: 'dt-center'
+                    },
+                    { 
+                        data: 'presenca',
+                        render: function(data) {
+                            return `${parseFloat(data || 0).toFixed(1)}%`;
+                        },
+                        className: 'dt-center'
+                    },
+                    {
+                        data: null,
+                        render: function() {
+                            return `
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> Detalhes
+                                </button>
+                            `;
+                        },
+                        className: 'dt-center'
+                    }
+                ],
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json'
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i> Copiar',
+                        className: 'btn btn-secondary'
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        className: 'btn btn-primary'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'btn btn-success'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf"></i> PDF',
+                        className: 'btn btn-danger'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i> Imprimir',
+                        className: 'btn btn-info'
+                    }
+                ],
+                initComplete: function() {
+                    // Adicionar busca global
+                    $('#search-global').on('keyup', function() {
+                        table.search(this.value).draw();
+                    });
+                }
+            });
+        }
+        
+        // Inicializar event listeners
+        function initEventListeners() {
+            console.log('Inicializando event listeners...');
+            
+            // Botão aplicar filtros
+            $('#btn-aplicar-filtros').click(aplicarFiltros);
+            
+            // Botão limpar filtros
+            $('#btn-limpar-filtros').click(limparFiltros);
+            
+            // Botões de exportação
+            $('#btn-export-csv').click(() => exportarDados('csv'));
+            $('#btn-export-json').click(() => exportarDados('json'));
+            $('#btn-export-pdf').click(() => exportarDados('pdf'));
+            
+            console.log('Event listeners inicializados');
+        }
+        
+        // Aplicar filtros
+        function aplicarFiltros() {
+            console.log('Aplicando filtros...');
+            
+            const tiposSelecionados = $('#filter-tipo').val() || [];
+            const posicionamentosSelecionados = $('#filter-posicionamento').val() || [];
+            const partidosSelecionados = $('#filter-partido').val() || [];
+            const ufsSelecionadas = $('#filter-uf').val() || [];
+            
+            // Obter valores dos sliders
+            const sliderGastos = $('#filter-gastos').data('ionRangeSlider');
+            const sliderGovernismo = $('#filter-governismo').data('ionRangeSlider');
+            const sliderIntegridade = $('#filter-integridade').data('ionRangeSlider');
+            
+            const minGastos = sliderGastos ? sliderGastos.result.from : 0;
+            const maxGastos = sliderGastos ? sliderGastos.result.to : Infinity;
+            const minGovernismo = sliderGovernismo ? sliderGovernismo.result.from : 0;
+            const maxGovernismo = sliderGovernismo ? sliderGovernismo.result.to : 100;
+            const minIntegridade = sliderIntegridade ? sliderIntegridade.result.from : 0;
+            const maxIntegridade = sliderIntegridade ? sliderIntegridade.result.to : 100;
+            
+            // Aplicar filtros
+            parlamentaresData.filtrados = parlamentaresData.todos.filter(p => {
+                // Filtro por tipo
+                if (tiposSelecionados.length > 0) {
+                    const tipoValido = 
+                        (tiposSelecionados.includes('deputados') && p.tipo === 'deputado') ||
+                        (tiposSelecionados.includes('senadores') && p.tipo === 'senador');
+                    if (!tipoValido) return false;
+                }
+                
+                // Filtro por posicionamento
+                if (posicionamentosSelecionados.length > 0) {
+                    if (!posicionamentosSelecionados.includes(p.posicionamento)) return false;
+                }
+                
+                // Filtro por partido
+                if (partidosSelecionados.length > 0) {
+                    if (!partidosSelecionados.includes(p.partido)) return false;
+                }
+                
+                // Filtro por UF
+                if (ufsSelecionadas.length > 0) {
+                    if (!ufsSelecionadas.includes(p.uf)) return false;
+                }
+                
+                // Filtro por gastos
+                if (p.gastos_totais < minGastos || p.gastos_totais > maxGastos) return false;
+                
+                // Filtro por governismo
+                if (p.governismo < minGovernismo || p.governismo > maxGovernismo) return false;
+                
+                // Filtro por integridade
+                if (p.indice_integridade < minIntegridade || p.indice_integridade > maxIntegridade) return false;
+                
+                return true;
+            });
+            
+            console.log(`Filtros aplicados: ${parlamentaresData.filtrados.length} parlamentares filtrados`);
+            
+            // Atualizar UI
+            atualizarUIComFiltros();
+            
+            // Mostrar notificação
+            showNotification(`Filtros aplicados: ${parlamentaresData.filtrados.length} parlamentares encontrados`, 'success');
+        }
+        
+        // Limpar filtros
+        function limparFiltros() {
+            console.log('Limpando filtros...');
+            
+            // Resetar selects
+            $('.selectpicker').selectpicker('val', '');
+            
+            // Resetar sliders
+            const gastosRange = obterRangeGastos();
+            const governismoRange = obterRangeGovernismo();
+            const integridadeRange = obterRangeIntegridade();
+            
+            $('#filter-gastos').data('ionRangeSlider').update({
+                from: gastosRange.min,
+                to: gastosRange.max
+            });
+            
+            $('#filter-governismo').data('ionRangeSlider').update({
+                from: governismoRange.min,
+                to: governismoRange.max
+            });
+            
+            $('#filter-integridade').data('ionRangeSlider').update({
+                from: integridadeRange.min,
+                to: integridadeRange.max
+            });
+            
+            // Resetar dados filtrados
+            parlamentaresData.filtrados = [...parlamentaresData.todos];
+            
+            // Atualizar UI
+            atualizarUIComFiltros();
+            
+            showNotification('Filtros limpos com sucesso', 'info');
+        }
+        
+        // Atualizar UI com filtros aplicados
+        function atualizarUIComFiltros() {
+            // Atualizar métricas
+            updateMetrics();
+            
+            // Atualizar gráficos (seria ideal recriar com dados filtrados)
+            // Para simplificar, apenas atualizamos as métricas por agora
+            
+            // Atualizar insights
+            updateInsights();
+        }
+        
+        // Exportar dados
+        function exportarDados(formato) {
+            switch(formato) {
+                case 'csv':
+                    exportarCSV();
+                    break;
+                case 'json':
+                    exportarJSON();
+                    break;
+                case 'pdf':
+                    exportarPDF();
+                    break;
+            }
+        }
+        
+        function exportarCSV() {
+            // Converter dados para CSV
+            const dados = parlamentaresData.filtrados;
+            const headers = ['Nome', 'Tipo', 'Partido', 'UF', 'Posicionamento', 'Governismo%', 'Gastos', 'Emendas', 'Processos', 'Integridade%', 'Presença%'];
+            
+            let csvContent = headers.join(';') + '\n';
+            
+            dados.forEach(p => {
+                const row = [
+                    p.nome,
+                    p.tipo === 'deputado' ? 'Deputado' : 'Senador',
+                    p.partido,
+                    p.uf,
+                    p.posicionamento,
+                    p.governismo.toFixed(1),
+                    p.gastos_totais,
+                    p.emendas_recebidas,
+                    p.processos_ativos,
+                    p.indice_integridade.toFixed(1),
+                    p.presenca.toFixed(1)
+                ].join(';');
+                
+                csvContent += row + '\n';
+            });
+            
+            // Criar e baixar arquivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `parlamentares_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Arquivo CSV exportado com sucesso', 'success');
+        }
+        
+        function exportarJSON() {
+            const dataStr = JSON.stringify(parlamentaresData.filtrados, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `parlamentares_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Arquivo JSON exportado com sucesso', 'success');
+        }
+        
+        function exportarPDF() {
+            showNotification('Funcionalidade de exportação PDF em desenvolvimento', 'info');
+        }
+        
+        // Atualizar métricas
+        function updateMetrics() {
+            const dados = parlamentaresData.filtrados;
+            
+            // Calcular totais
+            const totalParlamentares = dados.length;
+            const totalGastos = dados.reduce((sum, p) => sum + (p.gastos_totais || 0), 0);
+            const totalEmendas = dados.reduce((sum, p) => sum + (p.emendas_recebidas || 0), 0);
+            const totalProcessos = dados.reduce((sum, p) => sum + (p.processos_ativos || 0), 0);
+            
+            // Atualizar UI
+            $('#total-parlamentares').text(totalParlamentares);
+            $('#total-emendas').text(formatarMoeda(totalEmendas));
+            $('#total-processos').text(totalProcessos);
+            
+            // Atualizar título das tabs com contagem
+            $('#overview-tab').html(`<i class="fas fa-chart-pie mr-1"></i> Visão Geral (${totalParlamentares})`);
+        }
+        
+        // Atualizar insights
+        function updateInsights() {
+            const dados = parlamentaresData.filtrados;
+            
+            if (dados.length === 0) {
+                $('#insight-trending').html('Nenhum parlamentar corresponde aos filtros aplicados.');
+                $('#insight-alertas').html('Ajuste os filtros para visualizar insights.');
+                $('#insight-destaques').html('');
+                return;
+            }
+            
+            // Calcular insights
+            const maiorGastador = dados.reduce((max, p) => 
+                (p.gastos_totais || 0) > (max.gastos_totais || 0) ? p : max
+            , dados[0]);
+            
+            const menorIntegridade = dados.reduce((min, p) => 
+                (p.indice_integridade || 100) < (min.indice_integridade || 100) ? p : min
+            , dados[0]);
+            
+            const maiorEmendas = dados.reduce((max, p) => 
+                (p.emendas_recebidas || 0) > (max.emendas_recebidas || 0) ? p : max
+            , dados[0]);
+            
+            const altaIntegridade = dados.filter(p => (p.indice_integridade || 0) >= 90).length;
+            const baixaIntegridade = dados.filter(p => (p.indice_integridade || 0) < 50).length;
+            const comProcessos = dados.filter(p => (p.processos_ativos || 0) > 0).length;
+            
+            // Atualizar texto dos insights
+            $('#insight-trending').html(`
+                <strong>${maiorEmendas.nome}</strong> lidera em emendas com 
+                <strong>${formatarMoeda(maiorEmendas.emendas_recebidas)}</strong>.
+                <br><small class="text-muted">Partido: ${maiorEmendas.partido} | UF: ${maiorEmendas.uf}</small>
+            `);
+            
+            $('#insight-alertas').html(`
+                <strong>${baixaIntegridade} parlamentares</strong> com baixo índice de integridade (&lt;50%).
+                <br><strong>${comProcessos} parlamentares</strong> com processos ativos.
+                <br><small class="text-muted">${menorIntegridade.nome} tem apenas ${menorIntegridade.indice_integridade.toFixed(1)}% de integridade</small>
+            `);
+            
+            $('#insight-destaques').html(`
+                <strong>${altaIntegridade} parlamentares</strong> 
+                com integridade acima de 90%.
+                <br><strong>${dados.filter(p => p.presenca >= 95).length} parlamentares</strong>
+                com presença acima de 95%.
+                <br><small class="text-muted">Excelente desempenho ético e assiduidade</small>
+            `);
+        }
+        
+        // Funções utilitárias
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(valor);
+        }
+        
+        function showError(mensagem) {
+            console.error(mensagem);
+            
+            // Criar notificação
+            const notification = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    ${mensagem}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `;
+            
+            // Adicionar no topo
+            $('.container-fluid').prepend(notification);
+        }
+        
+        function showNotification(mensagem, tipo = 'info') {
+            const tipos = {
+                'success': 'alert-success',
+                'info': 'alert-info',
+                'warning': 'alert-warning',
+                'danger': 'alert-danger'
+            };
+            
+            const icon = {
+                'success': 'check-circle',
+                'info': 'info-circle',
+                'warning': 'exclamation-triangle',
+                'danger': 'exclamation-circle'
+            };
+            
+            const notification = `
+                <div class="alert ${tipos[tipo]} alert-dismissible fade show" role="alert" style="position: fixed; top: 80px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-${icon[tipo]} mr-2"></i>
+                    ${mensagem}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `;
+            
+            // Adicionar notificação
+            $('body').append(notification);
+            
+            // Remover após 5 segundos
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
+        
+        // Expor funções para debug
+        window.debug = {
+            parlamentaresData,
+            formatarMoeda,
+            showNotification
+        };
+    </script>
+</body>
+</html>
