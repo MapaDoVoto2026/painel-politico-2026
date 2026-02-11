@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css">
     <style>
         :root {
             --primary-dark: #2c3e50;
@@ -252,9 +255,7 @@
         </div>
 
         <!-- CARDS DE MÉTRICAS PRINCIPAIS (Atualizados dinamicamente) -->
-        <div class="row mb-4" id="metrics-cards">
-            <!-- Preenchido via JavaScript -->
-        </div>
+        <div class="row mb-4" id="metrics-cards"></div>
 
         <!-- ABAS PRINCIPAIS -->
         <ul class="nav nav-tabs nav-tabs-custom" id="perfilTab" role="tablist">
@@ -288,6 +289,11 @@
                     <i class="fas fa-question-circle mr-1"></i> Questionamentos
                 </a>
             </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="regras-tab" data-toggle="tab" href="#regras" role="tab">
+                    <i class="fas fa-book mr-1"></i> Regras
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content" id="perfilTabContent">
@@ -318,13 +324,9 @@
                         <div class="data-table">
                             <table class="table table-hover mb-0" id="comissoes-table">
                                 <thead class="thead-light">
-                                    <tr>
-                                        <th colspan="4" class="text-center">Comissões e CPIs</th>
-                                    </tr>
+                                    <tr><th colspan="4" class="text-center">Comissões e CPIs</th></tr>
                                 </thead>
-                                <tbody>
-                                    <!-- Preenchido via JavaScript -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -358,16 +360,9 @@
                         <div class="data-table">
                             <table class="table table-hover" id="attendance-table">
                                 <thead class="thead-light">
-                                    <tr>
-                                        <th>Indicador</th>
-                                        <th>Plenário</th>
-                                        <th>Comissões</th>
-                                        <th>Detalhamento</th>
-                                    </tr>
+                                    <tr><th>Indicador</th><th>Plenário</th><th>Comissões</th><th>Detalhamento</th></tr>
                                 </thead>
-                                <tbody>
-                                    <!-- Preenchido via JavaScript -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -404,18 +399,9 @@
                         <div class="data-table">
                             <table class="table table-hover" id="gastos-detalhados-table">
                                 <thead class="thead-light">
-                                    <tr>
-                                        <th>Mês/Ano</th>
-                                        <th>Divulgação (R$)</th>
-                                        <th>Veículos (R$)</th>
-                                        <th>Passagens (R$)</th>
-                                        <th>Combustíveis (R$)</th>
-                                        <th>Total (R$)</th>
-                                    </tr>
+                                    <tr><th>Mês/Ano</th><th>Divulgação (R$)</th><th>Veículos (R$)</th><th>Passagens (R$)</th><th>Combustíveis (R$)</th><th>Total (R$)</th></tr>
                                 </thead>
-                                <tbody>
-                                    <!-- Preenchido via JavaScript -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -449,17 +435,9 @@
                         <div class="data-table">
                             <table class="table table-hover" id="emendas-table">
                                 <thead class="thead-light">
-                                    <tr>
-                                        <th>Fundo/Destino</th>
-                                        <th>Autorizado (R$)</th>
-                                        <th>Empenhado (R$)</th>
-                                        <th>Pago (R$)</th>
-                                        <th>Execução</th>
-                                    </tr>
+                                    <tr><th>Fundo/Destino</th><th>Autorizado (R$)</th><th>Empenhado (R$)</th><th>Pago (R$)</th><th>Execução</th></tr>
                                 </thead>
-                                <tbody>
-                                    <!-- Preenchido via JavaScript -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
@@ -494,37 +472,26 @@
                             <div class="table-responsive">
                                 <table class="table table-hover" id="teamTable">
                                     <thead class="thead-light">
-                                        <tr>
-                                            <th>Nome</th>
-                                            <th>Cargo/Função</th>
-                                            <th>Período de Exercício</th>
-                                            <th>Ano</th>
-                                        </tr>
+                                        <tr><th>Nome</th><th>Cargo/Função</th><th>Período de Exercício</th><th>Ano</th></tr>
                                     </thead>
-                                    <tbody>
-                                        <!-- Dados serão inseridos via JavaScript -->
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                             <div class="text-center mt-3">
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    Use a busca para encontrar um nome específico.
-                                </small>
+                                <small class="text-muted"><i class="fas fa-info-circle mr-1"></i>Use a busca para encontrar um nome específico.</small>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ABA 6: QUESTIONAMENTOS (NOVA) -->
+            <!-- ABA 6: QUESTIONAMENTOS -->
             <div class="tab-pane fade" id="questions" role="tabpanel">
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="question-form">
                             <h5 class="mb-4"><i class="fas fa-question-circle mr-2" style="color: var(--color-question);"></i>Envie sua Pergunta</h5>
                             <p class="text-muted mb-4">Envie questionamentos sobre os gastos, emendas ou atuação do deputado. As perguntas serão publicadas para discussão pública.</p>
-                            
                             <form id="questionForm">
                                 <div class="form-group">
                                     <label for="questionName">Seu Nome (opcional)</label>
@@ -546,17 +513,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="questionText">Sua Pergunta *</label>
-                                    <textarea class="form-control" id="questionText" rows="4" required 
-                                              placeholder="Exemplo: Como justifica os R$ 300 mil gastos em divulgação em 2023?"></textarea>
+                                    <textarea class="form-control" id="questionText" rows="4" required placeholder="Exemplo: Como justifica os R$ 300 mil gastos em divulgação em 2023?"></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane mr-2"></i>Enviar Pergunta
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary ml-2" onclick="suggestQuestion()">
-                                    <i class="fas fa-lightbulb mr-2"></i>Sugerir Pergunta
-                                </button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane mr-2"></i>Enviar Pergunta</button>
+                                <button type="button" class="btn btn-outline-secondary ml-2" onclick="suggestQuestion()"><i class="fas fa-lightbulb mr-2"></i>Sugerir Pergunta</button>
                             </form>
-                            
                             <div class="alert alert-info mt-4">
                                 <i class="fas fa-info-circle mr-2"></i>
                                 <strong>Importante:</strong> Este é um espaço para discussão pública. O deputado não é obrigado a responder, mas as perguntas mais votadas serão encaminhadas oficialmente.
@@ -569,19 +530,66 @@
                                 <i class="fas fa-star" style="color: var(--color-question);"></i>
                                 Perguntas Sugeridas (Baseadas nos Dados)
                             </div>
-                            <div id="suggestedQuestions">
-                                <!-- Perguntas serão inseridas via JavaScript -->
-                            </div>
+                            <div id="suggestedQuestions"></div>
                         </div>
                     </div>
                 </div>
-                
                 <div class="row mt-4">
                     <div class="col-md-12">
                         <div class="data-table">
                             <h5 class="mb-3"><i class="fas fa-comments mr-2" style="color: var(--color-question);"></i>Perguntas Recentes da Comunidade</h5>
-                            <div id="communityQuestions">
-                                <!-- Perguntas da comunidade serão inseridas via JavaScript -->
+                            <div id="communityQuestions"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 7: REGRAS -->
+            <div class="tab-pane fade" id="regras" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-book" style="color: #e67e22;"></i>
+                                Regras da Cota Parlamentar (CEAP) e Verba de Gabinete
+                            </div>
+                            <div class="accordion" id="regrasAccordion">
+                                <div class="card">
+                                    <div class="card-header" id="headingCEAP">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseCEAP" aria-expanded="true" aria-controls="collapseCEAP">
+                                                Regras da Cota para o Exercício da Atividade Parlamentar (CEAP)
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseCEAP" class="collapse show" aria-labelledby="headingCEAP" data-parent="#regrasAccordion">
+                                        <div class="card-body">
+                                            <p><strong>Definição:</strong> Valor mensal para despesas do mandato, como passagens, divulgação, veículos, etc. (Ato 43/2009).</p>
+                                            <p><strong>Valor para AP:</strong> R$49.168,58/mês (~R$590.023/ano). Adicional para líderes (+R$1.353/mês).</p>
+                                            <p><strong>Despesas Permitidas:</strong> Com sublimites (ex.: veículos R$12.713/mês; combustíveis R$9.392/mês).</p>
+                                            <p><strong>Proibidas:</strong> Gastos eleitorais, NFs de parentes, divulgação pré-eleição.</p>
+                                            <p><strong>Prestação:</strong> 90 dias para NFs; reembolso em 3 dias.</p>
+                                            <p><strong>Violações:</strong> Extrapolações de limites ou atrasos.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingVerba">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseVerba" aria-expanded="false" aria-controls="collapseVerba">
+                                                Regras da Verba de Gabinete
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseVerba" class="collapse" aria-labelledby="headingVerba" data-parent="#regrasAccordion">
+                                        <div class="card-body">
+                                            <p><strong>Definição:</strong> Limite mensal para remuneração da equipe (Ato 72/1997, Ato 268/2023).</p>
+                                            <p><strong>Valor Inicial:</strong> R$118.376,13/mês a partir de 1º/2/2023 (~R$1.420.514/ano), ajustável anualmente.</p>
+                                            <p><strong>Gestão:</strong> Exclusivo para salários; saldo reverte. Processo eletrônico.</p>
+                                            <p><strong>Violações:</strong> Gasto > disponível ou uso indevido.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -590,23 +598,18 @@
         </div>
     </div>
 
-    <!-- Bootstrap & jQuery -->
+    <!-- jQuery, Bootstrap e DataTables -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- DataTables -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
 
     <script>
-        // Dados COMPLETOS do Deputado Acácio Favacho (2023-2025)
+        // ================= DADOS DO DEPUTADO =================
         const deputadoData = {
             id: 204379,
             nome: "Acácio da Silva Favacho Neto",
-            
-            // Dados por ano
             anos: {
                 "2023": {
-                    // Gastos Mensais 2023
                     despesasMensais: [
                         { mes: "Jan/23", valor: 41169.85, tipos: {divulgacao: 25000, veiculos: 10000, passagens: 5345.26, combustiveis: 0, telefonia: 824.59} },
                         { mes: "Fev/23", valor: 45961.19, tipos: {divulgacao: 33000, veiculos: 10000, passagens: 2348.03, combustiveis: 505.95, telefonia: 107.21} },
@@ -621,8 +624,6 @@
                         { mes: "Nov/23", valor: 28180.39, tipos: {divulgacao: 4500, veiculos: 10000, passagens: 11425.60, combustiveis: 1573.61, telefonia: 681.18} },
                         { mes: "Dez/23", valor: 10567.28, tipos: {divulgacao: 0, veiculos: 0, passagens: 10002.23, combustiveis: 0, telefonia: 565.05} }
                     ],
-                    
-                    // Despesas por Tipo 2023
                     despesasPorTipo: [
                         { tipo: "Divulgação da Atividade", valor: 302000, cor: "#e74c3c" },
                         { tipo: "Locação de Veículos", valor: 120000, cor: "#3498db" },
@@ -631,8 +632,6 @@
                         { tipo: "Telefonia", valor: 6000, cor: "#9b59b6" },
                         { tipo: "Manutenção de Escritório", valor: 810, cor: "#1abc9c" }
                     ],
-                    
-                    // Emendas 2023
                     emendas: {
                         autorizado: 31103395,
                         empenhado: 21140104,
@@ -645,40 +644,21 @@
                             { destino: "Fundo Saúde - Tartarugalzinho", autorizado: 3887627, empenhado: 2000000, pago: 2000000 }
                         ]
                     },
-                    
-                    // Atividade 2023
                     atividade: {
                         propostas_autoria: 251,
                         propostas_relatadas: 7,
                         votacoes_nominais: 289,
                         discursos: 9
                     },
-                    
-                    // Presença 2023
                     presenca: {
                         plenario: { presentes: 98, justificadas: 7, naoJustificadas: 10 },
                         comissoes: { presentes: 70, justificadas: 2, naoJustificadas: 25 }
                     },
-                    
-                    // Comissões 2023
                     comissoes: {
-                        titular: [
-                            "Comissão de Minas e Energia",
-                            "Comissão de Desenvolvimento Urbano",
-                            "Comissão Especial sobre Combate ao Câncer"
-                        ],
-                        titular_cpi: [
-                            "CPI das Pirâmides Financeiras",
-                            "CPI da Manipulação no Futebol"
-                        ],
-                        suplente: [
-                            "Comissão de Viação e Transportes",
-                            "CCJC (Constituição e Justiça)",
-                            "Comissão Especial da Reforma Administrativa"
-                        ]
+                        titular: ["Comissão de Minas e Energia","Comissão de Desenvolvimento Urbano","Comissão Especial sobre Combate ao Câncer"],
+                        titular_cpi: ["CPI das Pirâmides Financeiras","CPI da Manipulação no Futebol"],
+                        suplente: ["Comissão de Viação e Transportes","CCJC (Constituição e Justiça)","Comissão Especial da Reforma Administrativa"]
                     },
-                    
-                    // Equipe 2023
                     equipe: {
                         total_pessoas: 49,
                         folha_mensal: 46366.19,
@@ -696,17 +676,9 @@
                             { nome: "Reginaldo da Silva Pereira", cargo: "Secretário Parlamentar SP11", periodo: "Desde 21/02/2019" }
                         ]
                     },
-                    
-                    // Verba de Gabinete 2023
-                    verba_gabinete: {
-                        gasto: 1396003.53,
-                        disponivel: 1413661.56,
-                        percentual: 98.74
-                    }
+                    verba_gabinete: { gasto: 1396003.53, disponivel: 1413661.56, percentual: 98.74 }
                 },
-                
                 "2024": {
-                    // Gastos Mensais 2024
                     despesasMensais: [
                         { mes: "Jan/24", valor: 29943.32, tipos: {divulgacao: 7500, veiculos: 7800, passagens: 12298.10, combustiveis: 2135.79, telefonia: 209.43} },
                         { mes: "Fev/24", valor: 31182.77, tipos: {divulgacao: 4000, veiculos: 9000, passagens: 13870.15, combustiveis: 3389.74, telefonia: 922.88} },
@@ -721,8 +693,6 @@
                         { mes: "Nov/24", valor: 49577.16, tipos: {divulgacao: 23500, veiculos: 9000, passagens: 10680.46, combustiveis: 4981.61, telefonia: 665.09} },
                         { mes: "Dez/24", valor: 130485.53, tipos: {divulgacao: 104850, veiculos: 9000, passagens: 11267.40, combustiveis: 3952.31, telefonia: 665.82} }
                     ],
-                    
-                    // Despesas por Tipo 2024 (estimado baseado nos dados mensais)
                     despesasPorTipo: [
                         { tipo: "Divulgação da Atividade", valor: 228100, cor: "#e74c3c" },
                         { tipo: "Locação de Veículos", valor: 108000, cor: "#3498db" },
@@ -731,8 +701,6 @@
                         { tipo: "Telefonia", valor: 7500, cor: "#9b59b6" },
                         { tipo: "Manutenção de Escritório", valor: 4500, cor: "#1abc9c" }
                     ],
-                    
-                    // Emendas 2024
                     emendas: {
                         autorizado: 41885585,
                         empenhado: 41875785,
@@ -745,37 +713,21 @@
                             { destino: "Universidade Federal do AP", autorizado: 700000, empenhado: 700000, pago: 654500 }
                         ]
                     },
-                    
-                    // Atividade 2024
                     atividade: {
                         propostas_autoria: 32,
                         propostas_relatadas: 1,
                         votacoes_nominais: 246,
                         discursos: 9
                     },
-                    
-                    // Presença 2024
                     presenca: {
                         plenario: { presentes: 75, justificadas: 5, naoJustificadas: 7 },
                         comissoes: { presentes: 15, justificadas: 6, naoJustificadas: 34 }
                     },
-                    
-                    // Comissões 2024
                     comissoes: {
-                        titular: [
-                            "Comissão de Desenvolvimento Urbano (Presidente)",
-                            "Comissão de Constituição e Justiça"
-                        ],
-                        suplente: [
-                            "Comissão Especial sobre Cota Mínima",
-                            "Comissão de Constituição e Justiça"
-                        ],
-                        cargos: [
-                            "1º Vice-Líder da Maioria (CD)"
-                        ]
+                        titular: ["Comissão de Desenvolvimento Urbano (Presidente)","Comissão de Constituição e Justiça"],
+                        suplente: ["Comissão Especial sobre Cota Mínima","Comissão de Constituição e Justiça"],
+                        cargos: ["1º Vice-Líder da Maioria (CD)"]
                     },
-                    
-                    // Equipe 2024
                     equipe: {
                         total_pessoas: 42,
                         folha_mensal: 47500,
@@ -788,17 +740,9 @@
                             { nome: "Joaquim Marcelo Gomes Filho", cargo: "Secretário Parlamentar SP25", periodo: "Desde 12/05/2023" }
                         ]
                     },
-                    
-                    // Verba de Gabinete 2024
-                    verba_gabinete: {
-                        gasto: 1420000,
-                        disponivel: 1430000,
-                        percentual: 99.3
-                    }
+                    verba_gabinete: { gasto: 1420000, disponivel: 1430000, percentual: 99.3 }
                 },
-                
                 "2025": {
-                    // Gastos Mensais 2025
                     despesasMensais: [
                         { mes: "Jan/25", valor: 46508.85, tipos: {divulgacao: 23500, veiculos: 0, passagens: 16893.72, combustiveis: 4694.76, telefonia: 670.37} },
                         { mes: "Fev/25", valor: 59242.53, tipos: {divulgacao: 24642.92, veiculos: 11900, passagens: 14025.82, combustiveis: 7248.84, telefonia: 674.95} },
@@ -813,8 +757,6 @@
                         { mes: "Nov/25", valor: 38251.48, tipos: {divulgacao: 13500, veiculos: 0, passagens: 17541.11, combustiveis: 5316.57, telefonia: 1893.80} },
                         { mes: "Dez/25", valor: 44159.33, tipos: {divulgacao: 39250, veiculos: 0, passagens: 1227.39, combustiveis: 3407.65, telefonia: 274.29} }
                     ],
-                    
-                    // Despesas por Tipo 2025 (estimado baseado nos dados mensais)
                     despesasPorTipo: [
                         { tipo: "Divulgação da Atividade", valor: 275000, cor: "#e74c3c" },
                         { tipo: "Locação de Veículos", valor: 31640, cor: "#3498db" },
@@ -823,8 +765,6 @@
                         { tipo: "Telefonia", valor: 8000, cor: "#9b59b6" },
                         { tipo: "Manutenção de Escritório", valor: 5000, cor: "#1abc9c" }
                     ],
-                    
-                    // Emendas 2025
                     emendas: {
                         autorizado: 37275985,
                         empenhado: 37275960,
@@ -836,22 +776,16 @@
                             { destino: "Estruturação Saúde - AP", autorizado: 1000000, empenhado: 999975, pago: 0 }
                         ]
                     },
-                    
-                    // Atividade 2025
                     atividade: {
                         propostas_autoria: 67,
                         propostas_relatadas: 3,
                         votacoes_nominais: 396,
                         discursos: 25
                     },
-                    
-                    // Presença 2025
                     presenca: {
                         plenario: { presentes: 105, justificadas: 7, naoJustificadas: 9 },
                         comissoes: { presentes: 44, justificadas: 9, naoJustificadas: 50 }
                     },
-                    
-                    // Comissões 2025
                     comissoes: {
                         titular: [
                             "Grupo de Trabalho para Consolidação da Legislação",
@@ -859,8 +793,6 @@
                             "Comissão de Defesa dos Direitos das Pessoas com Deficiência"
                         ]
                     },
-                    
-                    // Equipe 2025
                     equipe: {
                         total_pessoas: 38,
                         folha_mensal: 49000,
@@ -873,13 +805,7 @@
                             { nome: "Joaquim Marcelo Gomes Filho", cargo: "Secretário Parlamentar SP25", periodo: "Desde 12/05/2023" }
                         ]
                     },
-                    
-                    // Verba de Gabinete 2025
-                    verba_gabinete: {
-                        gasto: 1579455.80,
-                        disponivel: 1590354.63,
-                        percentual: 99.31
-                    }
+                    verba_gabinete: { gasto: 1579455.80, disponivel: 1590354.63, percentual: 99.31 }
                 }
             }
         };
@@ -912,63 +838,46 @@
                 }
             },
             equipe: {
-                total_pessoas: 49, // Maior valor entre os anos
+                total_pessoas: 49,
                 folha_anual: deputadoData.anos["2023"].equipe.folha_anual + deputadoData.anos["2024"].equipe.folha_anual + deputadoData.anos["2025"].equipe.folha_anual
             }
         };
 
-        // Estado atual
+        // ================= VARIÁVEIS DE ESTADO =================
         let currentYear = 'acumulado';
-        let questionsData = JSON.parse(localStorage.getItem('questions_favacho')) || [];
         let communityQuestions = JSON.parse(localStorage.getItem('community_questions_favacho')) || [];
 
-        // Função para formatar valores monetários
+        // ================= FUNÇÕES AUXILIARES =================
         function formatarMoeda(valor) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(valor);
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(valor);
         }
 
-        // Função para formatar valores grandes
         function formatarMilhoes(valor) {
-            if (valor >= 1000000) {
-                return (valor / 1000000).toFixed(1) + 'M';
-            } else if (valor >= 1000) {
-                return (valor / 1000).toFixed(0) + 'K';
-            }
+            if (valor >= 1000000) return (valor / 1000000).toFixed(1) + 'M';
+            if (valor >= 1000) return (valor / 1000).toFixed(0) + 'K';
             return valor.toString();
         }
 
-        // Função para calcular percentual
         function calcularPercentual(parte, total) {
             if (total === 0) return 0;
             return Math.round((parte / total) * 100);
         }
 
-        // Mudar ano selecionado
-        function changeYear(year) {
+        // ================= ALTERAR ANO =================
+        window.changeYear = function(year) {
             currentYear = year;
-            
-            // Atualizar botões ativos
             $('[data-year]').removeClass('active');
             $(`[data-year="${year}"]`).addClass('active');
-            
-            // Atualizar todos os gráficos e tabelas
             updateMetrics();
             updateCharts();
             updateTables();
-        }
+        };
 
-        // Atualizar métricas principais
+        // ================= ATUALIZAR MÉTRICAS =================
         function updateMetrics() {
             const data = currentYear === 'acumulado' ? deputadoData.acumulado : deputadoData.anos[currentYear];
-            const anoLabel = currentYear === 'acumulado' ? '2023-2025' : currentYear;
-            
             let metricsHTML = '';
-            
+
             if (currentYear === 'acumulado') {
                 metricsHTML = `
                     <div class="col-xl-3 col-lg-6">
@@ -1004,7 +913,6 @@
                 const anoData = deputadoData.anos[currentYear];
                 const totalDiasPlenario = anoData.presenca.plenario.presentes + anoData.presenca.plenario.justificadas + anoData.presenca.plenario.naoJustificadas;
                 const percentualPresenca = calcularPercentual(anoData.presenca.plenario.presentes, totalDiasPlenario);
-                
                 metricsHTML = `
                     <div class="col-xl-3 col-lg-6">
                         <div class="stats-card activity">
@@ -1036,43 +944,35 @@
                     </div>
                 `;
             }
-            
             $('#metrics-cards').html(metricsHTML);
         }
 
-        // Atualizar gráficos
+        // ================= ATUALIZAR GRÁFICOS =================
         function updateCharts() {
             const data = currentYear === 'acumulado' ? getAcumuladoData() : deputadoData.anos[currentYear];
             const anoLabel = currentYear === 'acumulado' ? 'Acumulado 2023-2025' : currentYear;
-            
-            // 1. Gráfico de Gastos Mensais
+
+            // 1. Gastos Mensais (ou anual)
             if (currentYear === 'acumulado') {
-                // Para acumulado, mostrar gastos por ano
                 const yearlyData = [
                     { ano: '2023', total: 596830.07 },
                     { ano: '2024', total: 573533.87 },
                     { ano: '2025', total: 524504.52 }
                 ];
-                
-                const traceGastos = {
+                Plotly.react('chartMonthlyExpenses', [{
                     x: yearlyData.map(item => item.ano),
                     y: yearlyData.map(item => item.total),
                     type: 'bar',
                     marker: { color: '#e74c3c' },
                     text: yearlyData.map(item => formatarMoeda(item.total)),
                     textposition: 'auto'
-                };
-                
-                const layoutGastos = {
+                }], {
                     title: 'Gastos por Ano',
                     xaxis: { title: 'Ano' },
                     yaxis: { title: 'Valor (R$)', tickformat: ',.0f' }
-                };
-                
-                Plotly.newPlot('chartMonthlyExpenses', [traceGastos], layoutGastos, { responsive: true });
+                }, { responsive: true });
             } else {
-                // Para ano específico, mostrar gastos mensais
-                const traceGastos = {
+                Plotly.react('chartMonthlyExpenses', [{
                     x: data.despesasMensais.map(item => item.mes),
                     y: data.despesasMensais.map(item => item.valor),
                     type: 'scatter',
@@ -1080,25 +980,20 @@
                     line: { color: '#e74c3c', width: 3 },
                     marker: { size: 8, color: '#e74c3c' },
                     name: 'Gastos Mensais',
-                    hovertemplate: '%{x}<br>%{y:,.0f} R$<extra></extra>'
-                };
-
-                const layoutGastos = {
+                    hovertemplate: '%{x}<br>R$ %{y:,.0f}<extra></extra>'
+                }], {
                     title: `Gastos Mensais - ${anoLabel}`,
                     xaxis: { title: 'Mês/Ano', tickangle: -45 },
                     yaxis: { title: 'Valor (R$)', tickformat: ',.0f' },
                     hovermode: 'closest',
                     showlegend: false,
                     margin: { t: 10, b: 60 }
-                };
-
-                Plotly.newPlot('chartMonthlyExpenses', [traceGastos], layoutGastos, { responsive: true });
+                }, { responsive: true });
             }
 
-            // 2. Gráfico de Execução de Emendas (Gauge)
+            // 2. Taxa de Execução das Emendas
             const porcentagemExecucao = Math.round((data.emendas.pago / data.emendas.autorizado) * 100);
-            
-            const traceEmendas = {
+            Plotly.react('chartAmendmentExecution', [{
                 type: "indicator",
                 mode: "gauge+number",
                 value: porcentagemExecucao,
@@ -1121,16 +1016,10 @@
                         value: porcentagemExecucao
                     }
                 }
-            };
+            }], { margin: { t: 50, b: 0, l: 50, r: 50 } }, { responsive: true });
 
-            const layoutEmendas = {
-                margin: { t: 50, b: 0, l: 50, r: 50 }
-            };
-
-            Plotly.newPlot('chartAmendmentExecution', [traceEmendas], layoutEmendas, { responsive: true });
-
-            // 3. Gráfico de Distribuição de Atividade
-            const traceAtividade = {
+            // 3. Distribuição da Atividade
+            Plotly.react('chartActivityBreakdown', [{
                 labels: ['Propostas Autoria', 'Propostas Relatadas', 'Votações Nominais', 'Discursos'],
                 values: [data.atividade.propostas_autoria, data.atividade.propostas_relatadas, data.atividade.votacoes_nominais, data.atividade.discursos],
                 type: 'pie',
@@ -1140,45 +1029,38 @@
                 hoverinfo: 'label+percent+value',
                 textposition: 'outside',
                 automargin: true
-            };
-
-            const layoutAtividade = {
+            }], {
                 title: `Atividade Parlamentar - ${anoLabel}`,
                 showlegend: false,
                 margin: { t: 20, b: 20, l: 20, r: 20 }
-            };
+            }, { responsive: true });
 
-            Plotly.newPlot('chartActivityBreakdown', [traceAtividade], layoutAtividade, { responsive: true });
-
-            // 4. Gráfico de Presença e Ausências
-            const tracePresencaPlenario = {
-                x: ['Presenças', 'Aus. Justificadas', 'Aus. Não Justificadas'],
-                y: [data.presenca.plenario.presentes, data.presenca.plenario.justificadas, data.presenca.plenario.naoJustificadas],
-                name: 'Plenário',
-                type: 'bar',
-                marker: { color: '#3498db' }
-            };
-
-            const tracePresencaComissoes = {
-                x: ['Presenças', 'Aus. Justificadas', 'Aus. Não Justificadas'],
-                y: [data.presenca.comissoes.presentes, data.presenca.comissoes.justificadas, data.presenca.comissoes.naoJustificadas],
-                name: 'Comissões',
-                type: 'bar',
-                marker: { color: '#9b59b6' }
-            };
-
-            const layoutPresenca = {
+            // 4. Presença e Ausências
+            Plotly.react('chartAttendance', [
+                {
+                    x: ['Presenças', 'Aus. Justificadas', 'Aus. Não Justificadas'],
+                    y: [data.presenca.plenario.presentes, data.presenca.plenario.justificadas, data.presenca.plenario.naoJustificadas],
+                    name: 'Plenário',
+                    type: 'bar',
+                    marker: { color: '#3498db' }
+                },
+                {
+                    x: ['Presenças', 'Aus. Justificadas', 'Aus. Não Justificadas'],
+                    y: [data.presenca.comissoes.presentes, data.presenca.comissoes.justificadas, data.presenca.comissoes.naoJustificadas],
+                    name: 'Comissões',
+                    type: 'bar',
+                    marker: { color: '#9b59b6' }
+                }
+            ], {
                 title: `Presença - ${anoLabel}`,
                 barmode: 'group',
                 xaxis: { title: '' },
                 yaxis: { title: 'Quantidade' },
                 legend: { orientation: 'h', y: -0.2 }
-            };
+            }, { responsive: true });
 
-            Plotly.newPlot('chartAttendance', [tracePresencaPlenario, tracePresencaComissoes], layoutPresenca, { responsive: true });
-
-            // 5. Gráfico de Composição das Despesas
-            const traceDespesas = {
+            // 5. Composição das Despesas
+            Plotly.react('chartExpenseBreakdown', [{
                 labels: data.despesasPorTipo.map(item => item.tipo),
                 values: data.despesasPorTipo.map(item => item.valor),
                 type: 'pie',
@@ -1188,24 +1070,19 @@
                 hoverinfo: 'label+value+percent',
                 textposition: 'inside',
                 automargin: true
-            };
-
-            const layoutDespesas = {
+            }], {
                 title: `Composição das Despesas - ${anoLabel}`,
                 showlegend: false,
                 margin: { t: 20, b: 20, l: 20, r: 20 }
-            };
+            }, { responsive: true });
 
-            Plotly.newPlot('chartExpenseBreakdown', [traceDespesas], layoutDespesas, { responsive: true });
-
-            // 6. Gráfico de Evolução Anual de Gastos
+            // 6. Evolução Anual de Gastos
             const yearlyExpenses = [
                 { ano: '2023', valor: 596830.07 },
                 { ano: '2024', valor: 573533.87 },
                 { ano: '2025', valor: 524504.52 }
             ];
-            
-            const traceYearly = {
+            Plotly.react('chartYearlyExpenses', [{
                 x: yearlyExpenses.map(item => item.ano),
                 y: yearlyExpenses.map(item => item.valor),
                 type: 'scatter',
@@ -1214,72 +1091,95 @@
                 marker: { size: 10, color: '#e74c3c' },
                 text: yearlyExpenses.map(item => formatarMoeda(item.valor)),
                 textposition: 'top center'
-            };
-
-            const layoutYearly = {
+            }], {
                 title: 'Evolução Anual de Gastos',
                 xaxis: { title: 'Ano' },
                 yaxis: { title: 'Valor (R$)', tickformat: ',.0f' }
-            };
+            }, { responsive: true });
 
-            Plotly.newPlot('chartYearlyExpenses', [traceYearly], layoutYearly, { responsive: true });
-
-            // 7. Gráfico de Emendas por Ano
+            // 7. Emendas por Ano
             const yearlyAmendments = [
                 { ano: '2023', autorizado: deputadoData.anos["2023"].emendas.autorizado / 1000000 },
                 { ano: '2024', autorizado: deputadoData.anos["2024"].emendas.autorizado / 1000000 },
                 { ano: '2025', autorizado: deputadoData.anos["2025"].emendas.autorizado / 1000000 }
             ];
-            
-            const traceEmendasAno = {
+            Plotly.react('chartYearlyAmendments', [{
                 x: yearlyAmendments.map(item => item.ano),
                 y: yearlyAmendments.map(item => item.autorizado),
                 type: 'bar',
                 marker: { color: '#27ae60' },
                 text: yearlyAmendments.map(item => formatarMilhoes(item.autorizado * 1000000)),
                 textposition: 'auto'
-            };
-
-            const layoutEmendasAno = {
+            }], {
                 title: 'Emendas Autorizadas por Ano',
                 xaxis: { title: 'Ano' },
                 yaxis: { title: 'Valor (Milhões R$)', tickformat: '.1f' }
-            };
+            }, { responsive: true });
 
-            Plotly.newPlot('chartYearlyAmendments', [traceEmendasAno], layoutEmendasAno, { responsive: true });
+            // 8. Status das Emendas (gráfico de barras empilhadas)
+            Plotly.react('chartAmendmentStatus', [{
+                x: ['2023', '2024', '2025'],
+                y: [
+                    deputadoData.anos["2023"].emendas.pago / 1000000,
+                    deputadoData.anos["2024"].emendas.pago / 1000000,
+                    deputadoData.anos["2025"].emendas.pago / 1000000
+                ],
+                name: 'Pago',
+                type: 'bar',
+                marker: { color: '#27ae60' }
+            }, {
+                x: ['2023', '2024', '2025'],
+                y: [
+                    (deputadoData.anos["2023"].emendas.empenhado - deputadoData.anos["2023"].emendas.pago) / 1000000,
+                    (deputadoData.anos["2024"].emendas.empenhado - deputadoData.anos["2024"].emendas.pago) / 1000000,
+                    (deputadoData.anos["2025"].emendas.empenhado - deputadoData.anos["2025"].emendas.pago) / 1000000
+                ],
+                name: 'Empenhado não pago',
+                type: 'bar',
+                marker: { color: '#f39c12' }
+            }, {
+                x: ['2023', '2024', '2025'],
+                y: [
+                    (deputadoData.anos["2023"].emendas.autorizado - deputadoData.anos["2023"].emendas.empenhado) / 1000000,
+                    (deputadoData.anos["2024"].emendas.autorizado - deputadoData.anos["2024"].emendas.empenhado) / 1000000,
+                    (deputadoData.anos["2025"].emendas.autorizado - deputadoData.anos["2025"].emendas.empenhado) / 1000000
+                ],
+                name: 'Não empenhado',
+                type: 'bar',
+                marker: { color: '#e74c3c' }
+            }], {
+                title: 'Status das Emendas por Ano (R$ milhões)',
+                barmode: 'stack',
+                xaxis: { title: 'Ano' },
+                yaxis: { title: 'Valor (Milhões R$)' }
+            }, { responsive: true });
 
-            // 8. Gráfico de Folha Salarial por Ano
+            // 9. Folha de Pagamento Anual
             const yearlySalaries = [
                 { ano: '2023', valor: deputadoData.anos["2023"].equipe.folha_anual },
                 { ano: '2024', valor: deputadoData.anos["2024"].equipe.folha_anual },
                 { ano: '2025', valor: deputadoData.anos["2025"].equipe.folha_anual }
             ];
-            
-            const traceSalarios = {
+            Plotly.react('chartYearlySalaries', [{
                 x: yearlySalaries.map(item => item.ano),
                 y: yearlySalaries.map(item => item.valor / 1000000),
                 type: 'bar',
                 marker: { color: '#9b59b6' },
                 text: yearlySalaries.map(item => formatarMoeda(item.valor)),
                 textposition: 'auto'
-            };
-
-            const layoutSalarios = {
+            }], {
                 title: 'Folha de Pagamento por Ano',
                 xaxis: { title: 'Ano' },
                 yaxis: { title: 'Valor (Milhões R$)', tickformat: '.1f' }
-            };
+            }, { responsive: true });
 
-            Plotly.newPlot('chartYearlySalaries', [traceSalarios], layoutSalarios, { responsive: true });
-
-            // 9. Gráfico de Distribuição de Cargos (estático)
+            // 10. Distribuição de Cargos na Equipe
             const cargosDistribuicao = [
                 { cargo: "Secretário Parlamentar", quantidade: 35, cor: "#3498db" },
                 { cargo: "Cargo Natureza Especial", quantidade: 8, cor: "#9b59b6" },
                 { cargo: "Assessor Parlamentar", quantidade: 6, cor: "#2ecc71" }
             ];
-
-            const traceCargos = {
+            Plotly.react('chartTeamRoles', [{
                 labels: cargosDistribuicao.map(item => item.cargo),
                 values: cargosDistribuicao.map(item => item.quantidade),
                 type: 'pie',
@@ -1288,22 +1188,16 @@
                 textinfo: 'label+percent',
                 hoverinfo: 'label+value+percent',
                 automargin: true
-            };
-
-            const layoutCargos = {
+            }], {
                 title: 'Distribuição de Cargos na Equipe',
                 showlegend: false,
                 margin: { t: 20, b: 20, l: 20, r: 20 }
-            };
-
-            Plotly.newPlot('chartTeamRoles', [traceCargos], layoutCargos, { responsive: true });
+            }, { responsive: true });
         }
 
-        // Obter dados acumulados para gráficos
+        // ================= DADOS ACUMULADOS =================
         function getAcumuladoData() {
             const data = deputadoData.acumulado;
-            
-            // Calcular despesas por tipo acumuladas
             const despesasPorTipoAcumulado = [
                 { tipo: "Divulgação da Atividade", valor: 805100, cor: "#e74c3c" },
                 { tipo: "Locação de Veículos", valor: 259640, cor: "#3498db" },
@@ -1312,266 +1206,137 @@
                 { tipo: "Telefonia", valor: 21500, cor: "#9b59b6" },
                 { tipo: "Manutenção de Escritório", valor: 10310, cor: "#1abc9c" }
             ];
-            
-            return {
-                ...data,
-                despesasPorTipo: despesasPorTipoAcumulado
-            };
+            return { ...data, despesasPorTipo: despesasPorTipoAcumulado };
         }
 
-        // Atualizar tabelas
+        // ================= ATUALIZAR TABELAS =================
         function updateTables() {
             const data = currentYear === 'acumulado' ? getAcumuladoData() : deputadoData.anos[currentYear];
-            
-            // 1. Tabela de Comissões
+
+            // Tabela de Comissões
             let comissoesHTML = '';
             if (currentYear === 'acumulado' || currentYear === '2023') {
                 comissoesHTML = `
-                    <tr>
-                        <td><strong>Titular</strong></td>
-                        <td>Comissão de Minas e Energia</td>
-                        <td>Comissão de Desenvolvimento Urbano</td>
-                        <td>Comissão Especial sobre Combate ao Câncer</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Titular (CPI)</strong></td>
-                        <td colspan="3">CPI das Pirâmides Financeiras & CPI da Manipulação no Futebol</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Suplente</strong></td>
-                        <td>Comissão de Viação e Transportes</td>
-                        <td>CCJC (Constituição e Justiça)</td>
-                        <td>Comissão Especial da Reforma Administrativa</td>
-                    </tr>
+                    <tr><td><strong>Titular</strong></td><td>Comissão de Minas e Energia</td><td>Comissão de Desenvolvimento Urbano</td><td>Comissão Especial sobre Combate ao Câncer</td></tr>
+                    <tr><td><strong>Titular (CPI)</strong></td><td colspan="3">CPI das Pirâmides Financeiras & CPI da Manipulação no Futebol</td></tr>
+                    <tr><td><strong>Suplente</strong></td><td>Comissão de Viação e Transportes</td><td>CCJC (Constituição e Justiça)</td><td>Comissão Especial da Reforma Administrativa</td></tr>
                 `;
             } else if (currentYear === '2024') {
                 comissoesHTML = `
-                    <tr>
-                        <td><strong>Titular</strong></td>
-                        <td>Comissão de Desenvolvimento Urbano (Presidente)</td>
-                        <td>Comissão de Constituição e Justiça</td>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Suplente</strong></td>
-                        <td>Comissão Especial sobre Cota Mínima</td>
-                        <td>Comissão de Constituição e Justiça</td>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Cargos</strong></td>
-                        <td colspan="3">1º Vice-Líder da Maioria (CD)</td>
-                    </tr>
+                    <tr><td><strong>Titular</strong></td><td>Comissão de Desenvolvimento Urbano (Presidente)</td><td>Comissão de Constituição e Justiça</td><td>-</td></tr>
+                    <tr><td><strong>Suplente</strong></td><td>Comissão Especial sobre Cota Mínima</td><td>Comissão de Constituição e Justiça</td><td>-</td></tr>
+                    <tr><td><strong>Cargos</strong></td><td colspan="3">1º Vice-Líder da Maioria (CD)</td></tr>
                 `;
             } else if (currentYear === '2025') {
                 comissoesHTML = `
-                    <tr>
-                        <td><strong>Titular</strong></td>
-                        <td>Grupo de Trabalho para Consolidação da Legislação</td>
-                        <td>Comissão de Constituição e Justiça</td>
-                        <td>Comissão de Defesa dos Direitos das Pessoas com Deficiência</td>
-                    </tr>
+                    <tr><td><strong>Titular</strong></td><td>Grupo de Trabalho para Consolidação da Legislação</td><td>Comissão de Constituição e Justiça</td><td>Comissão de Defesa dos Direitos das Pessoas com Deficiência</td></tr>
                 `;
             }
             $('#comissoes-table tbody').html(comissoesHTML);
 
-            // 2. Tabela de Presença
+            // Tabela de Presença
             const totalDiasPlenario = data.presenca.plenario.presentes + data.presenca.plenario.justificadas + data.presenca.plenario.naoJustificadas;
             const percentualPlenario = calcularPercentual(data.presenca.plenario.presentes, totalDiasPlenario);
             const totalReunioesComissoes = data.presenca.comissoes.presentes + data.presenca.comissoes.justificadas + data.presenca.comissoes.naoJustificadas;
             const percentualComissoes = calcularPercentual(data.presenca.comissoes.presentes, totalReunioesComissoes);
-            
             $('#attendance-table tbody').html(`
-                <tr>
-                    <td><strong>Presenças</strong></td>
-                    <td>${data.presenca.plenario.presentes} dias</td>
-                    <td>${data.presenca.comissoes.presentes} reuniões</td>
-                    <td>Plenário: ${percentualPlenario}% | Comissões: ${percentualComissoes}%</td>
-                </tr>
-                <tr>
-                    <td><strong>Ausências Justificadas</strong></td>
-                    <td>${data.presenca.plenario.justificadas} dias</td>
-                    <td>${data.presenca.comissoes.justificadas} reuniões</td>
-                    <td>Principalmente por motivo de saúde</td>
-                </tr>
-                <tr>
-                    <td><strong>Ausências Não Justificadas</strong></td>
-                    <td>${data.presenca.plenario.naoJustificadas} dias</td>
-                    <td>${data.presenca.comissoes.naoJustificadas} reuniões</td>
-                    <td>Foco em atividades no estado do Amapá</td>
-                </tr>
+                <tr><td><strong>Presenças</strong></td><td>${data.presenca.plenario.presentes} dias</td><td>${data.presenca.comissoes.presentes} reuniões</td><td>Plenário: ${percentualPlenario}% | Comissões: ${percentualComissoes}%</td></tr>
+                <tr><td><strong>Ausências Justificadas</strong></td><td>${data.presenca.plenario.justificadas} dias</td><td>${data.presenca.comissoes.justificadas} reuniões</td><td>Principalmente por motivo de saúde</td></tr>
+                <tr><td><strong>Ausências Não Justificadas</strong></td><td>${data.presenca.plenario.naoJustificadas} dias</td><td>${data.presenca.comissoes.naoJustificadas} reuniões</td><td>Foco em atividades no estado do Amapá</td></tr>
             `);
 
-            // 3. Tabela de Gastos Detalhados
+            // Tabela de Gastos Detalhados
             let gastosDetalhadosHTML = '';
             if (currentYear !== 'acumulado') {
                 data.despesasMensais.forEach(item => {
-                    gastosDetalhadosHTML += `
-                        <tr>
-                            <td>${item.mes}</td>
-                            <td>${formatarMoeda(item.tipos.divulgacao)}</td>
-                            <td>${formatarMoeda(item.tipos.veiculos)}</td>
-                            <td>${formatarMoeda(item.tipos.passagens)}</td>
-                            <td>${formatarMoeda(item.tipos.combustiveis)}</td>
-                            <td><strong>${formatarMoeda(item.valor)}</strong></td>
-                        </tr>
-                    `;
+                    gastosDetalhadosHTML += `<tr><td>${item.mes}</td><td>${formatarMoeda(item.tipos.divulgacao)}</td><td>${formatarMoeda(item.tipos.veiculos)}</td><td>${formatarMoeda(item.tipos.passagens)}</td><td>${formatarMoeda(item.tipos.combustiveis)}</td><td><strong>${formatarMoeda(item.valor)}</strong></td></tr>`;
                 });
             } else {
-                // Para acumulado, mostrar resumo por ano
                 gastosDetalhadosHTML = `
-                    <tr>
-                        <td>2023</td>
-                        <td>${formatarMoeda(302000)}</td>
-                        <td>${formatarMoeda(120000)}</td>
-                        <td>${formatarMoeda(106000)}</td>
-                        <td>${formatarMoeda(18500)}</td>
-                        <td><strong>${formatarMoeda(596830.07)}</strong></td>
-                    </tr>
-                    <tr>
-                        <td>2024</td>
-                        <td>${formatarMoeda(228100)}</td>
-                        <td>${formatarMoeda(108000)}</td>
-                        <td>${formatarMoeda(145000)}</td>
-                        <td>${formatarMoeda(55000)}</td>
-                        <td><strong>${formatarMoeda(573533.87)}</strong></td>
-                    </tr>
-                    <tr>
-                        <td>2025</td>
-                        <td>${formatarMoeda(275000)}</td>
-                        <td>${formatarMoeda(31640)}</td>
-                        <td>${formatarMoeda(135000)}</td>
-                        <td>${formatarMoeda(65000)}</td>
-                        <td><strong>${formatarMoeda(524504.52)}</strong></td>
-                    </tr>
+                    <tr><td>2023</td><td>${formatarMoeda(302000)}</td><td>${formatarMoeda(120000)}</td><td>${formatarMoeda(106000)}</td><td>${formatarMoeda(18500)}</td><td><strong>${formatarMoeda(596830.07)}</strong></td></tr>
+                    <tr><td>2024</td><td>${formatarMoeda(228100)}</td><td>${formatarMoeda(108000)}</td><td>${formatarMoeda(145000)}</td><td>${formatarMoeda(55000)}</td><td><strong>${formatarMoeda(573533.87)}</strong></td></tr>
+                    <tr><td>2025</td><td>${formatarMoeda(275000)}</td><td>${formatarMoeda(31640)}</td><td>${formatarMoeda(135000)}</td><td>${formatarMoeda(65000)}</td><td><strong>${formatarMoeda(524504.52)}</strong></td></tr>
                 `;
             }
             $('#gastos-detalhados-table tbody').html(gastosDetalhadosHTML);
-            
-            // Atualizar total de despesas
-            let totalDespesas = 0;
-            if (currentYear === 'acumulado') {
-                totalDespesas = 596830.07 + 573533.87 + 524504.52;
-            } else {
-                data.despesasMensais.forEach(item => {
-                    totalDespesas += item.valor;
-                });
-            }
+            let totalDespesas = currentYear === 'acumulado' ? 596830.07 + 573533.87 + 524504.52 : data.despesasMensais.reduce((acc, item) => acc + item.valor, 0);
             $('#total-despesas').html(`Total de Despesas: <strong>${formatarMoeda(totalDespesas)}</strong>`);
 
-            // 4. Tabela de Emendas
+            // Tabela de Emendas
             let emendasHTML = '';
             if (currentYear !== 'acumulado' && data.emendas.projetos) {
                 data.emendas.projetos.forEach(projeto => {
                     const execucao = calcularPercentual(projeto.pago, projeto.autorizado);
                     const badgeClass = execucao >= 80 ? 'badge-success' : execucao >= 50 ? 'badge-warning' : 'badge-danger';
-                    emendasHTML += `
-                        <tr>
-                            <td>${projeto.destino}</td>
-                            <td>${formatarMoeda(projeto.autorizado)}</td>
-                            <td>${formatarMoeda(projeto.empenhado)}</td>
-                            <td>${formatarMoeda(projeto.pago)}</td>
-                            <td><span class="badge ${badgeClass}">${execucao}%</span></td>
-                        </tr>
-                    `;
+                    emendasHTML += `<tr><td>${projeto.destino}</td><td>${formatarMoeda(projeto.autorizado)}</td><td>${formatarMoeda(projeto.empenhado)}</td><td>${formatarMoeda(projeto.pago)}</td><td><span class="badge ${badgeClass}">${execucao}%</span></td></tr>`;
                 });
             } else {
-                // Para acumulado, mostrar totais
-                emendasHTML = `
-                    <tr>
-                        <td><strong>Total 2023-2025</strong></td>
-                        <td><strong>${formatarMoeda(data.emendas.autorizado)}</strong></td>
-                        <td><strong>${formatarMoeda(data.emendas.empenhado)}</strong></td>
-                        <td><strong>${formatarMoeda(data.emendas.pago)}</strong></td>
-                        <td><strong>${calcularPercentual(data.emendas.pago, data.emendas.autorizado)}%</strong></td>
-                    </tr>
-                `;
+                emendasHTML = `<tr><td><strong>Total 2023-2025</strong></td><td><strong>${formatarMoeda(data.emendas.autorizado)}</strong></td><td><strong>${formatarMoeda(data.emendas.empenhado)}</strong></td><td><strong>${formatarMoeda(data.emendas.pago)}</strong></td><td><strong>${calcularPercentual(data.emendas.pago, data.emendas.autorizado)}%</strong></td></tr>`;
             }
             $('#emendas-table tbody').html(emendasHTML);
 
-            // 5. Tabela de Equipe
+            // Tabela de Equipe
             let equipeHTML = '';
             if (currentYear === 'acumulado') {
-                // Mostrar membros de todos os anos
-                ['2023', '2024', '2025'].forEach(ano => {
+                ['2023','2024','2025'].forEach(ano => {
                     deputadoData.anos[ano].equipe.membros.forEach(membro => {
-                        equipeHTML += `
-                            <tr>
-                                <td>${membro.nome}</td>
-                                <td>${membro.cargo}</td>
-                                <td>${membro.periodo}</td>
-                                <td>${ano}</td>
-                            </tr>
-                        `;
+                        equipeHTML += `<tr><td>${membro.nome}</td><td>${membro.cargo}</td><td>${membro.periodo}</td><td>${ano}</td></tr>`;
                     });
                 });
             } else {
                 data.equipe.membros.forEach(membro => {
-                    equipeHTML += `
-                        <tr>
-                            <td>${membro.nome}</td>
-                            <td>${membro.cargo}</td>
-                            <td>${membro.periodo}</td>
-                            <td>${currentYear}</td>
-                        </tr>
-                    `;
+                    equipeHTML += `<tr><td>${membro.nome}</td><td>${membro.cargo}</td><td>${membro.periodo}</td><td>${currentYear}</td></tr>`;
                 });
             }
-            
             $('#teamTable tbody').html(equipeHTML);
-            
-            // Reinicializar DataTable se existir
-            if ($.fn.DataTable.isDataTable('#teamTable')) {
-                $('#teamTable').DataTable().destroy();
-            }
+
+            // DataTable
+            if ($.fn.DataTable.isDataTable('#teamTable')) $('#teamTable').DataTable().destroy();
             $('#teamTable').DataTable({
                 pageLength: 10,
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json'
-                },
+                language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json' },
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
                 responsive: true
             });
         }
 
-        // Carregar perguntas sugeridas
+        // ================= PERGUNTAS SUGERIDAS =================
         function loadSuggestedQuestions() {
             const suggestedQuestions = [
                 {
-                    title: "Gastos com Divulgação",
-                    question: "Em 2023, foram gastos R$ 302 mil em divulgação (50% do total). Como avalia o retorno deste investimento para a comunicação com seus eleitores?",
+                    title: "Extrapolações na Cota Parlamentar",
+                    question: "Deputado Acácio, em dezembro/2024, o gasto na Cota Parlamentar foi R$130.486 (excedente de R$81.317 em relação à cota mensal). Como justifica esse excesso, considerando a regra de acumulação anual?",
                     category: "gastos",
                     votes: 42
                 },
                 {
-                    title: "Execução de Emendas",
-                    question: "Dos R$ 31,1 milhões em emendas autorizadas em 2023, apenas R$ 21,1 milhões foram pagos (68%). Quais estratégias usará para melhorar o repasse de recursos ao Amapá?",
-                    category: "emendas",
+                    title: "Uso da Verba de Gabinete",
+                    question: "Em 2025, utilizou 99.31% da verba de gabinete (R$1.579.456). Confirma que esse valor foi exclusivamente para remuneração da equipe em Brasília ou estados, conforme Ato 72/1997?",
+                    category: "equipe",
                     votes: 38
                 },
                 {
-                    title: "Produtividade Legislativa",
-                    question: "Foi autor de 251 propostas em 2023, mas relatou apenas 7. Como planeja aumentar a tramitação e aprovação de seus projetos?",
-                    category: "atividade",
+                    title: "Execução de Emendas",
+                    question: "Das emendas autorizadas em 2023 (R$31,1 milhões), apenas 68% foram pagas. Quais medidas adotou para melhorar a execução nos anos seguintes?",
+                    category: "emendas",
                     votes: 35
                 },
                 {
-                    title: "Rotatividade na Equipe",
-                    question: "Em 2023, teve 49 pessoas diferentes na equipe. Como organiza e supervisiona o trabalho com tamanha rotatividade?",
-                    category: "equipe",
+                    title: "Gastos com Divulgação",
+                    question: "Gastos com divulgação somaram R$104.850 em dezembro/2024. Pode detalhar os fornecedores e o impacto na comunicação com os eleitores, evitando violações pré-eleitorais?",
+                    category: "gastos",
                     votes: 29
                 },
                 {
-                    title: "Gastos em Dezembro/2024",
-                    question: "Em dezembro de 2024, gastou R$ 104.850 em divulgação (80% do mês). Pode detalhar a destinação específica destes recursos?",
-                    category: "gastos",
+                    title: "Reajustes na Verba de Gabinete",
+                    question: "A verba disponível subiu de R$118.376 em 2023 para R$133.171 em 2025. Quais atos da Mesa justificam esses reajustes anuais?",
+                    category: "equipe",
                     votes: 27
                 }
             ];
-            
-            let suggestedHTML = '';
-            suggestedQuestions.forEach((q, index) => {
-                suggestedHTML += `
+            let html = '';
+            suggestedQuestions.forEach((q, idx) => {
+                html += `
                     <div class="question-card card mb-3">
                         <div class="card-body">
                             <h6 class="card-title">${q.title}</h6>
@@ -1579,38 +1344,27 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="badge badge-secondary">${q.category}</span>
                                 <div>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="useSuggestedQuestion(${index})">
-                                        <i class="fas fa-share mr-1"></i>Usar
-                                    </button>
-                                    <span class="ml-2 text-muted">
-                                        <i class="fas fa-thumbs-up"></i> ${q.votes}
-                                    </span>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="useSuggestedQuestion(${idx})"><i class="fas fa-share mr-1"></i>Usar</button>
+                                    <span class="ml-2 text-muted"><i class="fas fa-thumbs-up"></i> ${q.votes}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
             });
-            
-            $('#suggestedQuestions').html(suggestedHTML);
+            $('#suggestedQuestions').html(html);
         }
 
-        // Carregar perguntas da comunidade
+        // ================= PERGUNTAS DA COMUNIDADE =================
         function loadCommunityQuestions() {
             if (communityQuestions.length === 0) {
-                $('#communityQuestions').html(`
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle mr-2"></i>
-                        Ainda não há perguntas da comunidade. Seja o primeiro a enviar uma questão!
-                    </div>
-                `);
+                $('#communityQuestions').html(`<div class="alert alert-info"><i class="fas fa-info-circle mr-2"></i>Ainda não há perguntas da comunidade. Seja o primeiro a enviar uma questão!</div>`);
                 return;
             }
-            
-            let communityHTML = '';
-            communityQuestions.forEach((q, index) => {
+            let html = '';
+            communityQuestions.forEach((q, idx) => {
                 const date = new Date(q.date);
-                communityHTML += `
+                html += `
                     <div class="question-card card mb-3">
                         <div class="card-body">
                             <h6 class="card-title">${q.name || 'Anônimo'}</h6>
@@ -1618,84 +1372,46 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <span class="badge ${getCategoryBadgeClass(q.category)}">${getCategoryLabel(q.category)}</span>
-                                    <small class="text-muted ml-2">
-                                        <i class="far fa-calendar mr-1"></i>${date.toLocaleDateString('pt-BR')}
-                                    </small>
+                                    <small class="text-muted ml-2"><i class="far fa-calendar mr-1"></i>${date.toLocaleDateString('pt-BR')}</small>
                                 </div>
                                 <div>
-                                    <button class="btn btn-sm btn-outline-success" onclick="voteQuestion(${index})">
-                                        <i class="fas fa-thumbs-up mr-1"></i>Apoiar (${q.votes || 0})
-                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" onclick="voteQuestion(${idx})"><i class="fas fa-thumbs-up mr-1"></i>Apoiar (${q.votes || 0})</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
             });
-            
-            $('#communityQuestions').html(communityHTML);
+            $('#communityQuestions').html(html);
         }
 
-        // Funções auxiliares para categorias
         function getCategoryLabel(category) {
-            const labels = {
-                'gastos': 'Gastos',
-                'emendas': 'Emendas',
-                'atividade': 'Atividade',
-                'equipe': 'Equipe',
-                'outro': 'Outro'
-            };
+            const labels = { 'gastos': 'Gastos', 'emendas': 'Emendas', 'atividade': 'Atividade', 'equipe': 'Equipe', 'outro': 'Outro' };
             return labels[category] || category;
         }
 
         function getCategoryBadgeClass(category) {
-            const classes = {
-                'gastos': 'badge-danger',
-                'emendas': 'badge-warning',
-                'atividade': 'badge-success',
-                'equipe': 'badge-primary',
-                'outro': 'badge-secondary'
-            };
+            const classes = { 'gastos': 'badge-danger', 'emendas': 'badge-warning', 'atividade': 'badge-success', 'equipe': 'badge-primary', 'outro': 'badge-secondary' };
             return classes[category] || 'badge-secondary';
         }
 
-        // Usar pergunta sugerida
-        function useSuggestedQuestion(index) {
+        // ================= USAR PERGUNTA SUGERIDA =================
+        window.useSuggestedQuestion = function(index) {
             const suggestedQuestions = [
-                {
-                    question: "Em 2023, foram gastos R$ 302 mil em divulgação (50% do total). Como avalia o retorno deste investimento para a comunicação com seus eleitores?",
-                    category: "gastos"
-                },
-                {
-                    question: "Dos R$ 31,1 milhões em emendas autorizadas em 2023, apenas R$ 21,1 milhões foram pagos (68%). Quais estratégias usará para melhorar o repasse de recursos ao Amapá?",
-                    category: "emendas"
-                },
-                {
-                    question: "Foi autor de 251 propostas em 2023, mas relatou apenas 7. Como planeja aumentar a tramitação e aprovação de seus projetos?",
-                    category: "atividade"
-                },
-                {
-                    question: "Em 2023, teve 49 pessoas diferentes na equipe. Como organiza e supervisiona o trabalho com tamanha rotatividade?",
-                    category: "equipe"
-                },
-                {
-                    question: "Em dezembro de 2024, gastou R$ 104.850 em divulgação (80% do mês). Pode detalhar a destinação específica destes recursos?",
-                    category: "gastos"
-                }
+                { question: "Em 2023, foram gastos R$ 302 mil em divulgação (50% do total). Como avalia o retorno deste investimento para a comunicação com seus eleitores?", category: "gastos" },
+                { question: "Dos R$ 31,1 milhões em emendas autorizadas em 2023, apenas R$ 21,1 milhões foram pagos (68%). Quais estratégias usará para melhorar o repasse de recursos ao Amapá?", category: "emendas" },
+                { question: "Foi autor de 251 propostas em 2023, mas relatou apenas 7. Como planeja aumentar a tramitação e aprovação de seus projetos?", category: "atividade" },
+                { question: "Em 2023, teve 49 pessoas diferentes na equipe. Como organiza e supervisiona o trabalho com tamanha rotatividade?", category: "equipe" },
+                { question: "Em dezembro de 2024, gastou R$ 104.850 em divulgação (80% do mês). Pode detalhar a destinação específica destes recursos?", category: "gastos" }
             ];
-            
             const q = suggestedQuestions[index];
             $('#questionText').val(q.question);
             $('#questionCategory').val(q.category);
-            
-            // Rolar até o formulário
-            $('html, body').animate({
-                scrollTop: $('#questionForm').offset().top - 100
-            }, 500);
-        }
+            $('html, body').animate({ scrollTop: $('#questionForm').offset().top - 100 }, 500);
+        };
 
-        // Sugerir pergunta automática
-        function suggestQuestion() {
+        // ================= SUGERIR PERGUNTA AUTOMÁTICA =================
+        window.suggestQuestion = function() {
             const suggestions = [
                 "Como justifica o alto gasto com locação de veículos (R$ 120.000 em 2023)?",
                 "Qual a estratégia para aumentar a eficiência na execução das emendas orçamentárias?",
@@ -1703,111 +1419,71 @@
                 "Quais são suas principais bandeiras e como tem trabalhado por elas no Congresso?",
                 "Como avalia seu desempenho na presença em comissões temáticas?"
             ];
-            
-            const randomQuestion = suggestions[Math.floor(Math.random() * suggestions.length)];
-            $('#questionText').val(randomQuestion);
-            
-            // Mostrar feedback
+            $('#questionText').val(suggestions[Math.floor(Math.random() * suggestions.length)]);
             showNotification('Pergunta sugerida! Agora é só adaptar e enviar.', 'info');
-        }
+        };
 
-        // Votar em pergunta
-        function voteQuestion(index) {
-            if (!communityQuestions[index].votes) {
-                communityQuestions[index].votes = 0;
-            }
+        // ================= VOTAR =================
+        window.voteQuestion = function(index) {
+            if (!communityQuestions[index].votes) communityQuestions[index].votes = 0;
             communityQuestions[index].votes++;
-            
-            // Salvar no localStorage
             localStorage.setItem('community_questions_favacho', JSON.stringify(communityQuestions));
-            
-            // Recarregar perguntas
             loadCommunityQuestions();
-            
             showNotification('Seu apoio foi registrado!', 'success');
-        }
+        };
 
-        // Enviar pergunta
-        $('#questionForm').submit(function(e) {
-            e.preventDefault();
-            
-            const questionData = {
-                name: $('#questionName').val() || 'Anônimo',
-                email: $('#questionEmail').val() || '',
-                category: $('#questionCategory').val(),
-                question: $('#questionText').val(),
-                date: new Date().toISOString(),
-                votes: 0
-            };
-            
-            // Adicionar à lista de perguntas da comunidade
-            communityQuestions.unshift(questionData);
-            
-            // Salvar no localStorage
-            localStorage.setItem('community_questions_favacho', JSON.stringify(communityQuestions));
-            
-            // Limpar formulário
-            $('#questionForm')[0].reset();
-            
-            // Recarregar perguntas
-            loadCommunityQuestions();
-            
-            // Mostrar feedback
-            showNotification('Pergunta enviada com sucesso!', 'success');
-            
-            // Adicionar à aba de questionamentos
-            $('#questions-tab').html('<i class="fas fa-question-circle mr-1"></i> Questionamentos <span class="badge badge-light">' + communityQuestions.length + '</span>');
+        // ================= ENVIAR PERGUNTA =================
+        $(document).ready(function() {
+            $('#questionForm').submit(function(e) {
+                e.preventDefault();
+                const questionData = {
+                    name: $('#questionName').val() || 'Anônimo',
+                    email: $('#questionEmail').val() || '',
+                    category: $('#questionCategory').val(),
+                    question: $('#questionText').val(),
+                    date: new Date().toISOString(),
+                    votes: 0
+                };
+                communityQuestions.unshift(questionData);
+                localStorage.setItem('community_questions_favacho', JSON.stringify(communityQuestions));
+                $('#questionForm')[0].reset();
+                loadCommunityQuestions();
+                showNotification('Pergunta enviada com sucesso!', 'success');
+                $('#questions-tab').html('<i class="fas fa-question-circle mr-1"></i> Questionamentos <span class="badge badge-light">' + communityQuestions.length + '</span>');
+            });
         });
 
-        // Mostrar notificação
+        // ================= NOTIFICAÇÃO =================
         function showNotification(message, type = 'info') {
             const alertClass = type === 'success' ? 'alert-success' : type === 'warning' ? 'alert-warning' : 'alert-info';
-            
-            const notification = `
-                <div class="alert ${alertClass} alert-dismissible fade show" role="alert" 
-                     style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'} mr-2"></i>
-                    ${message}
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span>&times;</span>
-                    </button>
-                </div>
-            `;
-            
+            const notification = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;"><i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'} mr-2"></i>${message}<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button></div>`;
             $('body').append(notification);
-            
-            // Remover após 5 segundos
-            setTimeout(() => {
-                $('.alert').alert('close');
-            }, 5000);
+            setTimeout(() => { $('.alert').alert('close'); }, 5000);
         }
 
-        // Inicialização quando o documento estiver pronto
+        // ================= INICIALIZAÇÃO =================
         $(document).ready(function() {
-            // Inicializar métricas e gráficos
             updateMetrics();
             updateCharts();
             updateTables();
-            
-            // Carregar perguntas
             loadSuggestedQuestions();
             loadCommunityQuestions();
-            
-            // Atualizar badge da aba de questionamentos
             if (communityQuestions.length > 0) {
                 $('#questions-tab').html('<i class="fas fa-question-circle mr-1"></i> Questionamentos <span class="badge badge-light">' + communityQuestions.length + '</span>');
             }
-            
-            // Adicionar evento para atualizar gráficos ao mudar de aba
+
             $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-                // Aguardar um pouco para garantir que a aba está visível
                 setTimeout(() => {
-                    Plotly.Plots.resize(document.getElementById('chartMonthlyExpenses'));
-                    Plotly.Plots.resize(document.getElementById('chartAmendmentExecution'));
-                    Plotly.Plots.resize(document.getElementById('chartActivityBreakdown'));
-                    Plotly.Plots.resize(document.getElementById('chartAttendance'));
-                    Plotly.Plots.resize(document.getElementById('chartExpenseBreakdown'));
-                    Plotly.Plots.resize(document.getElementById('chartYearlyExpenses'));
+                    Plotly.relayout('chartMonthlyExpenses', {});
+                    Plotly.relayout('chartAmendmentExecution', {});
+                    Plotly.relayout('chartActivityBreakdown', {});
+                    Plotly.relayout('chartAttendance', {});
+                    Plotly.relayout('chartExpenseBreakdown', {});
+                    Plotly.relayout('chartYearlyExpenses', {});
+                    Plotly.relayout('chartYearlyAmendments', {});
+                    Plotly.relayout('chartAmendmentStatus', {});
+                    Plotly.relayout('chartYearlySalaries', {});
+                    Plotly.relayout('chartTeamRoles', {});
                 }, 300);
             });
         });
