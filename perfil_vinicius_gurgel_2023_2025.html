@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Detalhado - Dep. Vinicius Gurgel (2023-2025)</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css">
+    <style>
+        :root {
+            --primary-dark: #2c3e50;
+            --primary-light: #4a6491;
+            --color-finance: #e74c3c;
+            --color-activity: #27ae60;
+            --color-team: #9b59b6;
+            --color-goal: #f39c12;
+            --color-question: #3498db;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            color: #333;
+        }
+        .perfil-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            color: white;
+            padding: 2.5rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .perfil-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        .deputado-foto {
+            border: 5px solid rgba(255,255,255,0.9);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .stats-card.finance { border-top-color: var(--color-finance); }
+        .stats-card.activity { border-top-color: var(--color-activity); }
+        .stats-card.team { border-top-color: var(--color-team); }
+        .stats-card.goal { border-top-color: var(--color-goal); }
+        .stats-card.question { border-top-color: var(--color-question); }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .stats-label {
+            font-size: 0.95rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .nav-tabs-custom {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 25px;
+        }
+        .nav-tabs-custom .nav-link {
+            color: var(--primary-dark);
+            font-weight: 600;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+        .nav-tabs-custom .nav-link:hover {
+            background-color: rgba(44, 62, 80, 0.05);
+        }
+        .nav-tabs-custom .nav-link.active {
+            background-color: var(--primary-dark);
+            color: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: 100%;
+        }
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        .chart-title i {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+        .btn-back {
+            background-color: rgba(255,255,255,0.9);
+            color: var(--primary-dark);
+            border: none;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background-color: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        .year-selector {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .question-card {
+            border-left: 4px solid var(--color-question);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .question-form {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .progress-bar-custom {
+            height: 8px;
+            border-radius: 4px;
+        }
+        .badge-partido {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .perfil-header {
+                padding: 1.5rem 1rem;
+                text-align: center;
+            }
+            .stats-number {
+                font-size: 2rem;
+            }
+            .nav-tabs-custom .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Botão Voltar -->
+        <div class="back-button">
+            <button class="btn btn-back" onclick="window.history.back()">
+                <i class="fas fa-arrow-left mr-2"></i>Voltar ao Dashboard
+            </button>
+        </div>
+
+        <!-- CABEÇALHO DO PERFIL -->
+        <div class="row perfil-header">
+            <div class="col-lg-8 col-md-7">
+                <h1 class="display-5 font-weight-bold">Deputado Federal</h1>
+                <h2 class="mb-3">Vinicius de Azevedo Gurgel</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><i class="fas fa-landmark mr-2"></i><strong>Partido/UF:</strong> PL/AP</p>
+                        <p><i class="fas fa-id-badge mr-2"></i><strong>ID Parlamentar:</strong> 160591</p>
+                        <p><i class="fas fa-calendar-alt mr-2"></i><strong>Nascimento:</strong> 31/07/1978</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><i class="fas fa-envelope mr-2"></i><strong>E-mail:</strong> dep.viniciusgurgel@camara.leg.br</p>
+                        <p><i class="fas fa-phone mr-2"></i><strong>Telefone:</strong> (61) 3215-5852</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i><strong>Naturalidade:</strong> Macapá - AP</p>
+                        <p><i class="fas fa-home mr-2"></i><strong>Endereço:</strong> Gabinete 852 - Anexo IV</p>
+                    </div>
+                </div>
+                <!-- Seletor de Ano -->
+                <div class="year-selector mt-3">
+                    <label class="text-white font-weight-bold mb-2"><i class="fas fa-calendar-alt mr-2"></i>Visualização dos Dados:</label>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-light active" data-year="acumulado" onclick="changeYear('acumulado')">
+                            Acumulado 2023-2025
+                        </button>
+                        <button type="button" class="btn btn-outline-light" data-year="2023" onclick="changeYear('2023')">
+                            2023
+                        </button>
+                        <button type="button" class="btn btn-outline-light" data-year="2024" onclick="changeYear('2024')">
+                            2024
+                        </button>
+                        <button type="button" class="btn btn-outline-light" data-year="2025" onclick="changeYear('2025')">
+                            2025
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-5 text-center">
+                <img src="https://www.camara.leg.br/internet/deputado/bandep/160591.jpg" 
+                     class="img-fluid rounded-circle deputado-foto" 
+                     style="max-height: 220px;"
+                     alt="Foto do Deputado Vinicius Gurgel"
+                     onerror="this.src='https://via.placeholder.com/220/4a6491/ffffff?text=VG'">
+                <div class="mt-3">
+                    <a href="https://www.camara.leg.br/deputados/160591" 
+                       class="btn btn-outline-light btn-sm mr-2" target="_blank">
+                        <i class="fas fa-external-link-alt mr-1"></i> Página Oficial
+                    </a>
+                    <a href="https://dadosabertos.camara.leg.br/api/v2/deputados/160591" 
+                       class="btn btn-outline-light btn-sm" target="_blank">
+                        <i class="fas fa-database mr-1"></i> API de Dados
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARDS DE MÉTRICAS PRINCIPAIS -->
+        <div class="row mb-4" id="metrics-cards"></div>
+
+        <!-- ABAS PRINCIPAIS -->
+        <ul class="nav nav-tabs nav-tabs-custom" id="perfilTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab">
+                    <i class="fas fa-chart-pie mr-1"></i> Visão Geral
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity" role="tab">
+                    <i class="fas fa-file-contract mr-1"></i> Atividade Parlamentar
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="finance-tab" data-toggle="tab" href="#finance" role="tab">
+                    <i class="fas fa-money-bill-wave mr-1"></i> Finanças
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="emendas-tab" data-toggle="tab" href="#emendas" role="tab">
+                    <i class="fas fa-file-invoice-dollar mr-1"></i> Emendas
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="team-tab" data-toggle="tab" href="#team" role="tab">
+                    <i class="fas fa-users mr-1"></i> Equipe
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="questions-tab" data-toggle="tab" href="#questions" role="tab">
+                    <i class="fas fa-question-circle mr-1"></i> Questionamentos
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="regras-tab" data-toggle="tab" href="#regras" role="tab">
+                    <i class="fas fa-book mr-1"></i> Regras
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="perfilTabContent">
+            <!-- ABA 1: VISÃO GERAL -->
+            <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-chart-line" style="color: var(--color-finance);"></i>
+                                Evolução de Gastos Mensais (Cota Parlamentar)
+                            </div>
+                            <div id="chartMonthlyExpenses" style="height: 350px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-percentage" style="color: var(--color-goal);"></i>
+                                Taxa de Execução das Emendas
+                            </div>
+                            <div id="chartAmendmentExecution" style="height: 350px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="data-table">
+                            <table class="table table-hover mb-0" id="comissoes-table">
+                                <thead class="thead-light">
+                                    <tr><th colspan="4" class="text-center">Comissões e Cargos</th></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 2: ATIVIDADE PARLAMENTAR -->
+            <div class="tab-pane fade" id="activity" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-balance-scale" style="color: var(--color-activity);"></i>
+                                Distribuição da Atividade Legislativa
+                            </div>
+                            <div id="chartActivityBreakdown" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-calendar-check" style="color: var(--color-goal);"></i>
+                                Presença e Ausências
+                            </div>
+                            <div id="chartAttendance" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="data-table">
+                            <table class="table table-hover" id="attendance-table">
+                                <thead class="thead-light">
+                                    <tr><th>Indicador</th><th>Plenário</th><th>Comissões</th><th>Detalhamento</th></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 3: FINANÇAS -->
+            <div class="tab-pane fade" id="finance" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-chart-pie" style="color: var(--color-finance);"></i>
+                                Cota Parlamentar vs Verba de Gabinete
+                            </div>
+                            <div id="chartExpenseBreakdown" style="height: 400px;"></div>
+                            <div class="text-center mt-3">
+                                <small class="text-muted" id="total-despesas">Total Cota Parlamentar: <strong>R$ 0</strong></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-project-diagram" style="color: var(--color-activity);"></i>
+                                Evolução Anual de Gastos
+                            </div>
+                            <div id="chartYearlyExpenses" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="data-table">
+                            <h5 class="ml-3 mt-3"><i class="fas fa-chart-bar mr-2"></i>Gastos Mensais Detalhados</h5>
+                            <table class="table table-hover" id="gastos-detalhados-table">
+                                <thead class="thead-light">
+                                    <tr><th>Mês/Ano</th><th>Cota Parlamentar (R$)</th><th>Verba Gabinete (R$)</th><th>Disponível (R$)</th><th>% Utilização</th></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 4: EMENDAS -->
+            <div class="tab-pane fade" id="emendas" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-chart-bar" style="color: var(--color-finance);"></i>
+                                Emendas por Ano (Milhões R$)
+                            </div>
+                            <div id="chartYearlyAmendments" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-project-diagram" style="color: var(--color-activity);"></i>
+                                Status das Emendas
+                            </div>
+                            <div id="chartAmendmentStatus" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="data-table">
+                            <h5 class="ml-3 mt-3"><i class="fas fa-file-invoice mr-2"></i>Emendas por Destino</h5>
+                            <table class="table table-hover" id="emendas-table">
+                                <thead class="thead-light">
+                                    <tr><th>Fundo/Destino</th><th>Autorizado (R$)</th><th>Empenhado (R$)</th><th>Pago (R$)</th><th>Execução</th></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 5: EQUIPE -->
+            <div class="tab-pane fade" id="team" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-user-tag" style="color: var(--color-team);"></i>
+                                Evolução do Tamanho da Equipe
+                            </div>
+                            <div id="chartTeamRoles" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-wallet" style="color: var(--color-finance);"></i>
+                                Folha de Pagamento Anual
+                            </div>
+                            <div id="chartYearlySalaries" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="data-table">
+                            <h5 class="ml-3 mt-3"><i class="fas fa-users mr-2"></i>Pessoal de Gabinete</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="teamTable">
+                                    <thead class="thead-light">
+                                        <tr><th>Nome</th><th>Cargo</th><th>Período</th><th>Ano</th></tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 6: QUESTIONAMENTOS -->
+            <div class="tab-pane fade" id="questions" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="question-form">
+                            <h5 class="mb-4"><i class="fas fa-question-circle mr-2" style="color: var(--color-question);"></i>Envie sua Pergunta</h5>
+                            <p class="text-muted mb-4">Envie questionamentos sobre os gastos, emendas ou atuação do deputado.</p>
+                            <form id="questionForm">
+                                <div class="form-group">
+                                    <label for="questionName">Seu Nome (opcional)</label>
+                                    <input type="text" class="form-control" id="questionName" placeholder="Como deseja ser identificado">
+                                </div>
+                                <div class="form-group">
+                                    <label for="questionEmail">Seu E-mail (opcional)</label>
+                                    <input type="email" class="form-control" id="questionEmail" placeholder="Para receber respostas">
+                                </div>
+                                <div class="form-group">
+                                    <label for="questionCategory">Categoria</label>
+                                    <select class="form-control" id="questionCategory">
+                                        <option value="gastos">Gastos Parlamentares</option>
+                                        <option value="emendas">Emendas Orçamentárias</option>
+                                        <option value="atividade">Atividade Legislativa</option>
+                                        <option value="equipe">Equipe de Gabinete</option>
+                                        <option value="outro">Outro</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="questionText">Sua Pergunta *</label>
+                                    <textarea class="form-control" id="questionText" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane mr-2"></i>Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-star" style="color: var(--color-question);"></i>
+                                Perguntas Sugeridas
+                            </div>
+                            <div id="suggestedQuestions"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 7: REGRAS -->
+            <div class="tab-pane fade" id="regras" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="chart-container">
+                            <div class="chart-title">
+                                <i class="fas fa-book" style="color: #e67e22;"></i>
+                                Regras da Cota Parlamentar e Verba de Gabinete
+                            </div>
+                            <div class="accordion" id="regrasAccordion">
+                                <div class="card">
+                                    <div class="card-header" id="headingCEAP">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseCEAP">
+                                                Cota para Exercício da Atividade Parlamentar (CEAP)
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseCEAP" class="collapse show" data-parent="#regrasAccordion">
+                                        <div class="card-body">
+                                            <p><strong>Valor mensal:</strong> R$ 49.168,58 (AP) + R$ 1.353 para líderes</p>
+                                            <p><strong>Permitido:</strong> Passagens, divulgação, combustível, veículos</p>
+                                            <p><strong>Proibido:</strong> Gastos eleitorais, notas de parentes</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingVerba">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseVerba">
+                                                Verba de Gabinete
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseVerba" class="collapse" data-parent="#regrasAccordion">
+                                        <div class="card-body">
+                                            <p><strong>Valor:</strong> R$ 118.376 (2023), R$ 125.478 (2024), R$ 133.170 (2025)</p>
+                                            <p><strong>Finalidade:</strong> Salários de até 25 secretários</p>
+                                            <p><strong>Gestão:</strong> Exclusivo para folha de pagamento</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+
+    <script>
+        // ================= DADOS DO DEPUTADO VINICIUS GURGEL =================
+        const deputadoData = {
+            id: 160591,
+            nome: "Vinicius de Azevedo Gurgel",
+            anos: {
+                "2023": {
+                    cotaMensal: [
+                        { mes: "Jan/23", valor: 10171.85 },
+                        { mes: "Fev/23", valor: 41915.72 },
+                        { mes: "Mar/23", valor: 45442.27 },
+                        { mes: "Abr/23", valor: 90082.10 },
+                        { mes: "Mai/23", valor: 87738.85 },
+                        { mes: "Jun/23", valor: 54157.92 },
+                        { mes: "Jul/23", valor: 92632.45 },
+                        { mes: "Ago/23", valor: 46621.04 },
+                        { mes: "Set/23", valor: 45292.31 },
+                        { mes: "Out/23", valor: 37646.13 },
+                        { mes: "Nov/23", valor: 34691.88 },
+                        { mes: "Dez/23", valor: 24759.36 }
+                    ],
+                    verbaGabinete: [
+                        { mes: "Jan/23", valor: 111530.93, disponivel: 111675.59 },
+                        { mes: "Fev/23", valor: 117595.99, disponivel: 118376.13 },
+                        { mes: "Mar/23", valor: 117923.29, disponivel: 118376.13 },
+                        { mes: "Abr/23", valor: 117431.91, disponivel: 118376.13 },
+                        { mes: "Mai/23", valor: 116850.34, disponivel: 118376.13 },
+                        { mes: "Jun/23", valor: 117800.74, disponivel: 118376.13 },
+                        { mes: "Jul/23", valor: 118282.99, disponivel: 118376.13 },
+                        { mes: "Ago/23", valor: 117167.91, disponivel: 118376.13 },
+                        { mes: "Set/23", valor: 118303.33, disponivel: 118376.13 },
+                        { mes: "Out/23", valor: 117724.38, disponivel: 118376.13 },
+                        { mes: "Nov/23", valor: 117430.61, disponivel: 118376.13 },
+                        { mes: "Dez/23", valor: 116597.95, disponivel: 118376.13 }
+                    ],
+                    atividade: {
+                        propostas_autoria: 33,
+                        propostas_relatadas: 0,
+                        votacoes_nominais: 252,
+                        discursos: 0
+                    },
+                    presenca: {
+                        plenario: { presentes: 88, justificadas: 20, naoJustificadas: 6 },
+                        comissoes: { presentes: 3, justificadas: 0, naoJustificadas: 4 }
+                    },
+                    comissoes: {
+                        presidente: ["Comissão de Res 29/93 - Documentos Sigilosos (17/03/2023 a 09/04/2025)"],
+                        vice_lider: ["Partido Liberal (4 períodos em 2023)"],
+                        titular: [],
+                        suplente: []
+                    },
+                    equipe: {
+                        total_pessoas: 49,
+                        folha_anual: 1404640.37,
+                        membros: [
+                            { nome: "ALDENORA DUARTE DOS REIS", cargo: "Secretário Parlamentar SP03", periodo: "12/05/2023 a 27/12/2023" },
+                            { nome: "ANA BEATRIZ BANDEIRA NUNES RIBEIRO", cargo: "Cargo Natureza Especial CNE12", periodo: "04/04/2023 a 06/02/2025" },
+                            { nome: "CARLA KARINY CANTUARIA BRAGA PONTES", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "CLAUDIA THEREZA DE OLIVEIRA CARDOSO", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "DELIANE GIL CHAGAS", cargo: "Secretário Parlamentar SP03", periodo: "10/02/2022 a 27/12/2023" },
+                            { nome: "ELIANE MAMEDE DOS SANTOS", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "FABIANA NEVES GARCIA", cargo: "Secretário Parlamentar SP20", periodo: "15/02/2023 a 01/02/2024" },
+                            { nome: "GABRIELA TAIS BRITO DA SILVA", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "IGOR FRANCISCO DE SOUSA", cargo: "Cargo Natureza Especial CNE12", periodo: "13/02/2023 a 29/02/2024" },
+                            { nome: "IRANILDE DOS SANTOS SILVA", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" }
+                        ]
+                    },
+                    emendas: {
+                        autorizado: 0,
+                        empenhado: 0,
+                        pago: 0,
+                        projetos: []
+                    }
+                },
+                "2024": {
+                    cotaMensal: [
+                        { mes: "Jan/24", valor: 87879.66 },
+                        { mes: "Fev/24", valor: 36511.29 },
+                        { mes: "Mar/24", valor: 67006.30 },
+                        { mes: "Abr/24", valor: 70775.40 },
+                        { mes: "Mai/24", valor: 44441.56 },
+                        { mes: "Jun/24", valor: 40072.70 },
+                        { mes: "Jul/24", valor: 41747.45 },
+                        { mes: "Ago/24", valor: 44968.74 },
+                        { mes: "Set/24", valor: 59661.28 },
+                        { mes: "Out/24", valor: 53621.06 },
+                        { mes: "Nov/24", valor: 46970.38 },
+                        { mes: "Dez/24", valor: 10028.75 }
+                    ],
+                    verbaGabinete: [
+                        { mes: "Jan/24", valor: 118167.09, disponivel: 118376.13 },
+                        { mes: "Fev/24", valor: 124982.71, disponivel: 125478.69 },
+                        { mes: "Mar/24", valor: 120218.20, disponivel: 125478.69 },
+                        { mes: "Abr/24", valor: 123975.11, disponivel: 125478.69 },
+                        { mes: "Mai/24", valor: 122986.85, disponivel: 125478.69 },
+                        { mes: "Jun/24", valor: 123309.67, disponivel: 125478.69 },
+                        { mes: "Jul/24", valor: 123688.15, disponivel: 125478.69 },
+                        { mes: "Ago/24", valor: 125231.76, disponivel: 125478.69 },
+                        { mes: "Set/24", valor: 124902.55, disponivel: 125478.69 },
+                        { mes: "Out/24", valor: 125452.94, disponivel: 125478.69 },
+                        { mes: "Nov/24", valor: 125374.49, disponivel: 125478.69 }
+                    ],
+                    atividade: {
+                        propostas_autoria: 8,
+                        propostas_relatadas: 0,
+                        votacoes_nominais: 226,
+                        discursos: 0
+                    },
+                    presenca: {
+                        plenario: { presentes: 71, justificadas: 7, naoJustificadas: 9 },
+                        comissoes: { presentes: 1, justificadas: 0, naoJustificadas: 17 }
+                    },
+                    comissoes: {
+                        presidente: ["Comissão de Res 29/93 - Documentos Sigilosos (continua)"],
+                        titular: ["Comissão de Desenvolvimento Urbano"],
+                        suplente: ["Comissão de Agricultura", "Comissão de Integração Nacional", "Comissão de Saúde"]
+                    },
+                    equipe: {
+                        total_pessoas: 46,
+                        folha_anual: 1358289.52,
+                        membros: [
+                            { nome: "ALDENORA DUARTE DOS REIS", cargo: "Secretário Parlamentar SP03", periodo: "02/02/2024 a 29/12/2024" },
+                            { nome: "ALEF CORDEIRO RODRIGUES", cargo: "Secretário Parlamentar", periodo: "14/03/2024 a 04/08/2024" },
+                            { nome: "ANA LÚCIA ALBUQUERQUE ROCHA AQUINO", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "ANA PAULA DA SILVA GONÇALVES", cargo: "Secretário Parlamentar", periodo: "14/06/2024 a 04/08/2024" },
+                            { nome: "ANELITA ANDRADE CARDOZO", cargo: "Secretário Parlamentar", periodo: "09/01/2024 a 09/06/2024" },
+                            { nome: "CLAUDIA THEREZA DE OLIVEIRA CARDOSO", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "DELIANE GIL CHAGAS", cargo: "Secretário Parlamentar SP03", periodo: "02/02/2024 a 29/12/2024" },
+                            { nome: "EDIELSON SILVA DA COSTA", cargo: "Secretário Parlamentar", periodo: "13/09/2024 a 04/02/2025" },
+                            { nome: "EDRY JERRAH SOUZA LIMA", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "ELIANE MAMEDE DOS SANTOS", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" }
+                        ]
+                    },
+                    emendas: {
+                        autorizado: 25285000,
+                        empenhado: 25251000,
+                        pago: 25122400,
+                        projetos: [
+                            { destino: "Universidade Federal Rural Da Amazonia", autorizado: 500000, empenhado: 500000, pago: 500000 },
+                            { destino: "Fundo Nacional De Saude - Boa Viagem/CE", autorizado: 5000000, empenhado: 5000000, pago: 5000000 },
+                            { destino: "Transferencias Especiais - Aquiraz/CE", autorizado: 4000000, empenhado: 4000000, pago: 4000000 },
+                            { destino: "Transferencias Especiais - Amapa", autorizado: 11900000, empenhado: 11900000, pago: 11900000 },
+                            { destino: "FNS - Esplanada/BA", autorizado: 4000000, empenhado: 4000000, pago: 4000000 },
+                            { destino: "FNS - Itabuna/BA", autorizado: 999973, empenhado: 999973, pago: 999973 },
+                            { destino: "Comando do Exercito - AP", autorizado: 400000, empenhado: 398060, pago: 314292 },
+                            { destino: "FNS - Mucuge/BA", autorizado: 500874, empenhado: 500874, pago: 500874 },
+                            { destino: "UNIFAP", autorizado: 685792, empenhado: 685792, pago: 659397 },
+                            { destino: "FNS - Pinheiro/MA", autorizado: 5000000, empenhado: 5000000, pago: 5000000 }
+                        ]
+                    }
+                },
+                "2025": {
+                    cotaMensal: [
+                        { mes: "Jan/25", valor: 60781.14 },
+                        { mes: "Fev/25", valor: 44444.81 },
+                        { mes: "Mar/25", valor: 37320.96 },
+                        { mes: "Abr/25", valor: 60633.78 },
+                        { mes: "Mai/25", valor: 80560.32 },
+                        { mes: "Jun/25", valor: 69206.01 },
+                        { mes: "Jul/25", valor: 27357.30 },
+                        { mes: "Ago/25", valor: 35995.54 },
+                        { mes: "Set/25", valor: 49504.67 },
+                        { mes: "Out/25", valor: 29506.56 },
+                        { mes: "Nov/25", valor: 39006.56 },
+                        { mes: "Dez/25", valor: 20581.43 }
+                    ],
+                    verbaGabinete: [
+                        { mes: "Jan/25", valor: 125405.14, disponivel: 125478.69 },
+                        { mes: "Fev/25", valor: 133100.87, disponivel: 133170.54 },
+                        { mes: "Mar/25", valor: 131764.55, disponivel: 133170.54 },
+                        { mes: "Abr/25", valor: 131281.38, disponivel: 133170.54 },
+                        { mes: "Mai/25", valor: 132912.04, disponivel: 133170.54 },
+                        { mes: "Jun/25", valor: 132875.14, disponivel: 133170.54 },
+                        { mes: "Jul/25", valor: 132906.26, disponivel: 133170.54 },
+                        { mes: "Ago/25", valor: 132919.60, disponivel: 133170.54 },
+                        { mes: "Set/25", valor: 132372.28, disponivel: 133170.54 },
+                        { mes: "Out/25", valor: 132731.77, disponivel: 133170.54 },
+                        { mes: "Nov/25", valor: 132982.94, disponivel: 133170.54 },
+                        { mes: "Dez/25", valor: 132485.82, disponivel: 133170.54 }
+                    ],
+                    atividade: {
+                        propostas_autoria: 20,
+                        propostas_relatadas: 0,
+                        votacoes_nominais: 357,
+                        discursos: 1
+                    },
+                    presenca: {
+                        plenario: { presentes: 93, justificadas: 23, naoJustificadas: 5 },
+                        comissoes: { presentes: 2, justificadas: 13, naoJustificadas: 69 }
+                    },
+                    comissoes: {
+                        presidente: ["Comissão de Res 29/93 - Documentos Sigilosos (até 09/04/2025)"],
+                        titular: ["Comissão de Desenvolvimento Urbano", "Comissão de Saúde"],
+                        suplente: ["Comissão de Comunicação"]
+                    },
+                    equipe: {
+                        total_pessoas: 46,
+                        folha_anual: 1591120.00,
+                        membros: [
+                            { nome: "ALDENORA DUARTE DOS REIS", cargo: "Secretário Parlamentar", periodo: "30/05/2025 a 08/06/2025" },
+                            { nome: "AMARILDO SANTANA ALVES", cargo: "Secretário Parlamentar", periodo: "03/09/2025 a 10/11/2025" },
+                            { nome: "ANA BEATRIZ BANDEIRA NUNES RIBEIRO", cargo: "Cargo Natureza Especial CNE13", periodo: "Desde 28/02/2025" },
+                            { nome: "ANA CAROLINE SAMPAIO GOMES", cargo: "Cargo Natureza Especial CNE15", periodo: "Desde 12/11/2025" },
+                            { nome: "ANA LÚCIA ALBUQUERQUE ROCHA AQUINO", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" },
+                            { nome: "ANA PAULA ALMEIDA CAVALCANTE", cargo: "Secretário Parlamentar", periodo: "12/06/2025 a 29/12/2025" },
+                            { nome: "ARLYSON YODA SANTOS DA COSTA", cargo: "Secretário Parlamentar", periodo: "15/10/2025 a 29/01/2026" },
+                            { nome: "ARTHUR DE OLIVEIRA BRITO DA SILVA", cargo: "Secretário Parlamentar", periodo: "12/06/2025 a 11/02/2026" },
+                            { nome: "CLAUDIA THEREZA DE OLIVEIRA CARDOSO", cargo: "Secretário Parlamentar", periodo: "05/02/2025 a 01/06/2025" },
+                            { nome: "DANIELA DOS SANTOS", cargo: "Secretário Parlamentar", periodo: "Múltiplos períodos" }
+                        ]
+                    },
+                    emendas: {
+                        autorizado: 30275985,
+                        empenhado: 30225226,
+                        pago: 18754522,
+                        projetos: [
+                            { destino: "Universidade Federal Rural Da Amazonia", autorizado: 575985, empenhado: 575985, pago: 0 },
+                            { destino: "FNS - Macapá/AP", autorizado: 6000000, empenhado: 6000000, pago: 0 },
+                            { destino: "Fundo Nacional de Assistencia Social", autorizado: 1000000, empenhado: 1000000, pago: 1000000 },
+                            { destino: "Min. Integração Regional", autorizado: 1200000, empenhado: 1200000, pago: 54000 },
+                            { destino: "Transferencias Especiais - AP", autorizado: 15300000, empenhado: 15300000, pago: 15147000 },
+                            { destino: "Ministerio do Esporte - AP", autorizado: 200000, empenhado: 200000, pago: 0 },
+                            { destino: "FNS - Atenção Primária", autorizado: 5000000, empenhado: 4936841, pago: 2553522 },
+                            { destino: "FNS - Assistência Hospitalar", autorizado: 8000000, empenhado: 8000000, pago: 8000000 }
+                        ]
+                    }
+                }
+            }
+        };
+
+        // Dados acumulados
+        deputadoData.acumulado = {
+            cotaMensal: [],
+            verbaGabinete: [],
+            emendas: {
+                autorizado: deputadoData.anos["2024"].emendas.autorizado + deputadoData.anos["2025"].emendas.autorizado,
+                empenhado: deputadoData.anos["2024"].emendas.empenhado + deputadoData.anos["2025"].emendas.empenhado,
+                pago: deputadoData.anos["2024"].emendas.pago + deputadoData.anos["2025"].emendas.pago
+            },
+            atividade: {
+                propostas_autoria: 33 + 8 + 20,
+                propostas_relatadas: 0,
+                votacoes_nominais: 252 + 226 + 357,
+                discursos: 0 + 0 + 1
+            },
+            presenca: {
+                plenario: {
+                    presentes: 88 + 71 + 93,
+                    justificadas: 20 + 7 + 23,
+                    naoJustificadas: 6 + 9 + 5
+                },
+                comissoes: {
+                    presentes: 3 + 1 + 2,
+                    justificadas: 0 + 0 + 13,
+                    naoJustificadas: 4 + 17 + 69
+                }
+            },
+            equipe: {
+                total_pessoas: 49,
+                folha_anual: 1404640.37 + 1358289.52 + 1591120.00
+            }
+        };
+
+        // ================= VARIÁVEIS DE ESTADO =================
+        let currentYear = 'acumulado';
+        let communityQuestions = JSON.parse(localStorage.getItem('questions_gurgel')) || [];
+
+        // ================= FUNÇÕES AUXILIARES =================
+        function formatarMoeda(valor) {
+            return 'R$ ' + valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function formatarMilhoes(valor) {
+            if (valor >= 1000000) return (valor / 1000000).toFixed(1) + 'M';
+            if (valor >= 1000) return (valor / 1000).toFixed(0) + 'K';
+            return valor.toString();
+        }
+
+        function calcularPercentual(parte, total) {
+            if (total === 0) return 0;
+            return Math.round((parte / total) * 100);
+        }
+
+        window.changeYear = function(year) {
+            currentYear = year;
+            $('[data-year]').removeClass('active');
+            $(`[data-year="${year}"]`).addClass('active');
+            updateMetrics();
+            updateCharts();
+            updateTables();
+        };
+
+        function updateMetrics() {
+            const data = currentYear === 'acumulado' ? deputadoData.acumulado : deputadoData.anos[currentYear];
+            const anoData = currentYear !== 'acumulado' ? deputadoData.anos[currentYear] : null;
+            
+            let metricsHTML = '';
+
+            if (currentYear === 'acumulado') {
+                metricsHTML = `
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card activity">
+                            <div class="stats-number text-success">${data.atividade.propostas_autoria}</div>
+                            <div class="stats-label">Propostas de Autoria</div>
+                            <p class="small text-muted mb-0">+ ${data.atividade.votacoes_nominais} votações</p>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card finance">
+                            <div class="stats-number" style="color: var(--color-finance);">${formatarMilhoes(data.emendas.autorizado)}</div>
+                            <div class="stats-label">Emendas Autorizadas</div>
+                            <p class="small text-muted mb-0">${formatarMilhoes(data.emendas.pago)} executados</p>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card goal">
+                            <div class="stats-number" style="color: var(--color-goal);">${calcularPercentual(data.presenca.plenario.presentes, data.presenca.plenario.presentes + data.presenca.plenario.naoJustificadas)}%</div>
+                            <div class="stats-label">Presença em Plenário</div>
+                            <p class="small text-muted mb-0">${data.presenca.plenario.presentes} presenças</p>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card team">
+                            <div class="stats-number" style="color: var(--color-team);">${data.equipe.total_pessoas}</div>
+                            <div class="stats-label">Equipe (máx)</div>
+                            <p class="small text-muted mb-0">Folha: ${formatarMoeda(data.equipe.folha_anual)}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const totalDias = anoData.presenca.plenario.presentes + anoData.presenca.plenario.naoJustificadas;
+                const perc = calcularPercentual(anoData.presenca.plenario.presentes, totalDias);
+                metricsHTML = `
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card activity">
+                            <div class="stats-number text-success">${anoData.atividade.propostas_autoria}</div>
+                            <div class="stats-label">Propostas ${currentYear}</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card finance">
+                            <div class="stats-number" style="color: var(--color-finance);">${formatarMilhoes(anoData.emendas.autorizado)}</div>
+                            <div class="stats-label">Emendas</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card goal">
+                            <div class="stats-number" style="color: var(--color-goal);">${perc}%</div>
+                            <div class="stats-label">Presença</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6">
+                        <div class="stats-card team">
+                            <div class="stats-number" style="color: var(--color-team);">${anoData.equipe.total_pessoas}</div>
+                            <div class="stats-label">Equipe</div>
+                        </div>
+                    </div>
+                `;
+            }
+            $('#metrics-cards').html(metricsHTML);
+        }
+
+        function updateCharts() {
+            const data = currentYear === 'acumulado' ? deputadoData.acumulado : deputadoData.anos[currentYear];
+            const anoLabel = currentYear === 'acumulado' ? '2023-2025' : currentYear;
+            const anos = currentYear === 'acumulado' ? deputadoData.anos : { [currentYear]: data };
+
+            // 1. Gastos Mensais (Cota Parlamentar)
+            if (currentYear === 'acumulado') {
+                const yearlyCota = [
+                    { ano: '2023', total: deputadoData.anos["2023"].cotaMensal.reduce((s,m)=>s+m.valor,0) },
+                    { ano: '2024', total: deputadoData.anos["2024"].cotaMensal.reduce((s,m)=>s+m.valor,0) },
+                    { ano: '2025', total: deputadoData.anos["2025"].cotaMensal.reduce((s,m)=>s+m.valor,0) }
+                ];
+                Plotly.react('chartMonthlyExpenses', [{
+                    x: yearlyCota.map(i=>i.ano), y: yearlyCota.map(i=>i.total), type: 'bar',
+                    marker: {color: '#e74c3c'}, text: yearlyCota.map(i=>formatarMoeda(i.total))
+                }], {title: 'Cota Parlamentar por Ano'});
+            } else {
+                Plotly.react('chartMonthlyExpenses', [{
+                    x: data.cotaMensal.map(m=>m.mes), y: data.cotaMensal.map(m=>m.valor),
+                    type: 'scatter', mode: 'lines+markers', line: {color: '#e74c3c', width: 3}
+                }], {title: `Gastos Mensais - ${anoLabel}`});
+            }
+
+            // 2. Taxa de Execução das Emendas
+            const execucao = currentYear === 'acumulado' 
+                ? Math.round((data.emendas.pago / data.emendas.autorizado) * 100)
+                : data.emendas.autorizado > 0 ? Math.round((data.emendas.pago / data.emendas.autorizado) * 100) : 0;
+            Plotly.react('chartAmendmentExecution', [{
+                type: "indicator", mode: "gauge+number", value: execucao,
+                title: {text: `Execução ${anoLabel}`}, number: {suffix: "%"},
+                gauge: {axis: {range: [0,100]}, bar: {color: execucao >= 70 ? "#27ae60" : execucao >= 40 ? "#f39c12" : "#e74c3c"}}
+            }]);
+
+            // 3. Distribuição da Atividade
+            Plotly.react('chartActivityBreakdown', [{
+                labels: ['Propostas', 'Votações', 'Discursos'],
+                values: [data.atividade.propostas_autoria, data.atividade.votacoes_nominais, data.atividade.discursos],
+                type: 'pie', hole: 0.4,
+                marker: {colors: ['#27ae60','#3498db','#9b59b6']}
+            }]);
+
+            // 4. Presença
+            Plotly.react('chartAttendance', [
+                {x: ['Presenças','Ausências'], y: [data.presenca.plenario.presentes, data.presenca.plenario.naoJustificadas], name: 'Plenário', type: 'bar'},
+                {x: ['Presenças','Ausências'], y: [data.presenca.comissoes.presentes, data.presenca.comissoes.naoJustificadas], name: 'Comissões', type: 'bar'}
+            ]);
+
+            // 5. Composição das Despesas (Cota vs Verba)
+            const totalCota = currentYear === 'acumulado' 
+                ? [2023,2024,2025].reduce((s,ano)=>s+deputadoData.anos[ano].cotaMensal.reduce((a,b)=>a+b.valor,0),0)
+                : data.cotaMensal.reduce((s,m)=>s+m.valor,0);
+            const totalVerba = currentYear === 'acumulado'
+                ? [2023,2024,2025].reduce((s,ano)=>s+deputadoData.anos[ano].verbaGabinete.reduce((a,b)=>a+b.valor,0),0)
+                : data.verbaGabinete.reduce((s,m)=>s+m.valor,0);
+            Plotly.react('chartExpenseBreakdown', [{
+                labels: ['Cota Parlamentar', 'Verba de Gabinete'],
+                values: [totalCota, totalVerba],
+                type: 'pie', hole: 0.3,
+                marker: {colors: ['#e74c3c','#9b59b6']}
+            }]);
+
+            // 6. Evolução Anual
+            const anosLista = ['2023','2024','2025'];
+            const totaisAnuais = anosLista.map(ano => 
+                deputadoData.anos[ano].cotaMensal.reduce((s,m)=>s+m.valor,0)
+            );
+            Plotly.react('chartYearlyExpenses', [{
+                x: anosLista, y: totaisAnuais, type: 'bar',
+                marker: {color: '#e74c3c'}
+            }], {title: 'Evolução Anual da Cota Parlamentar'});
+
+            // 7. Emendas por Ano
+            const emendasAnuais = anosLista.map(ano => deputadoData.anos[ano].emendas.autorizado / 1e6);
+            Plotly.react('chartYearlyAmendments', [{
+                x: anosLista, y: emendasAnuais, type: 'bar',
+                marker: {color: '#27ae60'}
+            }], {title: 'Emendas por Ano (R$ milhões)'});
+
+            // 8. Status das Emendas
+            Plotly.react('chartAmendmentStatus', [
+                {x: anosLista, y: anosLista.map(ano=>deputadoData.anos[ano].emendas.pago/1e6), name: 'Pago', type: 'bar'},
+                {x: anosLista, y: anosLista.map(ano=>(deputadoData.anos[ano].emendas.empenhado-deputadoData.anos[ano].emendas.pago)/1e6), name: 'Empenhado não pago', type: 'bar'},
+                {x: anosLista, y: anosLista.map(ano=>(deputadoData.anos[ano].emendas.autorizado-deputadoData.anos[ano].emendas.empenhado)/1e6), name: 'Não empenhado', type: 'bar'}
+            ], {barmode: 'stack'});
+
+            // 9. Folha de Pagamento
+            const folhas = anosLista.map(ano => deputadoData.anos[ano].equipe.folha_anual / 1e6);
+            Plotly.react('chartYearlySalaries', [{
+                x: anosLista, y: folhas, type: 'bar',
+                marker: {color: '#9b59b6'}
+            }], {title: 'Folha de Pagamento (R$ milhões)'});
+
+            // 10. Tamanho da Equipe
+            const tamanhos = anosLista.map(ano => deputadoData.anos[ano].equipe.total_pessoas);
+            Plotly.react('chartTeamRoles', [{
+                x: anosLista, y: tamanhos, type: 'bar',
+                marker: {color: '#3498db'}
+            }], {title: 'Tamanho da Equipe'});
+        }
+
+        function updateTables() {
+            const data = currentYear === 'acumulado' ? deputadoData.anos['2024'] : deputadoData.anos[currentYear];
+            const ano = currentYear === 'acumulado' ? '2024' : currentYear;
+
+            // Comissões
+            let comHtml = '';
+            if (data.comissoes.presidente && data.comissoes.presidente.length) {
+                comHtml += `<tr><td><strong>Presidente</strong></td><td colspan="3">${data.comissoes.presidente.join(', ')}</td></tr>`;
+            }
+            if (data.comissoes.titular && data.comissoes.titular.length) {
+                comHtml += `<tr><td><strong>Titular</strong></td><td colspan="3">${data.comissoes.titular.join(', ')}</td></tr>`;
+            }
+            if (data.comissoes.suplente && data.comissoes.suplente.length) {
+                comHtml += `<tr><td><strong>Suplente</strong></td><td colspan="3">${data.comissoes.suplente.join(', ')}</td></tr>`;
+            }
+            $('#comissoes-table tbody').html(comHtml);
+
+            // Presença
+            const percPlen = calcularPercentual(data.presenca.plenario.presentes, data.presenca.plenario.presentes + data.presenca.plenario.naoJustificadas);
+            const percCom = calcularPercentual(data.presenca.comissoes.presentes, data.presenca.comissoes.presentes + data.presenca.comissoes.naoJustificadas);
+            $('#attendance-table tbody').html(`
+                <tr><td>Presenças</td><td>${data.presenca.plenario.presentes}</td><td>${data.presenca.comissoes.presentes}</td><td>Plenário: ${percPlen}% | Comissões: ${percCom}%</td></tr>
+                <tr><td>Ausências Justificadas</td><td>${data.presenca.plenario.justificadas}</td><td>${data.presenca.comissoes.justificadas}</td><td></td></tr>
+                <tr><td>Ausências Não Justificadas</td><td>${data.presenca.plenario.naoJustificadas}</td><td>${data.presenca.comissoes.naoJustificadas}</td><td></td></tr>
+            `);
+
+            // Gastos detalhados
+            let gastosHtml = '';
+            const meses = data.cotaMensal.length;
+            for (let i=0; i<meses; i++) {
+                const cota = data.cotaMensal[i];
+                const verba = data.verbaGabinete[i] || {valor:0, disponivel:0};
+                const percUso = verba.disponivel ? Math.round((verba.valor / verba.disponivel)*100) : 0;
+                gastosHtml += `<tr><td>${cota.mes}</td><td>${formatarMoeda(cota.valor)}</td><td>${formatarMoeda(verba.valor)}</td><td>${formatarMoeda(verba.disponivel)}</td><td>${percUso}%</td></tr>`;
+            }
+            $('#gastos-detalhados-table tbody').html(gastosHtml);
+            $('#total-despesas').html(`Total Cota Parlamentar: <strong>${formatarMoeda(data.cotaMensal.reduce((s,m)=>s+m.valor,0))}</strong>`);
+
+            // Emendas
+            let emendasHtml = '';
+            if (data.emendas.projetos && data.emendas.projetos.length) {
+                data.emendas.projetos.forEach(p => {
+                    const exec = calcularPercentual(p.pago, p.autorizado);
+                    emendasHtml += `<tr><td>${p.destino}</td><td>${formatarMoeda(p.autorizado)}</td><td>${formatarMoeda(p.empenhado)}</td><td>${formatarMoeda(p.pago)}</td><td>${exec}%</td></tr>`;
+                });
+            } else {
+                emendasHtml = `<tr><td colspan="5" class="text-center">Nenhuma emenda registrada em ${ano}</td></tr>`;
+            }
+            $('#emendas-table tbody').html(emendasHtml);
+
+            // Equipe
+            let equipeHtml = '';
+            data.equipe.membros.forEach(m => {
+                equipeHtml += `<tr><td>${m.nome}</td><td>${m.cargo}</td><td>${m.periodo}</td><td>${ano}</td></tr>`;
+            });
+            $('#teamTable tbody').html(equipeHtml);
+            if ($.fn.DataTable.isDataTable('#teamTable')) $('#teamTable').DataTable().destroy();
+            $('#teamTable').DataTable({pageLength: 10, language: {url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json'}});
+        }
+
+        // Perguntas
+        function loadSuggestedQuestions() {
+            const questions = [
+                {title: "Ausências em Comissões 2025", question: "Em 2025, foram 69 ausências não justificadas em comissões. Qual o motivo?", category: "atividade", votes: 23},
+                {title: "Execução de Emendas 2025", question: "Apenas R$ 2,5M dos R$ 6M da FNS foram pagos. Por que?", category: "emendas", votes: 18},
+                {title: "Gastos com Cota", question: "Gastou R$ 92.632 em julho/2023, quase o dobro da cota. Como justifica?", category: "gastos", votes: 15}
+            ];
+            let html = '';
+            questions.forEach((q,i) => {
+                html += `<div class="question-card card mb-2"><div class="card-body"><h6>${q.title}</h6><p class="small">${q.question}</p><span class="badge badge-secondary">${q.category}</span> <span class="ml-2"><i class="fas fa-thumbs-up"></i> ${q.votes}</span></div></div>`;
+            });
+            $('#suggestedQuestions').html(html);
+        }
+
+        function loadCommunityQuestions() {
+            if (!communityQuestions.length) {
+                $('#communityQuestions').html('<div class="alert alert-info">Nenhuma pergunta ainda.</div>');
+            }
+        }
+
+        $(document).ready(function() {
+            updateMetrics();
+            updateCharts();
+            updateTables();
+            loadSuggestedQuestions();
+            loadCommunityQuestions();
+        });
+    </script>
+</body>
+</html>
